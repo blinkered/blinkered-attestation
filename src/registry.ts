@@ -173,6 +173,14 @@ export const SOURCES: readonly SourceSpec[] = [
     'Leipzig Corpora, deu-at_web_2019_1M',
   ),
 
+  template(
+    'ebibletl',
+    'ebible',
+    'Tagalog Bible (tglulb)',
+    'eBible.org, Tagalog Unlocked Literal Bible',
+    'https://ebible.org/tglulb/{id}.htm',
+  ),
+
   web('cc', 'commoncrawl', 'Common Crawl', 'Common Crawl Foundation'),
   web('fw2', 'commoncrawl', 'FineWeb-2', 'FineWeb-2, from Common Crawl'),
 

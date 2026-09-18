@@ -16,6 +16,8 @@ export {
   leipzigSentences,
   tatoebaDocuments,
   tatoebaRows,
+  verseDocuments,
+  versesByChapter,
   wikiDocuments,
   wikiPages,
 } from './readers.js'

@@ -13,6 +13,8 @@ import {
   leipzigSentences,
   tatoebaDocuments,
   tatoebaRows,
+  verseDocuments,
+  versesByChapter,
   wikiDocuments,
   wikiPages,
 } from '../src/readers.js'
@@ -306,5 +308,51 @@ describe('reading a FineWeb-2 shard', () => {
       { locator: 'https://abante.com.ph/a', text: 'Magandang umaga.' },
       { locator: 'https://bomba.ph/b', text: 'Kumusta ka?' },
     ])
+  })
+})
+
+describe('the scripture reader', () => {
+  const lines = [
+    'GEN 1:1 Noong simula nilikha ng Diyos ang langit.',
+    'GEN 1:2 Ang lupa ay walang anyo.',
+    'GEN 2:1 Natapos ang langit at ang lupa.',
+    'EXO 12:14 Ang araw na ito ay magiging alaala.',
+  ]
+
+  it('gathers verses into the chapter a locator can open', async () => {
+    expect(await collect(versesByChapter(lines))).toEqual([
+      {
+        locator: 'GEN01',
+        text: 'Noong simula nilikha ng Diyos ang langit. Ang lupa ay walang anyo.',
+      },
+      { locator: 'GEN02', text: 'Natapos ang langit at ang lupa.' },
+      { locator: 'EXO12', text: 'Ang araw na ito ay magiging alaala.' },
+    ])
+  })
+
+  it('pads the chapter, because the pages are named GEN01 rather than GEN1', async () => {
+    const [first] = await collect(versesByChapter(['GEN 9:1 Pinagpala ng Diyos.']))
+    expect(first?.locator).toBe('GEN09')
+  })
+
+  it('ignores a line that is not a verse', async () => {
+    expect(await collect(versesByChapter(['', 'not a verse', 'GEN 1:1 Tunay.']))).toHaveLength(1)
+  })
+
+  it('emits the last chapter, which has no following verse to close it', async () => {
+    const found = await collect(versesByChapter(['REV 22:21 Ang biyaya.']))
+    expect(found).toEqual([{ locator: 'REV22', text: 'Ang biyaya.' }])
+  })
+
+  it('reads nothing from nothing', async () => {
+    expect(await collect(versesByChapter([]))).toEqual([])
+  })
+
+  it('reads a verse-per-line file off the filesystem', async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'blinkered-vpl-'))
+    const path = join(dir, 'tglulb_vpl.txt')
+    writeFileSync(path, `${lines.join('\n')}\n`)
+    const found = await collect(verseDocuments(path))
+    expect(found.map((document) => document.locator)).toEqual(['GEN01', 'GEN02', 'EXO12'])
   })
 })

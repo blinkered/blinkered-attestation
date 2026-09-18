@@ -251,6 +251,41 @@ export async function* fineweb2Documents(
   }
 }
 
+/**
+ * A verse-per-line scripture text: `BOOK C:V the text of the verse`.
+ *
+ * Bible translations are worth the trouble for exactly one reason: they are a family nothing
+ * else in this project belongs to. A wiki, a web crawl, a sentence bank and a shelf of novels
+ * can all be wrong about a language in the same direction; a translation made by people with no
+ * connection to any of them cannot be wrong in the same way. For a thin language that is often
+ * the difference between three families and two.
+ *
+ * Verses are gathered into chapters, because a chapter is what a locator can open. The register
+ * is narrow and archaic-leaning, which is a reason to use it as one voice among several and
+ * never as the only one.
+ */
+export async function* versesByChapter(lines: Lines): AsyncGenerator<Document> {
+  let chapter: string | null = null
+  let held: string[] = []
+
+  for await (const line of lines) {
+    const verse = /^([A-Z0-9]{3}) (\d+):(\d+)\s+(.*)$/u.exec(line)
+    if (verse === null) continue
+    const at = `${verse[1] as string}${(verse[2] as string).padStart(2, '0')}`
+    if (at !== chapter) {
+      if (chapter !== null && held.length > 0) yield { locator: chapter, text: held.join(' ') }
+      chapter = at
+      held = []
+    }
+    held.push(verse[4] as string)
+  }
+  if (chapter !== null && held.length > 0) yield { locator: chapter, text: held.join(' ') }
+}
+
+export function verseDocuments(path: string): AsyncGenerator<Document> {
+  return versesByChapter(createInterface({ input: createReadStream(path), crlfDelay: Infinity }))
+}
+
 const GUTENBERG_START = /^\*\*\*+ ?START OF (?:THE|THIS) PROJECT GUTENBERG EBOOK.*$/mu
 const GUTENBERG_END = /^\*\*\*+ ?END OF (?:THE|THIS) PROJECT GUTENBERG EBOOK.*$/mu
 

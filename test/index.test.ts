@@ -35,6 +35,8 @@ describe('the public interface', () => {
       'tatoebaDocuments',
       'tatoebaRows',
       'validateSourceId',
+      'verseDocuments',
+      'versesByChapter',
       'wikiDocuments',
       'wikiPages',
     ])
