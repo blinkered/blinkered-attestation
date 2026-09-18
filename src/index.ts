@@ -12,6 +12,8 @@ export {
   crawlRows,
   fineweb2Documents,
   gutenbergBody,
+  harvestDocuments,
+  harvestedPages,
   leipzigLocators,
   leipzigSentences,
   tatoebaDocuments,

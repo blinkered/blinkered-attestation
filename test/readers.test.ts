@@ -9,6 +9,8 @@ import {
   fileDocuments,
   fineweb2Documents,
   gutenbergBody,
+  harvestDocuments,
+  harvestedPages,
   leipzigLocators,
   leipzigSentences,
   tatoebaDocuments,
@@ -354,5 +356,33 @@ describe('the scripture reader', () => {
     writeFileSync(path, `${lines.join('\n')}\n`)
     const found = await collect(verseDocuments(path))
     expect(found.map((document) => document.locator)).toEqual(['GEN01', 'GEN02', 'EXO12'])
+  })
+})
+
+describe('the harvest reader', () => {
+  it('cites a harvested page by its own URL', async () => {
+    const rows = [
+      'https://www.kn-online.de/a\tSie entschuldigst dich nicht.',
+      'https://taz.de/b\tEr bedrohst niemanden.',
+    ]
+    expect(await collect(harvestedPages(rows))).toEqual([
+      { locator: 'https://www.kn-online.de/a', text: 'Sie entschuldigst dich nicht.' },
+      { locator: 'https://taz.de/b', text: 'Er bedrohst niemanden.' },
+    ])
+  })
+
+  it('skips a row with no text, since a search hit is not a sighting', async () => {
+    // A search engine saying a page holds a word is not the page holding it. Only fetched text
+    // counts, so a row that fetched nothing attests nothing.
+    expect(await collect(harvestedPages(['https://x/a\t', 'https://x/b']))).toEqual([])
+  })
+
+  it('reads a harvest file off the filesystem', async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'blinkered-harvest-'))
+    const path = join(dir, 'searched.tsv')
+    writeFileSync(path, 'https://x/a\tEin ordentliches Wort.\n')
+    expect(await collect(harvestDocuments(path))).toEqual([
+      { locator: 'https://x/a', text: 'Ein ordentliches Wort.' },
+    ])
   })
 })

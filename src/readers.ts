@@ -286,6 +286,34 @@ export function verseDocuments(path: string): AsyncGenerator<Document> {
   return versesByChapter(createInterface({ input: createReadStream(path), crlfDelay: Infinity }))
 }
 
+/**
+ * Harvested pages: `url<TAB>text`, one document a line.
+ *
+ * This is how the last stretch of a language gets attested. The bulk collections do the work
+ * for the overwhelming majority of a list and then stop dead: what is left is a few hundred
+ * words that are perfectly ordinary and simply absent from an encyclopedia, a shelf of novels
+ * and a sentence bank. Searching for those words one at a time is far too slow to be a corpus
+ * and exactly right as a mop.
+ *
+ * The harvest is a separate, deliberate step, and the file it writes is committed — so the
+ * build stays reproducible and offline, and nobody has to re-run a few thousand searches to
+ * rebuild a list. The text stored is what was actually fetched from the page, because a search
+ * engine saying a page contains a word is not the same as the page containing it.
+ */
+export async function* harvestedPages(lines: Lines): AsyncGenerator<Document> {
+  for await (const line of lines) {
+    const split = line.indexOf('\t')
+    if (split <= 0) continue
+    const text = line.slice(split + 1)
+    if (text === '') continue
+    yield { locator: line.slice(0, split), text }
+  }
+}
+
+export function harvestDocuments(path: string): AsyncGenerator<Document> {
+  return harvestedPages(createInterface({ input: createReadStream(path), crlfDelay: Infinity }))
+}
+
 const GUTENBERG_START = /^\*\*\*+ ?START OF (?:THE|THIS) PROJECT GUTENBERG EBOOK.*$/mu
 const GUTENBERG_END = /^\*\*\*+ ?END OF (?:THE|THIS) PROJECT GUTENBERG EBOOK.*$/mu
 

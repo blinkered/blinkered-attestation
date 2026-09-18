@@ -22,6 +22,8 @@ describe('the public interface', () => {
       'fineweb2Documents',
       'formatEvidence',
       'gutenbergBody',
+      'harvestDocuments',
+      'harvestedPages',
       'independence',
       'leipzigLocators',
       'leipzigSentences',
