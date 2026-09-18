@@ -33,6 +33,58 @@ Blinkered, where a frequency floor was tried and withdrawn because it rejected S
 ordinary English word with thirteen occurrences in a corpus of film subtitles. Thirteen
 occurrences is a fact about films. Three collections is a fact about English.
 
+## Three collections is not enough if they are the same collection
+
+Learned on the first real build, and the most expensive thing to get wrong.
+
+German was attested against Tatoeba, Project Gutenberg and Wikisource. Three genuinely separate
+organizations, three separate downloads, and the rule passed: 83% of the list kept. The dropped
+17% is what condemned it.
+
+```
+dropped words, by their rank in the corpus the candidates came from
+
+  rank      0-5,000       82        OKAY(118)  DAD(366)  MOM(420)  KUMPEL(702)
+  rank  5,000-10,000     248        TSCHÜSS(1060)  FOTOS(1251)  SEXY(2324)
+  rank 10,000-20,000     881        FERNSEHER(2589)  PIZZA(2687)  KÜHLSCHRANK(3320)
+  rank 20,000-50,000   4,672        HOMEPAGE  FITNESS  HYGIENISCH  FLUGZEUGTRÄGER
+```
+
+OKAY is the 118th commonest word in German. FERNSEHER and KÜHLSCHRANK are a television and a
+refrigerator. None of them is rare, obscure or disputable, and all of them were dropped for want
+of evidence.
+
+The three collections were independent in every sense that licensing cares about and in none
+that matters here. Gutenberg and Wikisource are both pre-1930s literature; Tatoeba is curated
+teaching sentences. Nothing in that mix has ever written the word HOMEPAGE, so no amount of
+volume would have helped.
+
+**So a source has two jobs, and they are separate.** Independence makes the claim defensible:
+three collections cannot be one dictionary wearing three hats. Register makes the claim
+_correct_: the collections have to between them cover the kind of language the candidates come
+from. Blinkered's German candidates were drawn from film subtitles, so the list is spoken,
+colloquial and modern, and attesting it needs a source that is too.
+
+Adding a fourth pre-1930s novel collection would satisfy the rule and change nothing. A modern
+news and web collection was what OKAY needed.
+
+**The check, therefore, is not the keep rate. It is reading the drop list.** A build that keeps a
+plausible-looking 83% and drops PIZZA is a failed build, and only the drop list says so.
+
+Adding two Leipzig collections — German news from 2024 and German web from 2021 — took the keep
+rate from 83.0% to 93.3% and brought back sixteen of those seventeen words. Nothing about the
+rule changed. The evidence did.
+
+```
+                            3 sources, one register    5 sources, three registers
+  kept                      30,288  (83.0%)            34,061  (93.3%)
+  OKAY, PIZZA, FERNSEHER    dropped                    kept
+  TSCHÜSS                   dropped                    dropped, at two sources
+```
+
+TSCHÜSS is the shape of what remains: attested by Tatoeba and by 2024 news, and by nothing else,
+because saying goodbye is not something an encyclopedia or a nineteenth-century novel does.
+
 ## The evidence file
 
 One per language, tab-separated, four columns: the word, the collections that attest it, how many
