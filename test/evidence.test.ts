@@ -84,6 +84,23 @@ describe('the evidence file', () => {
     expect(formatEvidence('de', '2026-09-18', [shuffled, abseits])).toBe(once)
   })
 
+  it('round-trips a word no collection saw, as no attestations rather than one empty one', () => {
+    // "We looked and found nothing" is a finding the file has to be able to state. The trap is
+    // that `''.split(',')` yields one empty string rather than none, so this parsed as a single
+    // attestation from a source named "" until a real build put it in front of the conformance
+    // check. 100% branch coverage did not catch it; the bug is in the data, not the branches.
+    const unseen: WordEvidence = { word: 'BLUFFST', attestations: [] }
+    const parsed = parseEvidence(formatEvidence('de', '2026-09-18', [unseen]))
+    expect(parsed.words[0]).toEqual({ word: 'BLUFFST', attestations: [] })
+  })
+
+  it('writes a word nothing attests as empty columns', () => {
+    const [, line] = formatEvidence('de', '2026-09-18', [
+      { word: 'BLUFFST', attestations: [] },
+    ]).split('\n')
+    expect(line).toBe('BLUFFST\t\t\t')
+  })
+
   it('counts distinct collections rather than attestations', () => {
     expect(independence(schade)).toBe(3)
     expect(independence(abseits)).toBe(2)

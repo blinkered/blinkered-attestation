@@ -159,8 +159,13 @@ function parseLine(entry: string, language: string): WordEvidence {
   const counts = columns[2] as string
   const locators = columns[3] ?? ''
 
-  const ids = sources.split(',')
-  const numbers = counts.split(',')
+  // An empty sources column means no collection saw this word, which is a finding worth
+  // recording rather than an absence. `''.split(',')` yields one empty string rather than none,
+  // so without this a word nothing attests parses as one attestation from a source called ""
+  // — which then fails conformance twice over, for naming an unregistered source and for
+  // citing no document. Found by running the conformance check against a real build.
+  const ids = sources === '' ? [] : sources.split(',')
+  const numbers = counts === '' ? [] : counts.split(',')
   // The one invariant worth checking on every line. Sources and counts are two lists written
   // in the same order, and nothing else in the file would notice them drifting apart.
   if (ids.length !== numbers.length) {
