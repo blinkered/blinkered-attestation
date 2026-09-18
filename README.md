@@ -90,6 +90,47 @@ rule changed. The evidence did.
 TSCHÜSS is the shape of what remains: attested by Tatoeba and by 2024 news, and by nothing else,
 because saying goodbye is not something an encyclopedia or a nineteenth-century novel does.
 
+## Three collections, gathered by three different people
+
+A refinement that only shows up once a language has more than a handful of sources, and which
+would quietly have hollowed the rule out.
+
+A Wikipedia and a Wikisource are two collections and one Wikimedia. Five years of Leipzig news
+are five collections and one crawler. Counting those as three sightings lets a word ship on a
+single organization's word, which is the thing the rule exists to prevent — so the count is over
+**families**, not collection ids.
+
+This is also the answer for a language whose every collection is a re-processing of the same web
+crawl. Egyptian Arabic has three such collections and therefore one family, and it fails the rule
+rather than passing it on a technicality.
+
+## The last few hundred words
+
+The bulk collections do the overwhelming majority of a language and then stop dead. What is left
+is a few hundred perfectly ordinary words that an encyclopedia, a shelf of novels and a sentence
+bank all happen not to contain — in German, the second-person verb forms and the colloquial
+compounds: KLAUST, BLAMIERST, ANRIEFST, POTTHÄSSLICH, AUSZUFLIPPEN.
+
+Those are found one at a time, by searching for the word and then **fetching the page and
+checking it is really there**. A search engine saying a page holds a word is not the page holding
+it. The harvest is a separate, deliberate step and the file it writes is committed, so the build
+stays reproducible and offline and nobody re-runs thousands of searches to rebuild a list.
+
+**It is cheaper than it looks.** Searching for two words returned five pages, and those five
+pages attested ten of the words that were one family short — the eight others incidentally,
+because a page containing one colloquial word contains others. At roughly five words a search,
+a language's tail is a few hundred searches rather than a few thousand.
+
+**A search hit attests but does not rank.** Its token total is an artefact of what was searched
+for, so a rate taken against it would report the rarest words in the language as the commonest —
+they are the only ones anybody looked for. Sources carry a `ranks` flag for exactly this.
+
+**What it is not.** Fetching a page Common Crawl already crawled is a second act of verification,
+not a second opinion: the gatherer differs and the publisher does not. For a rare word it is
+genuine independence, because a crawl samples the web rather than exhausting it and a search
+reaches pages it never captured. For a common one it is thinner than "three independent
+collections" sounds. Worth knowing which of the two a language is leaning on.
+
 ## The evidence file
 
 One per language, tab-separated, four columns: the word, the collections that attest it, how many
