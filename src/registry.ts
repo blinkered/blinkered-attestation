@@ -42,6 +42,15 @@ export interface SourceSpec {
    * whether the evidence is really independent.
    */
   readonly family: string
+  /**
+   * Whether this collection's counts are worth ranking by. Everything ranks unless it says not.
+   *
+   * A collection assembled by searching for the words themselves is evidence that a word exists
+   * and evidence of nothing else. Its token total is whatever the search happened to return, so
+   * a rate taken against it would say that the rarest words in the language are the commonest —
+   * they are the only ones that were searched for. It attests; it does not rank.
+   */
+  readonly ranks?: false
 }
 
 /**
@@ -169,7 +178,7 @@ export const SOURCES: readonly SourceSpec[] = [
 
   // Pages found by searching for the word itself and then checked for it, which is how the
   // last few hundred words of a language get attested once the bulk collections are exhausted.
-  web('search', 'search', 'Web search', "the page's own publisher"),
+  { ...web('search', 'search', 'Web search', "the page's own publisher"), ranks: false },
 ]
 
 const BY_ID = new Map(SOURCES.map((source) => [source.id, source]))

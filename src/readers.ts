@@ -15,6 +15,9 @@ import { spawn } from 'node:child_process'
 import { createReadStream } from 'node:fs'
 import { createInterface } from 'node:readline'
 import { asyncBufferFromFile, parquetMetadataAsync, parquetReadObjects } from 'hyparquet'
+// FineWeb-2's pages are ZSTD-compressed, which hyparquet leaves to a plugin rather than
+// bundling. Without it the read fails outright rather than silently returning less.
+import { compressors } from 'hyparquet-compressors'
 import type { Document } from './scan.js'
 
 type Lines = Iterable<string> | AsyncIterable<string>
@@ -239,6 +242,7 @@ export async function* fineweb2Documents(
   for (let from = 0; from < total; from += rowsPerBatch) {
     const rows = (await parquetReadObjects({
       file,
+      compressors,
       columns: ['text', 'url'],
       rowStart: from,
       rowEnd: Math.min(from + rowsPerBatch, total),

@@ -13,6 +13,9 @@ importers:
       hyparquet:
         specifier: ^1.31.1
         version: 1.31.1
+      hyparquet-compressors:
+        specifier: ^1.1.2
+        version: 1.1.2
     devDependencies:
       '@vitest/coverage-v8':
         specifier: ^2.1.8
@@ -801,6 +804,12 @@ packages:
     engines: { node: ^8.16.0 || ^10.6.0 || >=11.0.0 }
     os: [darwin]
 
+  fzstd@0.1.1:
+    resolution:
+      {
+        integrity: sha512-dkuVSOKKwh3eas5VkJy1AW1vFpet8TA/fGmVA5krThl8YcOVE/8ZIoEA1+U1vEn5ckxxhLirSdY837azmbaNHA==,
+      }
+
   glob@10.5.0:
     resolution:
       {
@@ -822,6 +831,12 @@ packages:
         integrity: sha512-H2iMtd0I4Mt5eYiapRdIDjp+XzelXQ0tFE4JS7YFwFevXXMmOp9myNrUvCg0D6ws8iqkRPBfKHgbwig1SmlLfg==,
       }
 
+  hyparquet-compressors@1.1.2:
+    resolution:
+      {
+        integrity: sha512-0Hx6w0ZpVpNCefKy5xBYLTp6rKeZn/tsUzuliNzfKqSCdLcTQSfwATEoeedS703Y17k1qNS61HwRME5aOeNkPg==,
+      }
+
   hyparquet-writer@0.16.9:
     resolution:
       {
@@ -838,6 +853,12 @@ packages:
     resolution:
       {
         integrity: sha512-tF9580Xb+41+Eb+mH0av1k7m1PWl+PSKrX66Yd7UOZ760cwEXP9/enwHRMSCeVncaubRI8XPb3v580/ujYKK5w==,
+      }
+
+  hysnappy@1.1.1:
+    resolution:
+      {
+        integrity: sha512-/V9XcN2NtRyWjR4LYMfvnvasVVF8jbT/ej0eofBQjZel91E3D813FQ3mQC6gDSMMTCq/FJh28XHeyqr3I/oBRw==,
       }
 
   is-fullwidth-code-point@3.0.0:
@@ -1612,6 +1633,8 @@ snapshots:
   fsevents@2.3.3:
     optional: true
 
+  fzstd@0.1.1: {}
+
   glob@10.5.0:
     dependencies:
       foreground-child: 3.3.1
@@ -1625,6 +1648,11 @@ snapshots:
 
   html-escaper@2.0.2: {}
 
+  hyparquet-compressors@1.1.2:
+    dependencies:
+      fzstd: 0.1.1
+      hysnappy: 1.1.1
+
   hyparquet-writer@0.16.9:
     dependencies:
       hyparquet: 1.29.2
@@ -1632,6 +1660,8 @@ snapshots:
   hyparquet@1.29.2: {}
 
   hyparquet@1.31.1: {}
+
+  hysnappy@1.1.1: {}
 
   is-fullwidth-code-point@3.0.0: {}
 

@@ -17,6 +17,7 @@
  */
 
 import { byRate, independence, partition } from './attest.js'
+import { sourceFor } from './registry.js'
 import { formatEvidence } from './evidence.js'
 import type { WordEvidence } from './evidence.js'
 import { merge } from './scan.js'
@@ -83,7 +84,19 @@ export function build(
   results: readonly ScanResult[],
   commonCut: number,
 ): Built {
-  const { totals, words: seen } = merge(results)
+  const { totals: scanned, words: seen } = merge(results)
+  // A collection built by searching for the words themselves attests but does not rank; see
+  // `ranks` in the registry. Dropping it from the denominator keeps it out of the ordering
+  // without keeping it out of the evidence.
+  const totals = new Map(
+    [...scanned].filter(([source]) => {
+      try {
+        return sourceFor(source).ranks !== false
+      } catch {
+        return true
+      }
+    }),
+  )
   const { kept, dropped } = partition(allCandidates(candidates, seen))
   const ranked = byRate(kept, totals)
 
