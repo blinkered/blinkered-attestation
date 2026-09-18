@@ -144,6 +144,31 @@ export async function* fileDocuments(
   for (const file of files) yield { locator: file.locator, text: await read(file.path) }
 }
 
+const GUTENBERG_START = /^\*\*\*+ ?START OF (?:THE|THIS) PROJECT GUTENBERG EBOOK.*$/mu
+const GUTENBERG_END = /^\*\*\*+ ?END OF (?:THE|THIS) PROJECT GUTENBERG EBOOK.*$/mu
+
+/**
+ * The book, without the licence wrapped around it.
+ *
+ * Every Project Gutenberg file opens and closes with the same few hundred words of English
+ * boilerplate. Left in, it is markup that repeats on every document — the same failure the wiki
+ * stripper exists to prevent, and worse here, because a German collection would end up attesting
+ * ANYONE, ANYWHERE and RESTRICTIONS a couple of thousand times each and rank them as common
+ * German.
+ *
+ * A file with no start marker is **skipped rather than used whole**. All 2,382 German books
+ * carry one, so a file without one is not a book in an older format, it is a file we have
+ * misunderstood — and admitting boilerplate is a worse outcome than losing one book out of
+ * thousands.
+ */
+export function gutenbergBody(text: string): string {
+  const start = GUTENBERG_START.exec(text)
+  if (start === null) return ''
+  const from = start.index + start[0].length
+  const end = GUTENBERG_END.exec(text)
+  return end === null || end.index < from ? text.slice(from) : text.slice(from, end.index)
+}
+
 /**
  * Turns wikitext into something close enough to prose.
  *

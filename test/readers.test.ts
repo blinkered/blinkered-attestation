@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import {
   fileDocuments,
+  gutenbergBody,
   tatoebaDocuments,
   tatoebaRows,
   wikiDocuments,
@@ -171,5 +172,49 @@ describe('reading from disk', () => {
     const path = join(tmp, 'truncated.xml.bz2')
     writeFileSync(path, 'not bzip2 at all')
     await expect(collect(wikiDocuments(path))).rejects.toThrow('bzip2 exited')
+  })
+})
+
+describe('the Gutenberg body', () => {
+  const wrap = (body: string): string =>
+    [
+      'The Project Gutenberg eBook of Test',
+      'no restrictions whatsoever.',
+      '*** START OF THE PROJECT GUTENBERG EBOOK TEST ***',
+      body,
+      '*** END OF THE PROJECT GUTENBERG EBOOK TEST ***',
+      'Updated editions will replace',
+    ].join('\n')
+
+  it('keeps the book and drops the licence around it', () => {
+    expect(gutenbergBody(wrap('Ein Haus am Meer.')).trim()).toBe('Ein Haus am Meer.')
+  })
+
+  it('leaves out the English boilerplate that repeats in every single file', () => {
+    // Left in, a German collection would rank RESTRICTIONS and WHATSOEVER as common German.
+    const body = gutenbergBody(wrap('Ein Haus.'))
+    expect(body).not.toContain('restrictions')
+    expect(body).not.toContain('Updated editions')
+  })
+
+  it('accepts the older THIS spelling of the marker', () => {
+    const text = '*** START OF THIS PROJECT GUTENBERG EBOOK X ***\nHaus\n'
+    expect(gutenbergBody(text).trim()).toBe('Haus')
+  })
+
+  it('takes the rest of the file when the end marker is missing', () => {
+    const text = '*** START OF THE PROJECT GUTENBERG EBOOK X ***\nHaus am Meer'
+    expect(gutenbergBody(text).trim()).toBe('Haus am Meer')
+  })
+
+  it('ignores an end marker sitting before the start one', () => {
+    const text =
+      '*** END OF THE PROJECT GUTENBERG EBOOK X ***\n*** START OF THE PROJECT GUTENBERG EBOOK X ***\nHaus'
+    expect(gutenbergBody(text).trim()).toBe('Haus')
+  })
+
+  it('skips a file with no start marker rather than using it whole', () => {
+    // All 2,382 German books carry one, so a file without one is misunderstood, not older.
+    expect(gutenbergBody('Irgendein Text ohne Markierung')).toBe('')
   })
 })

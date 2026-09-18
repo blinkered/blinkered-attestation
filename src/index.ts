@@ -15,6 +15,7 @@ export { merge, scan } from './scan.js'
 export type { Document, Hit, ScanResult } from './scan.js'
 export {
   fileDocuments,
+  gutenbergBody,
   tatoebaDocuments,
   tatoebaRows,
   wikiDocuments,

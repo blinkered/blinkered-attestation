@@ -17,6 +17,7 @@ describe('the public interface', () => {
       'expandLocator',
       'fileDocuments',
       'formatEvidence',
+      'gutenbergBody',
       'independence',
       'merge',
       'parseEvidence',
