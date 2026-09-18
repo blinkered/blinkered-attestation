@@ -16,6 +16,8 @@ export type { Document, Hit, ScanResult } from './scan.js'
 export {
   fileDocuments,
   gutenbergBody,
+  leipzigLocators,
+  leipzigSentences,
   tatoebaDocuments,
   tatoebaRows,
   wikiDocuments,

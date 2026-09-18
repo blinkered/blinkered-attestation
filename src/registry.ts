@@ -104,6 +104,20 @@ export const SOURCES: readonly SourceSpec[] = [
     'Tagalog Wikipedia contributors',
     'https://tl.wikipedia.org/?curid={id}',
   ),
+  // Leipzig resolves a sentence through two index files to the page it came from, so the URL
+  // is stored whole rather than as an id nobody could expand without the package in hand.
+  {
+    id: 'lznews',
+    name: 'Leipzig Corpora, German news 2024',
+    attribution: 'Leipzig Corpora Collection, deu_news_2024_1M',
+    locator: { kind: 'url' },
+  },
+  {
+    id: 'lzweb',
+    name: 'Leipzig Corpora, German web 2021',
+    attribution: 'Leipzig Corpora Collection, deu-de_web_2021_1M',
+    locator: { kind: 'url' },
+  },
   {
     id: 'cc',
     name: 'Common Crawl',

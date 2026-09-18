@@ -144,6 +144,55 @@ export async function* fileDocuments(
   for (const file of files) yield { locator: file.locator, text: await read(file.path) }
 }
 
+/**
+ * A Leipzig corpus package: one sentence per line, cited by the page it was taken from.
+ *
+ * Leipzig ships the citation in pieces — `sentences.txt` has the text, `inv_so.txt` maps a
+ * sentence to a source, `sources.txt` maps a source to a URL and a date — so the URL is
+ * resolved here and stored whole. Two hops at read time beats an evidence file nobody can check
+ * without first downloading a 200MB package to resolve it against.
+ *
+ * **Sentences with no source are skipped, not counted.** Only 454,000 of the million sentences
+ * in `deu_news_2024_1M` resolve to a URL; `inv_so.txt` simply has no row for the rest. Counting
+ * a sighting we could never cite would put a number in the evidence file that the locator
+ * column cannot support, which is the one kind of dishonesty this format exists to prevent.
+ * Losing half a collection is the cheaper mistake.
+ */
+export async function* leipzigSentences(
+  lines: Lines,
+  urlFor: ReadonlyMap<string, string>,
+): AsyncGenerator<Document> {
+  for await (const line of lines) {
+    const split = line.indexOf('\t')
+    if (split <= 0) continue
+    const url = urlFor.get(line.slice(0, split))
+    if (url === undefined) continue
+    yield { locator: url, text: line.slice(split + 1) }
+  }
+}
+
+/**
+ * Builds the sentence-to-URL map from a package's two index files.
+ *
+ * Both are small enough to hold: the largest is 710,000 rows, and the alternative is a random
+ * seek per sentence.
+ */
+export function leipzigLocators(invSo: string, sources: string): ReadonlyMap<string, string> {
+  const urlOf = new Map<string, string>()
+  for (const line of sources.split('\n')) {
+    const columns = line.split('\t')
+    if (columns.length >= 2) urlOf.set(columns[0] as string, columns[1] as string)
+  }
+  const bySentence = new Map<string, string>()
+  for (const line of invSo.split('\n')) {
+    const columns = line.split('\t')
+    if (columns.length < 2) continue
+    const url = urlOf.get(columns[1] as string)
+    if (url !== undefined) bySentence.set(columns[0] as string, url)
+  }
+  return bySentence
+}
+
 const GUTENBERG_START = /^\*\*\*+ ?START OF (?:THE|THIS) PROJECT GUTENBERG EBOOK.*$/mu
 const GUTENBERG_END = /^\*\*\*+ ?END OF (?:THE|THIS) PROJECT GUTENBERG EBOOK.*$/mu
 

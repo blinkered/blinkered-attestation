@@ -6,6 +6,8 @@ import { join } from 'node:path'
 import {
   fileDocuments,
   gutenbergBody,
+  leipzigLocators,
+  leipzigSentences,
   tatoebaDocuments,
   tatoebaRows,
   wikiDocuments,
@@ -216,5 +218,43 @@ describe('the Gutenberg body', () => {
   it('skips a file with no start marker rather than using it whole', () => {
     // All 2,382 German books carry one, so a file without one is misunderstood, not older.
     expect(gutenbergBody('Irgendein Text ohne Markierung')).toBe('')
+  })
+})
+
+describe('the Leipzig reader', () => {
+  const locators = leipzigLocators(
+    ['10\t1', '11\t2', '12\t999'].join('\n'),
+    ['1\thttps://kleinezeitung.at/a\t2024-01-05', '2\thttps://heise.de/b\t2024-12-02'].join('\n'),
+  )
+
+  it('resolves a sentence through both index files to the page it came from', () => {
+    expect(locators.get('10')).toBe('https://kleinezeitung.at/a')
+    expect(locators.get('11')).toBe('https://heise.de/b')
+  })
+
+  it('leaves out a sentence whose source id is not in sources.txt', () => {
+    expect(locators.has('12')).toBe(false)
+  })
+
+  it('stores the URL whole, so the evidence is checkable without the package', async () => {
+    const rows = ['10\tDer Fernseher ist kaputt.', '11\tPizza schmeckt gut.']
+    expect(await collect(leipzigSentences(rows, locators))).toEqual([
+      { locator: 'https://kleinezeitung.at/a', text: 'Der Fernseher ist kaputt.' },
+      { locator: 'https://heise.de/b', text: 'Pizza schmeckt gut.' },
+    ])
+  })
+
+  it('skips a sentence it could never cite rather than counting it', async () => {
+    // Only 45% of deu_news_2024_1M resolves. A count the locator column cannot support is the
+    // one kind of dishonesty this format exists to prevent.
+    expect(await collect(leipzigSentences(['12\tNicht zitierbar.'], locators))).toEqual([])
+  })
+
+  it('skips a line with no tab at all', async () => {
+    expect(await collect(leipzigSentences(['kaputt'], locators))).toEqual([])
+  })
+
+  it('ignores a malformed row in either index file', () => {
+    expect(leipzigLocators('10', '1\thttps://x/a').size).toBe(0)
   })
 })

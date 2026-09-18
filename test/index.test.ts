@@ -20,6 +20,8 @@ describe('the public interface', () => {
       'formatEvidence',
       'gutenbergBody',
       'independence',
+      'leipzigLocators',
+      'leipzigSentences',
       'merge',
       'parseEvidence',
       'partition',
