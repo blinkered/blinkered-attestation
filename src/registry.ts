@@ -174,6 +174,13 @@ export const SOURCES: readonly SourceSpec[] = [
   ),
 
   template(
+    'ebiblede',
+    'ebible',
+    'German Bible (Elberfelder 1905)',
+    'eBible.org, Elberfelder 1905',
+    'https://ebible.org/deuelo/{id}.htm',
+  ),
+  template(
     'ebibletl',
     'ebible',
     'Tagalog Bible (tglulb)',
