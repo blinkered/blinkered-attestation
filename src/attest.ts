@@ -1,11 +1,12 @@
 /**
  * The rule: three independent collections, or the word does not ship.
  *
- * "Independent" means three different collections, not three documents inside one. That
- * distinction is the whole point and it is worth being blunt about why: three pages of a single
- * web crawl can easily be three mirrors of the same dictionary, and a rule that counted them as
- * three would certify exactly the words it was built to catch. Three separate collections
- * cannot be one source wearing three hats.
+ * "Independent" means three different collections, not three documents inside one, and — the
+ * refinement that matters once a language has more than a handful of sources — not three
+ * collections gathered by the same people. A Wikipedia and a Wikisource are two collections and
+ * one Wikimedia. Five years of Leipzig news are five collections and one crawler. Counting
+ * those as three sightings would let a word clear the rule on a single organization's word,
+ * which is the thing the rule exists to prevent, so the count is over **families**.
  *
  * Rarity is not part of this rule and never deletes a word. A word attested by three
  * collections is real whether it is common or not; how common it is decides which tier it lands
@@ -16,11 +17,38 @@
  * about films. Three collections is a fact about English.
  */
 
-import { independence } from './evidence.js'
 import type { WordEvidence } from './evidence.js'
+import { sourceFor } from './registry.js'
 
 /** Three, and the reason is in this file's header rather than in a constant's name. */
 export const MINIMUM_SOURCES = 3
+
+/** Which organization gathered a collection. Registry-backed, and injectable for tests. */
+export type FamilyOf = (source: string) => string
+
+const registeredFamily: FamilyOf = (source) => sourceFor(source).family
+
+/**
+ * How many independent families attest this word. The number the drop rule reads.
+ *
+ * A source the registry does not know is counted under its own id rather than refused: the
+ * conformance check is where an unregistered source is a failure, and making the count throw
+ * would turn one bad row into an unreadable build.
+ */
+export function independence(
+  evidence: WordEvidence,
+  familyOf: FamilyOf = registeredFamily,
+): number {
+  const found = new Set<string>()
+  for (const attestation of evidence.attestations) {
+    try {
+      found.add(familyOf(attestation.source))
+    } catch {
+      found.add(attestation.source)
+    }
+  }
+  return found.size
+}
 
 export interface Partition {
   readonly kept: readonly WordEvidence[]
@@ -37,11 +65,12 @@ export interface Partition {
 export function partition(
   words: readonly WordEvidence[],
   minimum: number = MINIMUM_SOURCES,
+  familyOf: FamilyOf = registeredFamily,
 ): Partition {
   const kept: WordEvidence[] = []
   const dropped: WordEvidence[] = []
   for (const word of words) {
-    if (independence(word) >= minimum) kept.push(word)
+    if (independence(word, familyOf) >= minimum) kept.push(word)
     else dropped.push(word)
   }
   return { kept, dropped }

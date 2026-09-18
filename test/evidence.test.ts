@@ -1,11 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import {
-  SAMPLES_PER_SOURCE,
-  digestOf,
-  formatEvidence,
-  independence,
-  parseEvidence,
-} from '../src/evidence.js'
+import { SAMPLES_PER_SOURCE, digestOf, formatEvidence, parseEvidence } from '../src/evidence.js'
+import { independence } from '../src/attest.js'
 import type { WordEvidence } from '../src/evidence.js'
 
 const schade: WordEvidence = {

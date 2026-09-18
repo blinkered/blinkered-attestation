@@ -74,11 +74,6 @@ export function digestOf(body: string): string {
   return hex(low) + hex(high)
 }
 
-/** How many distinct collections attest this word. The number the drop rule reads. */
-export function independence(evidence: WordEvidence): number {
-  return new Set(evidence.attestations.map((attestation) => attestation.source)).size
-}
-
 function line(evidence: WordEvidence): string {
   const sorted = [...evidence.attestations].sort((left, right) =>
     left.source.localeCompare(right.source),

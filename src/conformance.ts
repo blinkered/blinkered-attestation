@@ -11,9 +11,9 @@
  * the goods agree.
  */
 
-import { independence, parseEvidence } from './evidence.js'
+import { parseEvidence } from './evidence.js'
 import type { EvidenceFile } from './evidence.js'
-import { MINIMUM_SOURCES } from './attest.js'
+import { MINIMUM_SOURCES, independence } from './attest.js'
 import { sourceFor } from './registry.js'
 
 export interface Failure {
@@ -89,6 +89,8 @@ export function conform(wordList: string, evidenceText: string): readonly Failur
     })
   }
 
+  // Counted over families, like the rule itself: a word attested only by a Wikipedia and a
+  // Wikisource has two collections and one organization behind it.
   const thin = shipped.filter((word) => {
     const found = supported.get(word)
     return found !== undefined && independence(found) < MINIMUM_SOURCES

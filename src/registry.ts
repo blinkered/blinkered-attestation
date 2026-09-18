@@ -32,6 +32,16 @@ export interface SourceSpec {
   /** Who to credit. Recorded because we cite these collections, not because they license us. */
   readonly attribution: string
   readonly locator: LocatorKind
+  /**
+   * Who gathered it, which is not the same question as which collection it is.
+   *
+   * A wiki dump and a Wikisource dump are two collections and one Wikimedia; five years of
+   * Leipzig news are five collections and one crawler. Counting those as three independent
+   * sightings would let a word clear the rule on the word of a single organization, which is
+   * the thing the rule exists to prevent. Families are compared, not ids, when the question is
+   * whether the evidence is really independent.
+   */
+  readonly family: string
 }
 
 /**
@@ -62,11 +72,20 @@ export function expandLocator(spec: SourceSpec, locator: string): string {
   return spec.locator.template.replace('{id}', locator)
 }
 
-const template = (id: string, name: string, attribution: string, url: string): SourceSpec => ({
+const template = (
+  id: string,
+  family: string,
+  name: string,
+  attribution: string,
+  url: string,
+): SourceSpec => ({ id, family, name, attribution, locator: { kind: 'template', template: url } })
+
+const web = (id: string, family: string, name: string, attribution: string): SourceSpec => ({
   id,
+  family,
   name,
   attribution,
-  locator: { kind: 'template', template: url },
+  locator: { kind: 'url' },
 })
 
 /**
@@ -79,51 +98,77 @@ const template = (id: string, name: string, attribution: string, url: string): S
 export const SOURCES: readonly SourceSpec[] = [
   template(
     'gut',
+    'gutenberg',
     'Project Gutenberg',
     'Project Gutenberg contributors',
     'https://www.gutenberg.org/ebooks/{id}',
   ),
-  template('tat', 'Tatoeba', 'Tatoeba contributors', 'https://tatoeba.org/en/sentences/show/{id}'),
+  template(
+    'tat',
+    'tatoeba',
+    'Tatoeba',
+    'Tatoeba contributors',
+    'https://tatoeba.org/en/sentences/show/{id}',
+  ),
+
   // One entry per wiki rather than one for all of them, because the host differs per language
-  // and a locator that needs two fields to resolve is not a locator.
+  // and a locator that needs two fields to resolve is not a locator. All one family: a
+  // Wikipedia and a Wikisource are two collections and one Wikimedia.
   template(
     'dewiki',
+    'wikimedia',
     'German Wikipedia',
     'German Wikipedia contributors',
     'https://de.wikipedia.org/?curid={id}',
   ),
   template(
     'dewikisource',
+    'wikimedia',
     'German Wikisource',
     'German Wikisource contributors',
     'https://de.wikisource.org/?curid={id}',
   ),
   template(
     'tlwiki',
+    'wikimedia',
     'Tagalog Wikipedia',
     'Tagalog Wikipedia contributors',
     'https://tl.wikipedia.org/?curid={id}',
   ),
+  template(
+    'tlwikisource',
+    'wikimedia',
+    'Tagalog Wikisource',
+    'Tagalog Wikisource contributors',
+    'https://tl.wikisource.org/?curid={id}',
+  ),
+
   // Leipzig resolves a sentence through two index files to the page it came from, so the URL
   // is stored whole rather than as an id nobody could expand without the package in hand.
-  {
-    id: 'lznews',
-    name: 'Leipzig Corpora, German news 2024',
-    attribution: 'Leipzig Corpora Collection, deu_news_2024_1M',
-    locator: { kind: 'url' },
-  },
-  {
-    id: 'lzweb',
-    name: 'Leipzig Corpora, German web 2021',
-    attribution: 'Leipzig Corpora Collection, deu-de_web_2021_1M',
-    locator: { kind: 'url' },
-  },
-  {
-    id: 'cc',
-    name: 'Common Crawl',
-    attribution: 'Common Crawl Foundation',
-    locator: { kind: 'url' },
-  },
+  // Every package is one family: five years of the same crawler is not five opinions.
+  web('lznews', 'leipzig', 'Leipzig, German news 2024', 'Leipzig Corpora, deu_news_2024_1M'),
+  web('lznews23', 'leipzig', 'Leipzig, German news 2023', 'Leipzig Corpora, deu_news_2023_1M'),
+  web('lznews22', 'leipzig', 'Leipzig, German news 2022', 'Leipzig Corpora, deu_news_2022_1M'),
+  web('lznews21', 'leipzig', 'Leipzig, German news 2021', 'Leipzig Corpora, deu_news_2021_1M'),
+  web(
+    'lzcrawl18',
+    'leipzig',
+    'Leipzig, German newscrawl 2018',
+    'Leipzig Corpora, deu_newscrawl-public_2018_1M',
+  ),
+  web('lzweb', 'leipzig', 'Leipzig, German web 2021', 'Leipzig Corpora, deu-de_web_2021_1M'),
+  web(
+    'lzwebat',
+    'leipzig',
+    'Leipzig, Austrian German web 2019',
+    'Leipzig Corpora, deu-at_web_2019_1M',
+  ),
+
+  web('cc', 'commoncrawl', 'Common Crawl', 'Common Crawl Foundation'),
+
+  // Pages found by searching for the word itself and then checked for it, which is how the
+  // last few hundred words of a language get attested once the bulk collections are exhausted.
+  web('search', 'search', 'Web search', "the page's own publisher"),
 ]
 
 const BY_ID = new Map(SOURCES.map((source) => [source.id, source]))

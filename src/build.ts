@@ -16,8 +16,8 @@
  * reading the drop list says so. It is an output of the build, not a debugging aid.
  */
 
-import { byRate, partition } from './attest.js'
-import { formatEvidence, independence } from './evidence.js'
+import { byRate, independence, partition } from './attest.js'
+import { formatEvidence } from './evidence.js'
 import type { WordEvidence } from './evidence.js'
 import { merge } from './scan.js'
 import type { ScanResult } from './scan.js'
