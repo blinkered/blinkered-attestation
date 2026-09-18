@@ -25,5 +25,8 @@ export {
 } from './readers.js'
 export type { Partition, SourceTotals } from './attest.js'
 
+export { build } from './build.js'
+export type { Built } from './build.js'
+
 export { conform, shippedWords } from './conformance.js'
 export type { Failure } from './conformance.js'

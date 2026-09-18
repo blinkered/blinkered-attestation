@@ -12,6 +12,7 @@ describe('the public interface', () => {
       'MINIMUM_SOURCES',
       'SAMPLES_PER_SOURCE',
       'SOURCES',
+      'build',
       'byRate',
       'conform',
       'digestOf',
