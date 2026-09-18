@@ -101,7 +101,7 @@ becomes a link somebody can open:
 
 ```
 gut:21034      ->  https://www.gutenberg.org/ebooks/21034
-dewiki:9912847 ->  https://de.wikipedia.org/?oldid=9912847
+dewiki:9912847 ->  https://de.wikipedia.org/?curid=9912847
 cc:<url>       ->  the URL itself; a crawl has no durable per-document id
 ```
 
