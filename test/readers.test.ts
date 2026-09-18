@@ -1,0 +1,175 @@
+import { describe, expect, it } from 'vitest'
+import { execFileSync } from 'node:child_process'
+import { mkdtempSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import {
+  fileDocuments,
+  tatoebaDocuments,
+  tatoebaRows,
+  wikiDocuments,
+  wikiPages,
+} from '../src/readers.js'
+import type { Document } from '../src/scan.js'
+
+async function collect(documents: AsyncGenerator<Document>): Promise<Document[]> {
+  const found: Document[] = []
+  for await (const document of documents) found.push(document)
+  return found
+}
+
+describe('the Tatoeba reader', () => {
+  it('takes the id as the locator and the third column as the text', async () => {
+    const rows = ['230\tdeu\tEs ist schade.', '77\tdeu\tLass uns etwas versuchen!']
+    expect(await collect(tatoebaRows(rows))).toEqual([
+      { locator: '230', text: 'Es ist schade.' },
+      { locator: '77', text: 'Lass uns etwas versuchen!' },
+    ])
+  })
+
+  it('skips a blank line', async () => {
+    expect(await collect(tatoebaRows(['', '1\tdeu\tHallo', '']))).toHaveLength(1)
+  })
+
+  it('skips a short row rather than reading it as an empty sentence', async () => {
+    // A truncated download understating a collection silently is the failure worth avoiding.
+    expect(await collect(tatoebaRows(['1\tdeu']))).toEqual([])
+  })
+
+  it('keeps a tab inside the sentence out of the locator', async () => {
+    const [first] = await collect(tatoebaRows(['5\tdeu\tzwei\tteile']))
+    expect(first).toEqual({ locator: '5', text: 'zwei' })
+  })
+})
+
+describe('the wiki reader', () => {
+  const page = (id: string, ns: string, text: string): string[] => [
+    '  <page>',
+    `    <title>Test ${id}</title>`,
+    `    <ns>${ns}</ns>`,
+    `    <id>${id}</id>`,
+    '    <revision>',
+    '      <id>99999</id>',
+    `      <text bytes="10" xml:space="preserve">${text}</text>`,
+    '    </revision>',
+    '  </page>',
+  ]
+
+  it('takes the page id rather than the revision id', async () => {
+    const found = await collect(wikiPages(page('1304', '0', 'schade nur')))
+    expect(found).toEqual([{ locator: '1304', text: 'schade nur' }])
+  })
+
+  it('reads only articles, skipping talk and project namespaces', async () => {
+    const lines = [...page('1', '0', 'artikel'), ...page('2', '1', 'diskussion')]
+    expect(await collect(wikiPages(lines))).toEqual([{ locator: '1', text: 'artikel' }])
+  })
+
+  it('reads a page whose text runs over many lines', async () => {
+    const lines = [
+      '  <page>',
+      '    <ns>0</ns>',
+      '    <id>7</id>',
+      '    <text xml:space="preserve">erste Zeile',
+      'zweite Zeile',
+      'dritte Zeile</text>',
+      '  </page>',
+    ]
+    const [first] = await collect(wikiPages(lines))
+    expect(first?.text).toBe('erste Zeile\nzweite Zeile\ndritte Zeile')
+  })
+
+  it('drops a page that never closes its text rather than emitting a partial one', async () => {
+    const lines = ['  <page>', '    <ns>0</ns>', '    <id>7</id>', '    <text>abgeschnitten']
+    expect(await collect(wikiPages(lines))).toEqual([])
+  })
+
+  it('resets between pages, so one page cannot inherit another’s id', async () => {
+    const lines = [...page('1', '0', 'eins'), '  <page>', '    <ns>0</ns>', '    <text>zwei</text>']
+    // The second page never declares an id, so it is not emitted rather than being filed under 1.
+    expect(await collect(wikiPages(lines))).toEqual([{ locator: '1', text: 'eins' }])
+  })
+
+  it('ignores a line with nothing it is looking for', async () => {
+    expect(await collect(wikiPages(['  <siteinfo>', '  </siteinfo>']))).toEqual([])
+  })
+})
+
+describe('stripping wikitext', () => {
+  const textOf = async (wikitext: string): Promise<string> => {
+    const [first] = await collect(
+      wikiPages(['<page>', '<ns>0</ns>', '<id>1</id>', `<text>${wikitext}</text>`, '</page>']),
+    )
+    return first?.text ?? ''
+  }
+
+  it('removes templates, which would otherwise be attested thousands of times', async () => {
+    expect(await textOf('Ein {{Infobox|x=1}} Haus')).toBe('Ein   Haus')
+  })
+
+  it('removes tables', async () => {
+    expect(await textOf('vor {|class="wikitable"\n|Zelle\n|} nach')).toBe('vor   nach')
+  })
+
+  it('removes references and any other tag', async () => {
+    expect(await textOf('Haus<ref>Quelle</ref> <b>fett</b>')).toBe('Haus   fett ')
+  })
+
+  it('shows the visible side of a link rather than its target', async () => {
+    expect(await textOf('[[Berlin|die Hauptstadt]] und [[Haus]]')).toBe('die Hauptstadt und Haus')
+  })
+
+  it('removes headings, which repeat on every article', async () => {
+    expect(await textOf('Text\n== Weblinks ==\nmehr')).toBe('Text\n \nmehr')
+  })
+
+  it('removes entities and bare URLs', async () => {
+    expect(await textOf('a &nbsp; b https://example.de/x c')).toBe('a   b   c')
+  })
+})
+
+describe('the file reader', () => {
+  it('pairs each locator with what its file holds', async () => {
+    const files = [
+      { locator: '2054', path: '/books/2054.txt' },
+      { locator: '2146', path: '/books/2146.txt' },
+    ]
+    const read = async (path: string): Promise<string> => `inhalt von ${path}`
+    expect(await collect(fileDocuments(files, read))).toEqual([
+      { locator: '2054', text: 'inhalt von /books/2054.txt' },
+      { locator: '2146', text: 'inhalt von /books/2146.txt' },
+    ])
+  })
+
+  it('reads nothing from no files', async () => {
+    expect(await collect(fileDocuments([], async () => ''))).toEqual([])
+  })
+})
+
+describe('reading from disk', () => {
+  const tmp = mkdtempSync(join(tmpdir(), 'blinkered-attestation-'))
+
+  it('reads a Tatoeba export off the filesystem', async () => {
+    const path = join(tmp, 'deu_sentences.tsv')
+    writeFileSync(path, '230\tdeu\tEs ist schade.\n77\tdeu\tHallo!\n')
+    expect(await collect(tatoebaDocuments(path))).toEqual([
+      { locator: '230', text: 'Es ist schade.' },
+      { locator: '77', text: 'Hallo!' },
+    ])
+  })
+
+  it('streams a bz2 wiki dump through the decompressor', async () => {
+    const xml = ['<page>', '<ns>0</ns>', '<id>1304</id>', '<text>schade nur</text>', '</page>']
+    const path = join(tmp, 'dump.xml.bz2')
+    writeFileSync(path, execFileSync('bzip2', ['-zc'], { input: xml.join('\n') }))
+    expect(await collect(wikiDocuments(path))).toEqual([{ locator: '1304', text: 'schade nur' }])
+  })
+
+  it('fails loudly when the dump is not a dump, rather than reading it as empty', async () => {
+    // A half-finished download decompresses to nothing, and nothing looks exactly like a
+    // collection that simply did not attest the word.
+    const path = join(tmp, 'truncated.xml.bz2')
+    writeFileSync(path, 'not bzip2 at all')
+    await expect(collect(wikiDocuments(path))).rejects.toThrow('bzip2 exited')
+  })
+})

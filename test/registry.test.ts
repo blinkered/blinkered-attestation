@@ -5,7 +5,7 @@ describe('the source registry', () => {
   it('expands a short id into a link somebody can open', () => {
     expect(expandLocator(sourceFor('gut'), '21034')).toBe('https://www.gutenberg.org/ebooks/21034')
     expect(expandLocator(sourceFor('dewiki'), '9912847')).toBe(
-      'https://de.wikipedia.org/?oldid=9912847',
+      'https://de.wikipedia.org/?curid=9912847',
     )
     expect(expandLocator(sourceFor('tat'), '551')).toBe('https://tatoeba.org/en/sentences/show/551')
   })

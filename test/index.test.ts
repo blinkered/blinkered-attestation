@@ -15,13 +15,20 @@ describe('the public interface', () => {
       'byRate',
       'digestOf',
       'expandLocator',
+      'fileDocuments',
       'formatEvidence',
       'independence',
+      'merge',
       'parseEvidence',
       'partition',
       'rateOf',
+      'scan',
       'sourceFor',
+      'tatoebaDocuments',
+      'tatoebaRows',
       'validateSourceId',
+      'wikiDocuments',
+      'wikiPages',
     ])
   })
 })

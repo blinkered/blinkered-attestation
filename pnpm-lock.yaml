@@ -6,6 +6,10 @@ settings:
 
 importers:
   .:
+    dependencies:
+      '@blinkered/engine':
+        specifier: file:../blinkered/packages/engine
+        version: file:../blinkered/packages/engine
     devDependencies:
       '@vitest/coverage-v8':
         specifier: ^2.1.8
@@ -62,6 +66,9 @@ packages:
       {
         integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==,
       }
+
+  '@blinkered/engine@file:../blinkered/packages/engine':
+    resolution: { directory: ../blinkered/packages/engine, type: directory }
 
   '@esbuild/aix-ppc64@0.21.5':
     resolution:
@@ -1241,6 +1248,8 @@ snapshots:
       '@babel/helper-validator-identifier': 7.29.7
 
   '@bcoe/v8-coverage@0.2.3': {}
+
+  '@blinkered/engine@file:../blinkered/packages/engine': {}
 
   '@esbuild/aix-ppc64@0.21.5':
     optional: true

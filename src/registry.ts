@@ -90,19 +90,19 @@ export const SOURCES: readonly SourceSpec[] = [
     'dewiki',
     'German Wikipedia',
     'German Wikipedia contributors',
-    'https://de.wikipedia.org/?oldid={id}',
+    'https://de.wikipedia.org/?curid={id}',
   ),
   template(
     'dewikisource',
     'German Wikisource',
     'German Wikisource contributors',
-    'https://de.wikisource.org/?oldid={id}',
+    'https://de.wikisource.org/?curid={id}',
   ),
   template(
     'tlwiki',
     'Tagalog Wikipedia',
     'Tagalog Wikipedia contributors',
-    'https://tl.wikipedia.org/?oldid={id}',
+    'https://tl.wikipedia.org/?curid={id}',
   ),
   {
     id: 'cc',
