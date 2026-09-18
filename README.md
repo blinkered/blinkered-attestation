@@ -37,6 +37,11 @@ occurrences is a fact about films. Three collections is a fact about English.
 
 Learned on the first real build, and the most expensive thing to get wrong.
 
+**Register** is the variety of language that suits a setting: formal or casual, written or
+spoken, technical or everyday. Same language, different words. A collection of text is never a
+neutral sample of a language — it is a sample of one register, and the words of the others are
+simply not in it. No encyclopedia says goodbye; no 1890s novel mentions a homepage.
+
 German was attested against Tatoeba, Project Gutenberg and Wikisource. Three genuinely separate
 organizations, three separate downloads, and the rule passed: 83% of the list kept. The dropped
 17% is what condemned it.
@@ -107,6 +112,21 @@ cc:<url>       ->  the URL itself; a crawl has no durable per-document id
 
 Sources are sorted and counts are written in the same order, so a rebuild over unchanged evidence
 produces identical bytes and a diff means something really changed.
+
+## Checking a locator, and checking your check
+
+Spot-checking the German evidence, `dewiki:2129` looked wrong: the page is the Hamburg article
+and a search for `tschüss` found nothing, in the live page and in the revision current when the
+dump was taken. It looked like the scanner had filed a word under the wrong page.
+
+It had not. The Hamburg article says **tschüß**, in the orthography Germany reformed in 1996, and
+German's fold maps ß to SS. Both spellings land on TSCHÜSS, which is correct — a word game deals
+tiles, and those are the same tiles. The search was wrong, not the evidence.
+
+This is the second time an ad-hoc check has been the error rather than the data; the first was a
+case-sensitive search against a page that renders its text lower-cased. **Check a locator through
+the fold, not by eye.** A spot check that does not know what the fold knows will keep reporting
+faults that are not there, and the day it reports a real one nobody will believe it.
 
 ## What lives where
 
