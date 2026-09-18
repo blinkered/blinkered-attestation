@@ -14,6 +14,7 @@
 import { spawn } from 'node:child_process'
 import { createReadStream } from 'node:fs'
 import { createInterface } from 'node:readline'
+import { asyncBufferFromFile, parquetMetadataAsync, parquetReadObjects } from 'hyparquet'
 import type { Document } from './scan.js'
 
 type Lines = Iterable<string> | AsyncIterable<string>
@@ -191,6 +192,59 @@ export function leipzigLocators(invSo: string, sources: string): ReadonlyMap<str
     if (url !== undefined) bySentence.set(columns[0] as string, url)
   }
   return bySentence
+}
+
+/**
+ * A FineWeb-2 parquet shard: web documents, each carrying the URL it was crawled from.
+ *
+ * The reason this reader exists at all is Tagalog. Its own Leipzig packages repeat Wikipedia,
+ * CC-100 has volume but no document ids of any kind, and OpenSubtitles is where the candidates
+ * came from — so the web is the only fourth family available, and FineWeb-2 is the only form of
+ * it that says which page each document was.
+ *
+ * Read a row group at a time rather than whole. A shard is three to five gigabytes and the rows
+ * are wanted once each, in order.
+ */
+export interface CrawlRow {
+  readonly text?: string
+  readonly url?: string
+}
+
+/**
+ * Crawl rows to documents, cited by the page each was crawled from.
+ *
+ * A row with no URL is skipped rather than counted. An attestation that cannot be checked is the
+ * one thing this project does not ship, and a count the locator column cannot support is worse
+ * than a slightly smaller collection — the same trade Leipzig makes, for the same reason.
+ */
+export function* crawlRows(rows: Iterable<CrawlRow>): Generator<Document> {
+  for (const row of rows) {
+    if (row.url === undefined || row.url === '' || row.text === undefined || row.text === '') {
+      continue
+    }
+    yield { locator: row.url, text: row.text }
+  }
+}
+
+export async function* fineweb2Documents(
+  path: string,
+  rowsPerBatch = 20_000,
+): AsyncGenerator<Document> {
+  const file = await asyncBufferFromFile(path)
+  // The row count comes from the footer rather than from a batch coming back empty, so the loop
+  // has a condition that can actually be false. A `for(;;)` that only ever leaves through a
+  // `return` leaves an exit no test can reach, which is a coverage hole standing in for a
+  // design one.
+  const total = Number((await parquetMetadataAsync(file)).num_rows)
+  for (let from = 0; from < total; from += rowsPerBatch) {
+    const rows = (await parquetReadObjects({
+      file,
+      columns: ['text', 'url'],
+      rowStart: from,
+      rowEnd: Math.min(from + rowsPerBatch, total),
+    })) as CrawlRow[]
+    yield* crawlRows(rows)
+  }
 }
 
 const GUTENBERG_START = /^\*\*\*+ ?START OF (?:THE|THIS) PROJECT GUTENBERG EBOOK.*$/mu

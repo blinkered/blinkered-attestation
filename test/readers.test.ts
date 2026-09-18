@@ -1,10 +1,13 @@
 import { describe, expect, it } from 'vitest'
 import { execFileSync } from 'node:child_process'
+import { parquetWriteFile } from 'hyparquet-writer'
 import { mkdtempSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import {
+  crawlRows,
   fileDocuments,
+  fineweb2Documents,
   gutenbergBody,
   leipzigLocators,
   leipzigSentences,
@@ -256,5 +259,52 @@ describe('the Leipzig reader', () => {
 
   it('ignores a malformed row in either index file', () => {
     expect(leipzigLocators('10', '1\thttps://x/a').size).toBe(0)
+  })
+})
+
+describe('the crawl reader', () => {
+  it('cites each document by the page it was crawled from', () => {
+    const rows = [
+      { url: 'https://abante.com.ph/a', text: 'Magandang umaga.' },
+      { url: 'https://bomba.ph/b', text: 'Kumusta ka?' },
+    ]
+    expect([...crawlRows(rows)]).toEqual([
+      { locator: 'https://abante.com.ph/a', text: 'Magandang umaga.' },
+      { locator: 'https://bomba.ph/b', text: 'Kumusta ka?' },
+    ])
+  })
+
+  it('skips a row with no URL, because it could never be cited', () => {
+    expect([...crawlRows([{ text: 'walang URL' }])]).toEqual([])
+    expect([...crawlRows([{ url: '', text: 'walang URL' }])]).toEqual([])
+  })
+
+  it('skips a row with no text', () => {
+    expect([...crawlRows([{ url: 'https://x/a' }])]).toEqual([])
+    expect([...crawlRows([{ url: 'https://x/a', text: '' }])]).toEqual([])
+  })
+})
+
+describe('reading a FineWeb-2 shard', () => {
+  it('streams every row, batching through the file', async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'blinkered-parquet-'))
+    const path = join(dir, 'fil.parquet')
+    parquetWriteFile({
+      filename: path,
+      columnData: [
+        {
+          name: 'url',
+          data: ['https://abante.com.ph/a', 'https://bomba.ph/b', '', 'https://x.ph/d'],
+        },
+        { name: 'text', data: ['Magandang umaga.', 'Kumusta ka?', 'walang url', ''] },
+      ],
+    })
+    // A batch size below the row count, so the paging loop runs more than once and its exit
+    // condition is exercised rather than assumed.
+    const found = await collect(fineweb2Documents(path, 2))
+    expect(found).toEqual([
+      { locator: 'https://abante.com.ph/a', text: 'Magandang umaga.' },
+      { locator: 'https://bomba.ph/b', text: 'Kumusta ka?' },
+    ])
   })
 })

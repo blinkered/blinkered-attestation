@@ -17,11 +17,13 @@
   },
   "devDependencies": {
     "@vitest/coverage-v8": "^2.1.8",
+    "hyparquet-writer": "^0.16.9",
     "prettier": "^3.4.2",
     "typescript": "^5.7.2",
     "vitest": "^2.1.8"
   },
   "dependencies": {
-    "@blinkered/engine": "file:../blinkered/packages/engine"
+    "@blinkered/engine": "file:../blinkered/packages/engine",
+    "hyparquet": "^1.31.1"
   }
 }

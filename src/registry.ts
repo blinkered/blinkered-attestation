@@ -165,6 +165,7 @@ export const SOURCES: readonly SourceSpec[] = [
   ),
 
   web('cc', 'commoncrawl', 'Common Crawl', 'Common Crawl Foundation'),
+  web('fw2', 'commoncrawl', 'FineWeb-2', 'FineWeb-2, from Common Crawl'),
 
   // Pages found by searching for the word itself and then checked for it, which is how the
   // last few hundred words of a language get attested once the bulk collections are exhausted.
