@@ -131,6 +131,50 @@ genuine independence, because a crawl samples the web rather than exhausting it 
 reaches pages it never captured. For a common one it is thinner than "three independent
 collections" sounds. Worth knowing which of the two a language is leaning on.
 
+## Where to find families
+
+The ready-made corpora — a Wikipedia, a Gutenberg, a Tatoeba — are a small and arbitrary set, and
+for most of the world's languages they run out fast. Korean has no Leipzig package, no Gutenberg
+shelf and no eBible translation: three families, one of which is fifteen thousand sentences.
+
+Treating that as the ceiling was a failure of imagination. Korean has newspapers, broadcasters,
+literary archives, a parliament that publishes its proceedings and a government that publishes
+its gazette, and under the family rule every one of those is an independent voice. The techniques
+below are roughly in order of how much they return for the effort.
+
+**Fetch a publisher directly.** Works for every language on earth and needs no corpus to exist.
+Find a domain, read its sitemap or feed, fetch a few hundred pages, keep the text. Ten domains is
+ten families — more than any language gets from the ready-made corpora put together. `fetch.ts`
+does this, and does it slowly on purpose: robots.txt honoured, one request at a time with a pause
+between, a user agent that says who we are, and a hard cap per host. We are a guest on somebody's
+server, reading what they published, in order to cite them.
+
+**OPUS is a dozen families, not one.** Its sub-corpora were gathered by unrelated people and only
+share a distributor. For Korean alone: TED talks (15.6MB), QED educational subtitles (19.3MB),
+Global Voices citizen journalism, Tanzil Quran translations, and KDE's software localization.
+Five families from one site, for a language that looked like it had none.
+
+**Software localization covers nearly every language.** GNOME, KDE, Mozilla, LibreOffice and
+Ubuntu each translate into a hundred-odd locales, and each project is a separate family. The
+register is narrow — menus, buttons, error messages — which makes it a poor primary source and a
+perfectly good third opinion.
+
+**Religious translations are a family with excellent locators.** eBible for Bibles, Tanzil for
+Quran translations. Both are verse-addressed, so the locator is exact and permanent, and both are
+gathered by people with no connection to any web crawl. The register is archaic-leaning, so they
+add confidence rather than reach.
+
+**National literary archives, where a language has one.** Aozora Bunko for Japanese (17,700 public
+domain works, and its files carry human-supplied furigana — kana readings with no analyser in the
+chain). Deutsches Textarchiv and Zeno.org for German. Gallica for French. Biblioteca Virtual
+Miguel de Cervantes for Spanish. Lib.ru for Russian. These are Gutenberg's equivalents and nobody
+thinks of them because Gutenberg is the one with the English name.
+
+**What does not work, and why it keeps looking like it will.** A collection with no document
+identifiers cannot attest anything, however much text it holds — CC-100 has 700MB of Tagalog and
+not one URL in it. And a dataset that re-processes a crawl somebody else made is the same family
+as the crawl: FineWeb-2, HPLT, mC4, CC-100 and NLLB are five datasets and one opinion.
+
 ## The evidence file
 
 One per language, tab-separated, four columns: the word, the collections that attest it, how many

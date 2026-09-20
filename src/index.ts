@@ -30,3 +30,18 @@ export type { Built } from './build.js'
 
 export { conform, shippedWords } from './conformance.js'
 export type { Failure } from './conformance.js'
+
+export {
+  MAX_PAGES_PER_HOST,
+  POLITE_DELAY_MS,
+  USER_AGENT,
+  allowed,
+  disallowedPaths,
+  feedLinks,
+  isSitemapIndex,
+  readableText,
+  sitemapLinks,
+} from './web.js'
+
+export { DISCOVERY_PATHS, discover, harvestSites, httpGet, sitePages } from './fetch.js'
+export type { Get, SiteHarvest } from './fetch.js'
