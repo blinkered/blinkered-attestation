@@ -59,6 +59,7 @@ describe('the public interface', () => {
       'sitePages',
       'sitemapLinks',
       'sourceFor',
+      'take',
       'tatoebaDocuments',
       'tatoebaRows',
       'validateSourceId',

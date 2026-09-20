@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { merge, scan, scanByDomain } from '../src/scan.js'
+import { merge, scan, scanByDomain, take } from '../src/scan.js'
 import type { Document } from '../src/scan.js'
 
 /** German's real fold, near enough for a unit test: upper-case, ß to SS, umlauts kept. */
@@ -146,5 +146,26 @@ describe('scanning by domain', () => {
 
   it('scans nothing into nothing', async () => {
     expect(await scanByDomain([], candidates, fold, domainOf)).toEqual([])
+  })
+})
+
+describe('taking part of a collection', () => {
+  it('stops after the count asked for', async () => {
+    const many = docs(['1', 'a'], ['2', 'b'], ['3', 'c'], ['4', 'd'])
+    const found = []
+    for await (const document of take(many, 2)) found.push(document.locator)
+    expect(found).toEqual(['1', '2'])
+  })
+
+  it('takes the whole collection when it is shorter than the count', async () => {
+    const found = []
+    for await (const document of take(docs(['1', 'a']), 99)) found.push(document.locator)
+    expect(found).toEqual(['1'])
+  })
+
+  it('takes nothing when asked for nothing', async () => {
+    const found = []
+    for await (const document of take(docs(['1', 'a']), 0)) found.push(document.locator)
+    expect(found).toEqual([])
   })
 })

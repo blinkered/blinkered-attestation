@@ -97,6 +97,31 @@ export async function scan(
 }
 
 /**
+ * The first `count` documents of a collection, for the cases where scanning all of it is not
+ * worth the wall-clock.
+ *
+ * Japanese is why this exists. Every other language scans its corpora directly; Japanese has to
+ * go through a morphological analyser first, and Sudachi reading a 2.2GB Wikipedia is hours of
+ * work for a curve that has flattened long before the end. A few hundred thousand articles
+ * attest a language's ordinary vocabulary perfectly well, and the drop list says plainly whether
+ * that was enough.
+ *
+ * Recorded in the language's own sources file, so a reader can see the list was cut and by how
+ * much rather than wondering why Japanese looks thin.
+ */
+export async function* take(
+  documents: Iterable<Document> | AsyncIterable<Document>,
+  count: number,
+): AsyncGenerator<Document> {
+  let taken = 0
+  for await (const document of documents) {
+    if (taken >= count) return
+    taken += 1
+    yield document
+  }
+}
+
+/**
  * Scans harvested pages as one collection per registrable domain.
  *
  * This is what makes fetching pages worth the trouble. A single `search` source would be one

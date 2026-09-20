@@ -5,7 +5,7 @@ export { SAMPLES_PER_SOURCE, digestOf, formatEvidence, parseEvidence } from './e
 export type { Attestation, EvidenceFile, WordEvidence } from './evidence.js'
 
 export { MINIMUM_SOURCES, byRate, independence, partition, rateOf } from './attest.js'
-export { merge, scan, scanByDomain } from './scan.js'
+export { merge, scan, scanByDomain, take } from './scan.js'
 export type { Document, Hit, ScanResult } from './scan.js'
 export {
   fileDocuments,

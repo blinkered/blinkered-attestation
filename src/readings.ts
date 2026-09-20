@@ -40,6 +40,12 @@ export async function* withReadings(
   const child = spawn(python, [script], { stdio: ['pipe', 'pipe', 'inherit'] })
   const lines = createInterface({ input: child.stdout, crlfDelay: Infinity })
 
+  // A reader that dies mid-stream closes its stdin, and the next write raises EPIPE on a socket
+  // with no listener — which takes the whole process down with an unhandled 'error' event and
+  // hides the Python traceback that says what actually went wrong. Swallowed here so the exit
+  // code below can report the real failure.
+  child.stdin.on('error', () => undefined)
+
   // The child echoes each locator back and results are matched on it, rather than on the order
   // they arrive in. Order looks simpler and is wrong: a child that emits one spurious line
   // shifts every document after it onto somebody else's locator, which would put a citation in

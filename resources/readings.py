@@ -23,6 +23,29 @@ from sudachipy import Dictionary, SplitMode
 # and leaving them in would attest the commonest tiles in the language from grammar alone.
 SKIP = {"助詞", "助動詞", "補助記号", "記号", "空白"}
 
+# Sudachi refuses input over 49,149 bytes, and a Wikipedia article is several times that. The
+# chunk is well under the limit because the boundary search may not find a break for a while,
+# and because the limit is counted in bytes while the search works in characters.
+CHUNK_BYTES = 20_000
+
+
+def chunks(text: str):
+    """Splits text at whitespace, near a size Sudachi will accept.
+
+    Breaking mid-word would invent a reading for half a word, so the split hunts backwards for a
+    space. Japanese often runs for a long way without one, so a chunk with no break in it is cut
+    where it must be — losing at most the two tokens either side of the cut, out of thousands.
+    """
+    while text:
+        if len(text.encode("utf-8")) <= CHUNK_BYTES:
+            yield text
+            return
+        cut = CHUNK_BYTES // 3  # Worst case for UTF-8 Japanese: three bytes a character.
+        space = text.rfind(" ", cut // 2, cut)
+        at = space if space > 0 else cut
+        yield text[:at]
+        text = text[at:]
+
 
 def main() -> None:
     # Mode C is the longest unit: 日本語 stays one word rather than becoming 日本 and 語. Mode A
@@ -35,14 +58,15 @@ def main() -> None:
         if not text:
             continue
         readings = []
-        for token in tokenizer.tokenize(text, SplitMode.C):
-            if token.part_of_speech()[0] in SKIP:
-                continue
-            reading = token.reading_form()
-            # A token Sudachi does not know comes back with no reading at all. Its surface is
-            # not a reading and guessing one would attest a word nobody wrote.
-            if reading:
-                readings.append(reading)
+        for chunk in chunks(text):
+            for token in tokenizer.tokenize(chunk, SplitMode.C):
+                if token.part_of_speech()[0] in SKIP:
+                    continue
+                reading = token.reading_form()
+                # A token Sudachi does not know comes back with no reading at all. Its surface
+                # is not a reading and guessing one would attest a word nobody wrote.
+                if reading:
+                    readings.append(reading)
         sys.stdout.write(f"{locator}\t{' '.join(readings)}\n")
         sys.stdout.flush()
 
