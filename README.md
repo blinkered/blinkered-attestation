@@ -225,6 +225,12 @@ Only the final evidence file is ever tracked. Downloaded dumps and per-source in
 untracked `.cache/`, because git history full of large regenerable files is the failure mode this
 layout exists to avoid.
 
+**A dump is not ready until its download has finished.** Obvious, and worth writing down because
+it cost a twenty-minute build: a partial `.bz2` decompresses happily until it hits the end of what
+has arrived, then fails as a CRC error that reads exactly like a corrupt file. Check the size
+against the server's `content-length`, or wait for the download to report done — never judge by
+the file existing and looking big enough.
+
 **And the cache is deleted per language once its evidence is written.** The collections for one
 language run to tens of gigabytes — a Wikipedia dump is 1GB for Korean and 24GB for English, and
 a FineWeb-2 shard is 4.5GB apiece — so queueing six languages at once fills a disk, which is how
