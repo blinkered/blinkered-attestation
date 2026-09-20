@@ -175,6 +175,34 @@ identifiers cannot attest anything, however much text it holds — CC-100 has 70
 not one URL in it. And a dataset that re-processes a crawl somebody else made is the same family
 as the crawl: FineWeb-2, HPLT, mC4, CC-100 and NLLB are five datasets and one opinion.
 
+## What decides a language's coverage
+
+Four languages built, and the number that predicts coverage is not the number of families. It is
+how big the candidate list is against how far the families reach.
+
+```
+              candidates   families   kept
+  German          36,493      5        97.9%
+  Spanish        201,655      5        47.8%
+  French         144,105      5        48.0%
+  Korean          38,467      3         6.8%
+```
+
+German and French have the same five families and differ by fifty points. The difference is that
+German's starter list is 36,000 words and French's is 144,000 — four times as many, most of the
+excess being inflected forms that only a very large corpus ever sees. French has two families big
+enough to reach them, a Wikipedia and a Gutenberg, and three that are not: Leipzig at 50,000
+words, Tatoeba at 55,000, a Bible at 15,000. Since a word needs three families, every word has to
+pass through one of the small ones, and the small ones are the ceiling.
+
+**So the lever is bigger families, not more of them.** A sixth small collection moves French by a
+percent; one more collection the size of its Wikipedia would move it by tens. That is what makes
+fetching publishers worth the afternoon — not because any one newspaper is large, but because
+twenty of them together are, and each is a family in its own right.
+
+Korean shows the same arithmetic at its limit: two families of thirty-four thousand words each and
+a third of two thousand six hundred, so the list shipped two thousand six hundred.
+
 ## The evidence file
 
 One per language, tab-separated, four columns: the word, the collections that attest it, how many
