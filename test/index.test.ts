@@ -44,6 +44,7 @@ describe('the public interface', () => {
       'partition',
       'rateOf',
       'readableText',
+      'saturation',
       'scan',
       'scanByDomain',
       'shippedWords',

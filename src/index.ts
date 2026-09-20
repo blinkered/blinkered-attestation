@@ -47,3 +47,6 @@ export { DISCOVERY_PATHS, discover, harvestSites, httpGet, sitePages } from './f
 export type { Get, SiteHarvest } from './fetch.js'
 
 export { withReadings } from './readings.js'
+
+export { saturation } from './saturation.js'
+export type { Step } from './saturation.js'
