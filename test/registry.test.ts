@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { SOURCES, expandLocator, sourceFor, validateSourceId } from '../src/registry.js'
+import { SOURCES, domainOf, expandLocator, sourceFor, validateSourceId } from '../src/registry.js'
 
 describe('the source registry', () => {
   it('expands a short id into a link somebody can open', () => {
     expect(expandLocator(sourceFor('gut'), '21034')).toBe('https://www.gutenberg.org/ebooks/21034')
-    expect(expandLocator(sourceFor('dewiki'), '9912847')).toBe(
+    expect(expandLocator(sourceFor('wiki:de'), '9912847')).toBe(
       'https://de.wikipedia.org/?curid=9912847',
     )
     expect(expandLocator(sourceFor('tat'), '551')).toBe('https://tatoeba.org/en/sentences/show/551')
@@ -39,7 +39,6 @@ describe('a source id', () => {
   it.each([
     ['a tab', 'de\twiki'],
     ['a comma', 'de,wiki'],
-    ['a colon', 'de:wiki'],
     ['a space', 'de wiki'],
   ])('is refused when it contains %s, because the format spends that character', (_, id) => {
     expect(() => validateSourceId(id)).toThrow('reserved character')
@@ -50,6 +49,83 @@ describe('a source id', () => {
   })
 
   it('is accepted when it is plain', () => {
-    expect(() => validateSourceId('dewiki')).not.toThrow()
+    expect(() => validateSourceId('wiki:de')).not.toThrow()
+  })
+})
+
+describe('derived sources', () => {
+  it('builds a wiki source from its language tag', () => {
+    const spec = sourceFor('wiki:fr')
+    expect(spec.family).toBe('wikimedia')
+    expect(expandLocator(spec, '12345')).toBe('https://fr.wikipedia.org/?curid=12345')
+  })
+
+  it('puts a Wikisource in the same family as its Wikipedia', () => {
+    expect(sourceFor('wikisource:fr').family).toBe(sourceFor('wiki:fr').family)
+    expect(expandLocator(sourceFor('wikisource:ru'), '99')).toBe(
+      'https://ru.wikisource.org/?curid=99',
+    )
+  })
+
+  it('builds a Leipzig package source, all of them one family', () => {
+    expect(sourceFor('lz:fra_news_2024_1M').family).toBe('leipzig')
+    expect(sourceFor('lz:spa_web_2016_1M').family).toBe('leipzig')
+  })
+
+  it('builds an eBible source from its translation code', () => {
+    expect(expandLocator(sourceFor('ebible:deuelo'), 'GEN01')).toBe(
+      'https://ebible.org/deuelo/GEN01.htm',
+    )
+    expect(sourceFor('ebible:tglulb').family).toBe('ebible')
+  })
+
+  it('gives a fetched domain its own family, and does not let it rank', () => {
+    // Nick's rule: a domain is a publisher, so every new domain is a new family. That is what
+    // makes fetching pages able to carry a word over the line rather than nudge it.
+    expect(sourceFor('web:lemonde.fr').family).toBe('lemonde.fr')
+    expect(sourceFor('web:spiegel.de').family).toBe('spiegel.de')
+    expect(sourceFor('web:lemonde.fr').ranks).toBe(false)
+  })
+
+  it('keeps every crawl-derived dataset in one family', () => {
+    // Three re-processings of the same crawled web are three datasets and one opinion. This is
+    // the line that makes Egyptian Arabic fail the rule rather than pass it on a technicality.
+    expect(sourceFor('fw2').family).toBe(sourceFor('cc').family)
+  })
+
+  it('refuses a prefix it does not know, and a prefix with nothing after it', () => {
+    expect(() => sourceFor('nonsense:x')).toThrow('no registered source')
+    expect(() => sourceFor('wiki:')).toThrow('no registered source')
+    expect(() => sourceFor(':fr')).toThrow('no registered source')
+  })
+})
+
+describe('the registrable domain', () => {
+  it('is the domain, not the subdomain', () => {
+    expect(domainOf('https://blog.example.com/a')).toBe('example.com')
+    expect(domainOf('https://shop.example.com/b')).toBe('example.com')
+  })
+
+  it('drops a leading www', () => {
+    expect(domainOf('https://www.spiegel.de/x')).toBe('spiegel.de')
+  })
+
+  it('keeps three labels under a suffix anyone can register beneath', () => {
+    expect(domainOf('https://www.bbc.co.uk/news')).toBe('bbc.co.uk')
+    expect(domainOf('https://abante.com.ph/story')).toBe('abante.com.ph')
+    expect(domainOf('https://www.asahi.co.jp/a')).toBe('asahi.co.jp')
+  })
+
+  it('handles a bare two-label host', () => {
+    expect(domainOf('https://lemonde.fr/')).toBe('lemonde.fr')
+  })
+
+  it('ignores port, path and case', () => {
+    expect(domainOf('https://WWW.Example.COM:8443/Path?q=1')).toBe('example.com')
+  })
+
+  it('returns an unparseable locator whole rather than bucketing it with every other one', () => {
+    // A wiki page id is not a URL and must not collapse into a single "unparseable" family.
+    expect(domainOf('12345')).toBe('12345')
   })
 })

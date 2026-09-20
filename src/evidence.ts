@@ -170,13 +170,18 @@ function parseLine(entry: string, language: string): WordEvidence {
     )
   }
 
+  // A locator is `<source>:<rest>`, and the source id may itself contain colons — `wiki:fr`,
+  // `web:lemonde.fr`. Splitting on the first colon would file `wiki:fr:12345` under `wiki`, so
+  // the prefix is matched against the sources this line already declares, longest first. That
+  // keeps the format readable and needs no separator that a URL might contain.
+  const byLength = [...ids].sort((left, right) => right.length - left.length)
   const sampled = new Map<string, string[]>()
   for (const locator of locators === '' ? [] : locators.split(' ')) {
-    const split = locator.indexOf(':')
-    if (split <= 0) throw new Error(`"${word}" in ${language} has a malformed locator: ${locator}`)
-    const id = locator.slice(0, split)
-    const rest = locator.slice(split + 1)
-    sampled.set(id, [...(sampled.get(id) ?? []), rest])
+    const id = byLength.find((source) => locator.startsWith(`${source}:`))
+    if (id === undefined) {
+      throw new Error(`"${word}" in ${language} has a malformed locator: ${locator}`)
+    }
+    sampled.set(id, [...(sampled.get(id) ?? []), locator.slice(id.length + 1)])
   }
 
   const attestations = ids.map((id, at) => {

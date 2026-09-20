@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { merge, scan } from '../src/scan.js'
+import { merge, scan, scanByDomain } from '../src/scan.js'
 import type { Document } from '../src/scan.js'
 
 /** German's real fold, near enough for a unit test: upper-case, ß to SS, umlauts kept. */
@@ -71,7 +71,7 @@ describe('scanning a collection', () => {
   })
 
   it('reports the source it was given, so merged results stay attributable', async () => {
-    expect((await scan('dewiki', docs(['1', 'haus']), candidates, fold)).source).toBe('dewiki')
+    expect((await scan('wiki:de', docs(['1', 'haus']), candidates, fold)).source).toBe('wiki:de')
   })
 
   it('finds nothing in an empty collection without falling over', async () => {
@@ -115,5 +115,36 @@ describe('merging collections', () => {
     const { totals, words } = merge([])
     expect(totals.size).toBe(0)
     expect(words.size).toBe(0)
+  })
+})
+
+describe('scanning by domain', () => {
+  const domainOf = (locator: string): string => {
+    try {
+      return new URL(locator).hostname.replace(/^www\./u, '')
+    } catch {
+      return locator
+    }
+  }
+
+  it('makes one collection per domain, so five sites are five families', async () => {
+    const pages = docs(
+      ['https://spiegel.de/a', 'schade'],
+      ['https://www.spiegel.de/b', 'haus'],
+      ['https://taz.de/c', 'schade abseits'],
+    )
+    const results = await scanByDomain(pages, candidates, fold, domainOf)
+    expect(results.map((result) => result.source)).toEqual(['web:spiegel.de', 'web:taz.de'])
+    expect(results[0]?.hits.size).toBe(2)
+  })
+
+  it('returns collections sorted, so an unchanged harvest rebuilds identically', async () => {
+    const pages = docs(['https://zeit.de/a', 'haus'], ['https://bild.de/b', 'haus'])
+    const results = await scanByDomain(pages, candidates, fold, domainOf)
+    expect(results.map((result) => result.source)).toEqual(['web:bild.de', 'web:zeit.de'])
+  })
+
+  it('scans nothing into nothing', async () => {
+    expect(await scanByDomain([], candidates, fold, domainOf)).toEqual([])
   })
 })

@@ -126,26 +126,28 @@ describe('ranking', () => {
 })
 
 describe('families, not collections', () => {
+  // The real registry already knows these are all Wikimedia; this only spells it out locally so
+  // the test reads without a trip to registry.ts.
   const wikimedia = (source: string): string =>
-    source.endsWith('wiki') || source.endsWith('wikisource') ? 'wikimedia' : source
+    source.startsWith('wiki:') || source.startsWith('wikisource:') ? 'wikimedia' : source
 
   it('counts a Wikipedia and a Wikisource as one organization', () => {
     // Two collections, one Wikimedia. Letting that plus one more clear the rule would mean a
     // word ships on a single organization's word, which is what the rule exists to prevent.
-    const both = word('X', { dewiki: 9, dewikisource: 4, tat: 1 })
+    const both = word('X', { 'wiki:de': 9, 'wikisource:de': 4, tat: 1 })
     expect(independence(both, wikimedia)).toBe(2)
     expect(partition([both], MINIMUM_SOURCES, wikimedia).dropped).toEqual([both])
   })
 
   it('keeps a word once a third organization is involved', () => {
-    const three = word('Y', { dewiki: 9, dewikisource: 4, tat: 1, gut: 2 })
+    const three = word('Y', { 'wiki:de': 9, 'wikisource:de': 4, tat: 1, gut: 2 })
     expect(independence(three, wikimedia)).toBe(3)
     expect(partition([three], MINIMUM_SOURCES, wikimedia).kept).toEqual([three])
   })
 
   it('counts five years of one crawler as one', () => {
     const leipzig = () => 'leipzig'
-    const years = word('Z', { lznews: 5, lznews23: 4, lznews22: 3, lznews21: 2, lzweb: 1 })
+    const years = word('Z', { 'lz:a': 5, 'lz:b': 4, 'lz:c': 3, 'lz:d': 2, 'lz:e': 1 })
     expect(independence(years, leipzig)).toBe(1)
   })
 
@@ -161,7 +163,7 @@ describe('families, not collections', () => {
 
   it('uses the registry when no family function is given', () => {
     // dewiki and dewikisource are both wikimedia in the real registry.
-    expect(independence(word('V', { dewiki: 1, dewikisource: 1, gut: 1 }))).toBe(2)
-    expect(independence(word('U', { dewiki: 1, gut: 1, tat: 1 }))).toBe(3)
+    expect(independence(word('V', { 'wiki:de': 1, 'wikisource:de': 1, gut: 1 }))).toBe(2)
+    expect(independence(word('U', { 'wiki:de': 1, gut: 1, tat: 1 }))).toBe(3)
   })
 })

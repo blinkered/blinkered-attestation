@@ -1,17 +1,20 @@
 /**
- * Where an attestation points, and how a short identifier becomes a link somebody can open.
+ * Where an attestation points, how a short identifier becomes a link somebody can open, and who
+ * gathered the collection it came from.
  *
- * The whole claim this project makes rests on a reader being able to check it. "SCHADE occurs
- * in three independent collections" is worth nothing if the three cannot be visited, so every
- * source registered here has to answer one question: given a document you found a word in,
- * what is the smallest durable string that gets a person back to that document?
+ * The whole claim this project makes rests on a reader being able to check it. "SCHADE occurs in
+ * three independent collections" is worth nothing if the three cannot be visited, so every source
+ * has to answer one question: given a document you found a word in, what is the smallest durable
+ * string that gets a person back to that document?
  *
  * Two answers, and the difference is the difference between a small evidence file and a large
- * one. A collection with stable per-document identifiers — a Wikipedia page id, a Gutenberg
- * ebook number, a Tatoeba sentence id — costs six or seven bytes a hit and expands through a
- * template. A web crawl has no such thing, so the locator is the page URL itself and costs
- * sixty. Both are legitimate; only one is cheap, and the registry records which is which so
- * nobody has to guess from the data.
+ * one. A collection with stable per-document identifiers — a Wikipedia page id, a Gutenberg ebook
+ * number, a Tatoeba sentence id — costs six or seven bytes a hit and expands through a template.
+ * A crawled or fetched page has no such thing, so the locator is the URL itself and costs sixty.
+ *
+ * **Most source ids are derived rather than listed.** Fifty-one languages would otherwise mean a
+ * hundred hand-written wiki entries, and the hundred-and-first would be the one with a typo in
+ * its URL. `wiki:fr` and `ebible:deuelo` carry everything needed to build their own spec.
  */
 
 /** How a locator turns back into something a person can open. */
@@ -23,9 +26,8 @@ export type LocatorKind =
 
 export interface SourceSpec {
   /**
-   * Short, stable, and written into every evidence line, so it is worth keeping to three or
-   * four characters. It is also the identity a language's evidence is keyed by: renaming one
-   * invalidates every file that used it, which is why `SOURCES` is append-mostly.
+   * Short, stable, and written into every evidence line. It is also the identity a language's
+   * evidence is keyed by: renaming one invalidates every file that used it.
    */
   readonly id: string
   readonly name: string
@@ -35,20 +37,19 @@ export interface SourceSpec {
   /**
    * Who gathered it, which is not the same question as which collection it is.
    *
-   * A wiki dump and a Wikisource dump are two collections and one Wikimedia; five years of
-   * Leipzig news are five collections and one crawler. Counting those as three independent
-   * sightings would let a word clear the rule on the word of a single organization, which is
-   * the thing the rule exists to prevent. Families are compared, not ids, when the question is
-   * whether the evidence is really independent.
+   * A Wikipedia and a Wikisource are two collections and one Wikimedia; five years of Leipzig
+   * news are five collections and one crawler; three re-processings of Common Crawl are three
+   * datasets and one web crawl. Counting any of those as three independent sightings would let a
+   * word ship on a single organization's word, which is the thing the rule exists to prevent.
    */
   readonly family: string
   /**
    * Whether this collection's counts are worth ranking by. Everything ranks unless it says not.
    *
-   * A collection assembled by searching for the words themselves is evidence that a word exists
+   * A collection assembled by looking for the words themselves is evidence that a word exists
    * and evidence of nothing else. Its token total is whatever the search happened to return, so
-   * a rate taken against it would say that the rarest words in the language are the commonest —
-   * they are the only ones that were searched for. It attests; it does not rank.
+   * a rate taken against it would report the rarest words in the language as the commonest —
+   * they are the only ones anybody looked for.
    */
   readonly ranks?: false
 }
@@ -56,12 +57,12 @@ export interface SourceSpec {
 /**
  * Separators the evidence format spends, and which therefore cannot appear in a source id.
  *
- * A tab splits columns, a comma splits the sources within a column, and a colon splits a
- * locator from its source. A space splits locators from each other. An id carrying any of them
- * would parse as two fields and the parser would not notice, which is the failure worth
- * refusing up front rather than debugging later.
+ * A tab splits columns, a comma splits sources within a column, a space splits locators, and the
+ * **first** colon splits a locator from its source. A colon later in the id is fine — `wiki:fr`
+ * and `web:lemonde.fr` rely on it — which is why the locator parser splits once rather than on
+ * every colon, and why only the other three characters are refused here.
  */
-const RESERVED = /[\t,: ]/u
+const RESERVED = /[\t, ]/u
 
 /** Refuses a source that would corrupt the file format it is written into. */
 export function validateSourceId(id: string): void {
@@ -72,9 +73,9 @@ export function validateSourceId(id: string): void {
 /**
  * Turns a stored locator back into a URL.
  *
- * For a `url` source the locator is returned unchanged, which is not laziness: the stored
- * string genuinely is the answer, and pretending otherwise would mean inventing a template
- * that expands to its own input.
+ * For a `url` source the locator is returned unchanged, which is not laziness: the stored string
+ * genuinely is the answer, and pretending otherwise would mean inventing a template that expands
+ * to its own input.
  */
 export function expandLocator(spec: SourceSpec, locator: string): string {
   if (spec.locator.kind === 'url') return locator
@@ -89,7 +90,7 @@ const template = (
   url: string,
 ): SourceSpec => ({ id, family, name, attribution, locator: { kind: 'template', template: url } })
 
-const web = (id: string, family: string, name: string, attribution: string): SourceSpec => ({
+const urlSource = (id: string, family: string, name: string, attribution: string): SourceSpec => ({
   id,
   family,
   name,
@@ -98,13 +99,115 @@ const web = (id: string, family: string, name: string, attribution: string): Sou
 })
 
 /**
- * The collections we cite, and the shorthand each is cited by.
+ * Suffixes under which anyone may register, so the name above them is the domain.
  *
- * Deliberately a flat list rather than a per-language one. Which sources cover which language
- * is a fact about the language and belongs in that language's own repository; what belongs
- * here is only the promise that `gut:21034` means the same thing everywhere it is written.
+ * Not the whole public suffix list, which is several thousand entries and a dependency. The risk
+ * of a short list is one-directional and worth stating: a suffix we fail to recognise makes two
+ * sites look like **one** family, which under-counts independence and loses words. The reverse —
+ * splitting one owner into two families — would let a word ship on one site's word alone, and
+ * only a suffix wrongly listed here could cause it.
  */
-export const SOURCES: readonly SourceSpec[] = [
+const MULTI_LABEL_SUFFIXES = new Set([
+  'co.uk',
+  'org.uk',
+  'me.uk',
+  'gov.uk',
+  'ac.uk',
+  'co.jp',
+  'or.jp',
+  'ne.jp',
+  'ac.jp',
+  'go.jp',
+  'com.au',
+  'net.au',
+  'org.au',
+  'edu.au',
+  'gov.au',
+  'com.br',
+  'com.mx',
+  'com.ar',
+  'com.ph',
+  'com.sg',
+  'com.my',
+  'com.tr',
+  'com.cn',
+  'com.tw',
+  'com.hk',
+  'co.kr',
+  'or.kr',
+  'go.kr',
+  'co.in',
+  'co.za',
+  'co.nz',
+  'com.pl',
+  'com.ua',
+  'com.vn',
+  'co.id',
+  'or.id',
+  'go.id',
+])
+
+/**
+ * The registrable domain of a URL: the thing a family is named after.
+ *
+ * Nick's rule, and it is the right cut. A subdomain is the same publisher — `blog.example.com`
+ * and `shop.example.com` are one voice — while two domains are two, whoever happened to fetch
+ * them. It is also what makes fetching pages worth doing: every new domain is a new family, so a
+ * handful of sites can carry a word over the line that no single collection could.
+ */
+export function domainOf(url: string): string {
+  let host: string
+  try {
+    host = new URL(url).hostname.toLowerCase()
+  } catch {
+    // Not a URL at all. Returned whole so it still groups consistently rather than vanishing
+    // into one bucket with every other unparseable locator.
+    return url.toLowerCase()
+  }
+  const labels = host.replace(/^www\./u, '').split('.')
+  if (labels.length <= 2) return labels.join('.')
+  const lastTwo = labels.slice(-2).join('.')
+  return MULTI_LABEL_SUFFIXES.has(lastTwo) ? labels.slice(-3).join('.') : lastTwo
+}
+
+/** Sources whose id says everything needed to build their spec. */
+const DERIVED: Readonly<Record<string, (rest: string) => SourceSpec>> = {
+  wiki: (lang) =>
+    template(
+      `wiki:${lang}`,
+      'wikimedia',
+      `${lang}.wikipedia.org`,
+      `${lang}.wikipedia.org contributors`,
+      `https://${lang}.wikipedia.org/?curid={id}`,
+    ),
+  wikisource: (lang) =>
+    template(
+      `wikisource:${lang}`,
+      'wikimedia',
+      `${lang}.wikisource.org`,
+      `${lang}.wikisource.org contributors`,
+      `https://${lang}.wikisource.org/?curid={id}`,
+    ),
+  // Every Leipzig package is one family: five years of the same crawler is not five opinions.
+  lz: (pkg) => urlSource(`lz:${pkg}`, 'leipzig', `Leipzig ${pkg}`, `Leipzig Corpora, ${pkg}`),
+  ebible: (translation) =>
+    template(
+      `ebible:${translation}`,
+      'ebible',
+      `eBible ${translation}`,
+      `eBible.org, ${translation}`,
+      `https://ebible.org/${translation}/{id}.htm`,
+    ),
+  // One family per registrable domain, which is what makes the harvest able to clear a gap
+  // rather than nibble at it. It attests; it does not rank.
+  web: (domain) => ({
+    ...urlSource(`web:${domain}`, domain, domain, `${domain}`),
+    ranks: false,
+  }),
+}
+
+/** Sources with nothing in their name to derive from. */
+const FIXED: readonly SourceSpec[] = [
   template(
     'gut',
     'gutenberg',
@@ -119,88 +222,27 @@ export const SOURCES: readonly SourceSpec[] = [
     'Tatoeba contributors',
     'https://tatoeba.org/en/sentences/show/{id}',
   ),
-
-  // One entry per wiki rather than one for all of them, because the host differs per language
-  // and a locator that needs two fields to resolve is not a locator. All one family: a
-  // Wikipedia and a Wikisource are two collections and one Wikimedia.
-  template(
-    'dewiki',
-    'wikimedia',
-    'German Wikipedia',
-    'German Wikipedia contributors',
-    'https://de.wikipedia.org/?curid={id}',
-  ),
-  template(
-    'dewikisource',
-    'wikimedia',
-    'German Wikisource',
-    'German Wikisource contributors',
-    'https://de.wikisource.org/?curid={id}',
-  ),
-  template(
-    'tlwiki',
-    'wikimedia',
-    'Tagalog Wikipedia',
-    'Tagalog Wikipedia contributors',
-    'https://tl.wikipedia.org/?curid={id}',
-  ),
-  template(
-    'tlwikisource',
-    'wikimedia',
-    'Tagalog Wikisource',
-    'Tagalog Wikisource contributors',
-    'https://tl.wikisource.org/?curid={id}',
-  ),
-
-  // Leipzig resolves a sentence through two index files to the page it came from, so the URL
-  // is stored whole rather than as an id nobody could expand without the package in hand.
-  // Every package is one family: five years of the same crawler is not five opinions.
-  web('lznews', 'leipzig', 'Leipzig, German news 2024', 'Leipzig Corpora, deu_news_2024_1M'),
-  web('lznews23', 'leipzig', 'Leipzig, German news 2023', 'Leipzig Corpora, deu_news_2023_1M'),
-  web('lznews22', 'leipzig', 'Leipzig, German news 2022', 'Leipzig Corpora, deu_news_2022_1M'),
-  web('lznews21', 'leipzig', 'Leipzig, German news 2021', 'Leipzig Corpora, deu_news_2021_1M'),
-  web(
-    'lzcrawl18',
-    'leipzig',
-    'Leipzig, German newscrawl 2018',
-    'Leipzig Corpora, deu_newscrawl-public_2018_1M',
-  ),
-  web('lzweb', 'leipzig', 'Leipzig, German web 2021', 'Leipzig Corpora, deu-de_web_2021_1M'),
-  web(
-    'lzwebat',
-    'leipzig',
-    'Leipzig, Austrian German web 2019',
-    'Leipzig Corpora, deu-at_web_2019_1M',
-  ),
-
-  template(
-    'ebiblede',
-    'ebible',
-    'German Bible (Elberfelder 1905)',
-    'eBible.org, Elberfelder 1905',
-    'https://ebible.org/deuelo/{id}.htm',
-  ),
-  template(
-    'ebibletl',
-    'ebible',
-    'Tagalog Bible (tglulb)',
-    'eBible.org, Tagalog Unlocked Literal Bible',
-    'https://ebible.org/tglulb/{id}.htm',
-  ),
-
-  web('cc', 'commoncrawl', 'Common Crawl', 'Common Crawl Foundation'),
-  web('fw2', 'commoncrawl', 'FineWeb-2', 'FineWeb-2, from Common Crawl'),
-
-  // Pages found by searching for the word itself and then checked for it, which is how the
-  // last few hundred words of a language get attested once the bulk collections are exhausted.
-  { ...web('search', 'search', 'Web search', "the page's own publisher"), ranks: false },
+  // One family, deliberately. FineWeb-2, HPLT, mC4, CC-100 and NLLB are different datasets over
+  // the same crawled web, and treating them as separate opinions is how Egyptian Arabic would
+  // pass a rule it should fail.
+  urlSource('fw2', 'commoncrawl', 'FineWeb-2', 'FineWeb-2, from Common Crawl'),
+  urlSource('cc', 'commoncrawl', 'Common Crawl', 'Common Crawl Foundation'),
 ]
 
-const BY_ID = new Map(SOURCES.map((source) => [source.id, source]))
+const BY_ID = new Map(FIXED.map((source) => [source.id, source]))
 
-/** Looks a source up, refusing an unknown id rather than returning a hole. */
+export const SOURCES: readonly SourceSpec[] = FIXED
+
+/** Looks a source up, deriving it where the id says how, and refusing an id that says nothing. */
 export function sourceFor(id: string): SourceSpec {
-  const spec = BY_ID.get(id)
-  if (spec === undefined) throw new RangeError(`no registered source "${id}"`)
-  return spec
+  const fixed = BY_ID.get(id)
+  if (fixed !== undefined) return fixed
+
+  const split = id.indexOf(':')
+  if (split > 0) {
+    const derive = DERIVED[id.slice(0, split)]
+    const rest = id.slice(split + 1)
+    if (derive !== undefined && rest !== '') return derive(rest)
+  }
+  throw new RangeError(`no registered source "${id}"`)
 }

@@ -8,7 +8,7 @@ const supported = (word: string, sources: string[]): WordEvidence => ({
   attestations: sources.map((source) => ({ source, count: 4, locators: ['1'] })),
 })
 
-const THREE = ['tat', 'gut', 'dewiki']
+const THREE = ['tat', 'gut', 'wiki:de']
 
 const list = (...words: string[]): string =>
   `#blinkered/wordlist/2 language=de common=1 full=${String(words.length)}\n${words.join('\n')}\n`
@@ -72,7 +72,7 @@ describe('conformance refuses', () => {
       attestations: [
         { source: 'tat', count: 4, locators: ['1'] },
         { source: 'gut', count: 4, locators: ['2'] },
-        { source: 'dewiki', count: 4, locators: [] },
+        { source: 'wiki:de', count: 4, locators: [] },
       ],
     })
     const failures = conform(list('SCHADE'), evidence)

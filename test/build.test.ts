@@ -68,7 +68,7 @@ describe('building a language', () => {
   it('ranks the shipped list commonest first', () => {
     const four = [
       ...THREE,
-      result('dewiki', 1000, [
+      result('wiki:de', 1000, [
         ['PIZZA', 900, ['7']],
         ['OKAY', 1, ['8']],
       ]),
@@ -111,7 +111,7 @@ describe('a source that attests but does not rank', () => {
     // artefact of what was searched for. Ranking by it would make the rarest words look like
     // the commonest, because they are the only ones anybody searched for.
     const withSearch = [
-      result('dewiki', 1_000_000, [
+      result('wiki:de', 1_000_000, [
         ['ALLTAG', 5000, ['1']],
         ['KURZSCHLIESSEN', 2, ['2']],
       ]),
@@ -120,7 +120,7 @@ describe('a source that attests but does not rank', () => {
         ['KURZSCHLIESSEN', 1, ['4']],
       ]),
       result('tat', 1_000_000, [['ALLTAG', 3000, ['5']]]),
-      result('search', 12, [['KURZSCHLIESSEN', 6, ['https://example.de/x']]]),
+      result('web:example.de', 12, [['KURZSCHLIESSEN', 6, ['https://example.de/x']]]),
     ]
     const built = build('de', '2026-09-18', ['ALLTAG', 'KURZSCHLIESSEN'], withSearch, 2)
     // Both kept: three families each, search supplying the third for the rare one.
@@ -135,7 +135,7 @@ describe('a source that attests but does not rank', () => {
     // from the ranking here would change the order for a reason nothing in the output explains.
     const unknown = [
       result('mystery', 1_000_000, [['NEU', 900, ['1']]]),
-      result('dewiki', 1_000_000, [['NEU', 1, ['2']]]),
+      result('wiki:de', 1_000_000, [['NEU', 1, ['2']]]),
       result('gut', 1_000_000, [['NEU', 1, ['3']]]),
     ]
     // mystery counts as its own family, so NEU has three and is kept.

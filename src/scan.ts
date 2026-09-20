@@ -97,6 +97,39 @@ export async function scan(
 }
 
 /**
+ * Scans harvested pages as one collection per registrable domain.
+ *
+ * This is what makes fetching pages worth the trouble. A single `search` source would be one
+ * family however many sites it drew on, so a word found on five unrelated news sites would still
+ * be one sighting. Split by domain and those are five families, which is both truer and the only
+ * way the harvest can carry a word over the line rather than nudge it.
+ *
+ * Everything is held in memory, which is right for this collection and nothing else: a harvest
+ * is a few thousand pages by construction. The bulk collections stream.
+ */
+export async function scanByDomain(
+  documents: Iterable<Document> | AsyncIterable<Document>,
+  candidates: ReadonlySet<string>,
+  fold: (raw: string) => string,
+  domainOf: (locator: string) => string,
+): Promise<ScanResult[]> {
+  const byDomain = new Map<string, Document[]>()
+  for await (const document of documents) {
+    const domain = domainOf(document.locator)
+    const held = byDomain.get(domain)
+    if (held === undefined) byDomain.set(domain, [document])
+    else held.push(document)
+  }
+
+  const results: ScanResult[] = []
+  for (const [domain, documents_] of byDomain) {
+    results.push(await scan(`web:${domain}`, documents_, candidates, fold))
+  }
+  // Sorted, so a rebuild over an unchanged harvest produces the same evidence file.
+  return results.sort((left, right) => left.source.localeCompare(right.source))
+}
+
+/**
  * Folds several collections' results into one word-keyed view.
  *
  * Returned sorted by key so that everything downstream — the evidence file, the diff a reviewer
