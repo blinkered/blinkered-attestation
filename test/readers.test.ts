@@ -360,29 +360,138 @@ describe('the scripture reader', () => {
 })
 
 describe('the harvest reader', () => {
-  it('cites a harvested page by its own URL', async () => {
-    const rows = [
-      'https://www.kn-online.de/a\tSie entschuldigst dich nicht.',
-      'https://taz.de/b\tEr bedrohst niemanden.',
-    ]
-    expect(await collect(harvestedPages(rows))).toEqual([
-      { locator: 'https://www.kn-online.de/a', text: 'Sie entschuldigst dich nicht.' },
-      { locator: 'https://taz.de/b', text: 'Er bedrohst niemanden.' },
-    ])
+  it('expands counts back into words, so a scan counts what the page held', async () => {
+    const rows = ['https://www.kn-online.de/a\tENTSCHULDIGST:2 BEDROHST:1']
+    const [first] = await collect(harvestedPages(rows))
+    expect(first?.locator).toBe('https://www.kn-online.de/a')
+    expect(first?.text).toBe('ENTSCHULDIGST ENTSCHULDIGST BEDROHST')
   })
 
-  it('skips a row with no text, since a search hit is not a sighting', async () => {
-    // A search engine saying a page holds a word is not the page holding it. Only fetched text
-    // counts, so a row that fetched nothing attests nothing.
+  it('records no prose, which is the whole point of the format', async () => {
+    // Keeping fetched text would republish somebody's journalism. A count of words already in
+    // our own dictionary is a fact about the page and cannot reconstruct it.
+    const [first] = await collect(harvestedPages(['https://taz.de/b\tKLAUST:1']))
+    expect(first?.text).toBe('KLAUST')
+  })
+
+  it('takes a word whose own spelling contains a colon', async () => {
+    // The count is after the LAST colon, so a locator-like word survives.
+    const [first] = await collect(harvestedPages(['https://x/a\tA:B:3']))
+    expect(first?.text).toBe('A:B A:B A:B')
+  })
+
+  it('skips a page that held none of our words', async () => {
     expect(await collect(harvestedPages(['https://x/a\t', 'https://x/b']))).toEqual([])
+  })
+
+  it('ignores a malformed pair rather than inventing a count', async () => {
+    const [first] = await collect(harvestedPages(['https://x/a\tGOOD:2 NOCOUNT BAD:0 NEG:-1']))
+    expect(first?.text).toBe('GOOD GOOD')
+  })
+
+  it('skips a page whose every pair was malformed', async () => {
+    expect(await collect(harvestedPages(['https://x/a\tNOCOUNT']))).toEqual([])
   })
 
   it('reads a harvest file off the filesystem', async () => {
     const dir = mkdtempSync(join(tmpdir(), 'blinkered-harvest-'))
     const path = join(dir, 'searched.tsv')
-    writeFileSync(path, 'https://x/a\tEin ordentliches Wort.\n')
+    writeFileSync(path, 'https://x/a\tORDENTLICH:1\n')
     expect(await collect(harvestDocuments(path))).toEqual([
-      { locator: 'https://x/a', text: 'Ein ordentliches Wort.' },
+      { locator: 'https://x/a', text: 'ORDENTLICH' },
     ])
+  })
+})
+
+describe('the crawl reader', () => {
+  it('cites each document by the page it was crawled from', () => {
+    const rows = [
+      { url: 'https://abante.com.ph/a', text: 'Magandang umaga.' },
+      { url: 'https://bomba.ph/b', text: 'Kumusta ka?' },
+    ]
+    expect([...crawlRows(rows)]).toEqual([
+      { locator: 'https://abante.com.ph/a', text: 'Magandang umaga.' },
+      { locator: 'https://bomba.ph/b', text: 'Kumusta ka?' },
+    ])
+  })
+
+  it('skips a row with no URL, because it could never be cited', () => {
+    expect([...crawlRows([{ text: 'walang URL' }])]).toEqual([])
+    expect([...crawlRows([{ url: '', text: 'walang URL' }])]).toEqual([])
+  })
+
+  it('skips a row with no text', () => {
+    expect([...crawlRows([{ url: 'https://x/a' }])]).toEqual([])
+    expect([...crawlRows([{ url: 'https://x/a', text: '' }])]).toEqual([])
+  })
+})
+
+describe('reading a FineWeb-2 shard', () => {
+  it('streams every row, batching through the file', async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'blinkered-parquet-'))
+    const path = join(dir, 'fil.parquet')
+    parquetWriteFile({
+      filename: path,
+      columnData: [
+        {
+          name: 'url',
+          data: ['https://abante.com.ph/a', 'https://bomba.ph/b', '', 'https://x.ph/d'],
+        },
+        { name: 'text', data: ['Magandang umaga.', 'Kumusta ka?', 'walang url', ''] },
+      ],
+    })
+    // A batch size below the row count, so the paging loop runs more than once and its exit
+    // condition is exercised rather than assumed.
+    const found = await collect(fineweb2Documents(path, 2))
+    expect(found).toEqual([
+      { locator: 'https://abante.com.ph/a', text: 'Magandang umaga.' },
+      { locator: 'https://bomba.ph/b', text: 'Kumusta ka?' },
+    ])
+  })
+})
+
+describe('the scripture reader', () => {
+  const lines = [
+    'GEN 1:1 Noong simula nilikha ng Diyos ang langit.',
+    'GEN 1:2 Ang lupa ay walang anyo.',
+    'GEN 2:1 Natapos ang langit at ang lupa.',
+    'EXO 12:14 Ang araw na ito ay magiging alaala.',
+  ]
+
+  it('gathers verses into the chapter a locator can open', async () => {
+    expect(await collect(versesByChapter(lines))).toEqual([
+      {
+        locator: 'GEN01',
+        text: 'Noong simula nilikha ng Diyos ang langit. Ang lupa ay walang anyo.',
+      },
+      { locator: 'GEN02', text: 'Natapos ang langit at ang lupa.' },
+      { locator: 'EXO12', text: 'Ang araw na ito ay magiging alaala.' },
+    ])
+  })
+
+  it('pads the chapter, because the pages are named GEN01 rather than GEN1', async () => {
+    const [first] = await collect(versesByChapter(['GEN 9:1 Pinagpala ng Diyos.']))
+    expect(first?.locator).toBe('GEN09')
+  })
+
+  it('ignores a line that is not a verse', async () => {
+    expect(await collect(versesByChapter(['', 'not a verse', 'GEN 1:1 Tunay.']))).toHaveLength(1)
+  })
+
+  it('emits the last chapter, which has no following verse to close it', async () => {
+    const found = await collect(versesByChapter(['REV 22:21 Ang biyaya.']))
+    expect(found).toEqual([{ locator: 'REV22', text: 'Ang biyaya.' }])
+  })
+
+  it('reads nothing from nothing', async () => {
+    expect(await collect(versesByChapter([]))).toEqual([])
+  })
+
+  it('reads a verse-per-line file off the filesystem', async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'blinkered-vpl-'))
+    const path = join(dir, 'tglulb_vpl.txt')
+    writeFileSync(path, `${lines.join('\n')}\n`)
+    const found = await collect(verseDocuments(path))
+    expect(found.map((document) => document.locator)).toEqual(['GEN01', 'GEN02', 'EXO12'])
   })
 })

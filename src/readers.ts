@@ -287,26 +287,40 @@ export function verseDocuments(path: string): AsyncGenerator<Document> {
 }
 
 /**
- * Harvested pages: `url<TAB>text`, one document a line.
+ * Harvested pages: `url<TAB>WORD:count WORD:count …`, one page a line.
  *
- * This is how the last stretch of a language gets attested. The bulk collections do the work
- * for the overwhelming majority of a list and then stop dead: what is left is a few hundred
- * words that are perfectly ordinary and simply absent from an encyclopedia, a shelf of novels
- * and a sentence bank. Searching for those words one at a time is far too slow to be a corpus
- * and exactly right as a mop.
+ * This is how the last stretch of a language gets attested. The bulk collections do the work for
+ * the overwhelming majority of a list and then stop dead; what is left is a few hundred ordinary
+ * words that an encyclopedia, a shelf of novels and a sentence bank all happen not to contain.
+ * Fetching pages one at a time is far too slow to be a corpus and exactly right as a mop.
  *
- * The harvest is a separate, deliberate step, and the file it writes is committed — so the
- * build stays reproducible and offline, and nobody has to re-run a few thousand searches to
- * rebuild a list. The text stored is what was actually fetched from the page, because a search
- * engine saying a page contains a word is not the same as the page containing it.
+ * **What is stored is which of our own candidates the page held, and how often — never the page.**
+ * The first version of this file kept the fetched text, which was a mistake serious enough to be
+ * worth recording: a public repository of harvested articles is a republication of somebody's
+ * journalism, and escaping a share-alike dictionary by copying newspapers would be no escape at
+ * all. A count of words already in our dictionary is a fact about the page. It cannot reconstruct
+ * it, and it is all the build ever needed.
+ *
+ * The counts are expanded back into repeated words so the scanner counts them exactly as it
+ * would have counted the prose, which keeps one code path for every collection.
  */
 export async function* harvestedPages(lines: Lines): AsyncGenerator<Document> {
   for await (const line of lines) {
     const split = line.indexOf('\t')
     if (split <= 0) continue
-    const text = line.slice(split + 1)
-    if (text === '') continue
-    yield { locator: line.slice(0, split), text }
+    const found = line.slice(split + 1).trim()
+    if (found === '') continue
+
+    const words: string[] = []
+    for (const pair of found.split(' ')) {
+      const at = pair.lastIndexOf(':')
+      if (at <= 0) continue
+      const count = Number(pair.slice(at + 1))
+      if (!Number.isInteger(count) || count < 1) continue
+      words.push(...Array.from({ length: count }, () => pair.slice(0, at)))
+    }
+    if (words.length === 0) continue
+    yield { locator: line.slice(0, split), text: words.join(' ') }
   }
 }
 
