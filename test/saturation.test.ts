@@ -67,3 +67,26 @@ describe('the saturation curve', () => {
     expect(saturation([word('A', ['x', 'y', 'z'])], own, 0)[2]?.share).toBe(0)
   })
 })
+
+describe('ties below the minimum', () => {
+  it('prefers the larger family when nothing can yet be kept', () => {
+    // Below three families everything ties at zero kept, so an arbitrary winner makes the early
+    // curve meaningless: French reported a 15,369-word Bible ahead of a 120,597-word Wikipedia,
+    // which said nothing about French and everything about map order.
+    const words = [
+      word('A', ['small', 'big', 'third']),
+      word('B', ['big', 'third', 'fourth']),
+      word('C', ['big']),
+    ]
+    const steps = saturation(words, own, 3)
+    expect(steps[0]?.added).toBe('big')
+  })
+
+  it('still prefers the family that keeps more once the minimum is reachable', () => {
+    // Size only breaks ties; it never outranks actually rescuing words.
+    const words = [word('A', ['x', 'y', 'winner']), word('B', ['x', 'y', 'winner'])]
+    const steps = saturation(words, own, 2)
+    expect(steps[2]?.added).toBe('winner')
+    expect(steps[2]?.kept).toBe(2)
+  })
+})

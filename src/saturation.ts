@@ -14,6 +14,13 @@
  *
  * Greedy is not provably optimal for set cover, but the gap is small and the alternative is
  * enumerating every subset of twenty-odd families.
+ *
+ * **Ties are broken by size, and that is load-bearing rather than tidy.** Below the minimum
+ * every candidate family keeps exactly nothing, so the first steps are a tie among all of them
+ * and an arbitrary winner makes the early curve meaningless: French first reported `ebible`
+ * (15,369 words) ahead of `wikimedia` (120,597), which says nothing about French and everything
+ * about map order. Preferring the family that has seen the most words makes those steps mean
+ * what a reader takes them to mean.
  */
 
 import { MINIMUM_SOURCES } from './attest.js'
@@ -102,7 +109,9 @@ export function saturation(
     for (const [name, seen] of byFamily) {
       if (chosenNames.includes(name)) continue
       const kept = keptWith([...chosen, seen], candidates, minimum)
-      if (best === null || kept > best.kept) best = { name, words: seen, kept }
+      const better =
+        best === null || kept > best.kept || (kept === best.kept && seen.size > best.words.size)
+      if (better) best = { name, words: seen, kept }
     }
     // `byFamily` is non-empty inside the loop by its own condition, so a best is always found.
     const found = best as { name: string; words: Set<string>; kept: number }
