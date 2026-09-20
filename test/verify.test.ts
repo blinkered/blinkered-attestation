@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { pageHolds, prove } from '../src/verify.js'
+import { archiveUrl, pageHolds, prove } from '../src/verify.js'
 import type { Reader } from '../src/verify.js'
 import type { WordEvidence } from '../src/evidence.js'
 
@@ -121,5 +121,64 @@ describe('proving a word', () => {
     const proof = await prove({ word: 'X', attestations: [] }, fold, pages({}), 3)
     expect(proof.checked).toEqual([])
     expect(proof.holds).toBe(false)
+  })
+})
+
+describe('the Internet Archive', () => {
+  it('builds a snapshot URL without an API call, which is what makes it usable', () => {
+    // The availability API rate-limits hard; /web/<when>/<url> redirects to the nearest capture.
+    expect(archiveUrl('http://book.daum.net/detail/book.do?bookid=KOR97889')).toBe(
+      'https://web.archive.org/web/2020/http://book.daum.net/detail/book.do?bookid=KOR97889',
+    )
+  })
+
+  it('takes a year, so a crawl can be checked against a contemporaneous capture', () => {
+    expect(archiveUrl('http://x.kr/a', '2013')).toBe(
+      'https://web.archive.org/web/2013/http://x.kr/a',
+    )
+  })
+
+  it('rescues a citation whose live page has died', async () => {
+    const dead: WordEvidence = {
+      word: 'SCHADE',
+      attestations: [
+        { source: 'wiki:de', count: 1, locators: ['1'] },
+        { source: 'gut', count: 1, locators: ['2'] },
+        { source: 'tat', count: 1, locators: ['3'] },
+      ],
+    }
+    const archiveOnly = pages({
+      'https://de.wikipedia.org/?curid=1': 'schade',
+      'https://www.gutenberg.org/ebooks/2': 'schade',
+      // The live Tatoeba page is gone; the archive has it.
+      'https://web.archive.org/web/2020/https://tatoeba.org/en/sentences/show/3': 'es ist schade',
+    })
+    const proof = await prove(dead, fold, archiveOnly, 3)
+    expect(proof.holds).toBe(true)
+    expect(proof.checked[2]?.outcome).toBe('archived')
+  })
+
+  it('does not go to the archive when the live page answered', async () => {
+    // A page that loaded without the word is a finding; a second opinion would bury it.
+    const both = pages({
+      'https://de.wikipedia.org/?curid=1': 'etwas anderes',
+      'https://web.archive.org/web/2020/https://de.wikipedia.org/?curid=1': 'schade',
+    })
+    const one: WordEvidence = {
+      word: 'SCHADE',
+      attestations: [{ source: 'wiki:de', count: 1, locators: ['1'] }],
+    }
+    expect((await prove(one, fold, both, 1)).checked[0]?.outcome).toBe('absent')
+  })
+
+  it('reports absent when the archive has the page but not the word', async () => {
+    const one: WordEvidence = {
+      word: 'SCHADE',
+      attestations: [{ source: 'tat', count: 1, locators: ['3'] }],
+    }
+    const archived = pages({
+      'https://web.archive.org/web/2020/https://tatoeba.org/en/sentences/show/3': 'ganz anderes',
+    })
+    expect((await prove(one, fold, archived, 1)).checked[0]?.outcome).toBe('absent')
   })
 })

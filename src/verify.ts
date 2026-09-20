@@ -25,12 +25,30 @@ import type { WordEvidence } from './evidence.js'
 export type Outcome =
   /** The page loaded and the word is on it. The claim holds. */
   | 'found'
+  /** The live page is gone, but the Internet Archive's copy of it holds the word. */
+  | 'archived'
   /** The page loaded and the word is not on it. The claim does not hold. */
   | 'absent'
-  /** The page could not be read at all, so it says nothing either way. */
+  /** Neither the page nor an archived copy could be read, so it says nothing either way. */
   | 'unreachable'
   /** The source is not registered, so its locator cannot even be turned into a URL. */
   | 'unresolvable'
+
+/**
+ * The Internet Archive's copy of a page, which is what makes a crawled citation durable.
+ *
+ * A locator taken from a web crawl is a snapshot of a page that has since moved, changed or
+ * gone: verifying six Korean words, every stable-id citation resolved and every crawl URL that
+ * failed was a dead link. The archive answers for those, and it answers without an API call —
+ * `/web/<when>/<url>` redirects to the nearest capture — which matters because the availability
+ * API rate-limits hard.
+ *
+ * The original URL stays in the evidence. It is the truth about where the text was, and pointing
+ * a citation at an intermediary would record where we went looking instead.
+ */
+export function archiveUrl(url: string, when = '2020'): string {
+  return `https://web.archive.org/web/${when}/${url}`
+}
 
 export interface Checked {
   readonly source: string
@@ -92,10 +110,24 @@ export async function prove(
 
     for (const locator of attestation.locators) {
       const url = expandLocator(spec, locator)
-      const text = await read(url)
-      const outcome: Outcome =
-        text === null ? 'unreachable' : pageHolds(text, evidence.word, fold) ? 'found' : 'absent'
-      if (outcome === 'found') proven.add(spec.family)
+      const live = await read(url)
+
+      let outcome: Outcome
+      if (live !== null) {
+        outcome = pageHolds(live, evidence.word, fold) ? 'found' : 'absent'
+      } else {
+        // Only when the live page is gone. A page that loaded and did not hold the word is a
+        // finding, and going to the archive for a second opinion would bury it.
+        const archived = await read(archiveUrl(url))
+        outcome =
+          archived === null
+            ? 'unreachable'
+            : pageHolds(archived, evidence.word, fold)
+              ? 'archived'
+              : 'absent'
+      }
+
+      if (outcome === 'found' || outcome === 'archived') proven.add(spec.family)
       checked.push({ source: attestation.source, locator, url, outcome })
     }
   }

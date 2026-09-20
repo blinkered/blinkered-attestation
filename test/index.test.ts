@@ -10,13 +10,17 @@ describe('the public interface', () => {
   it('exports everything a dictionary repository builds against', () => {
     expect(Object.keys(api).sort()).toEqual([
       'DISCOVERY_PATHS',
+      'EVIDENCE_DIR',
+      'EVIDENCE_FILE',
       'MAX_PAGES_PER_HOST',
       'MINIMUM_SOURCES',
       'POLITE_DELAY_MS',
       'SAMPLES_PER_SOURCE',
+      'SHARD_BYTES',
       'SOURCES',
       'USER_AGENT',
       'allowed',
+      'archiveUrl',
       'build',
       'byRate',
       'conform',
@@ -25,6 +29,7 @@ describe('the public interface', () => {
       'disallowedPaths',
       'discover',
       'domainOf',
+      'evidencePaths',
       'expandLocator',
       'feedLinks',
       'fileDocuments',
@@ -45,6 +50,7 @@ describe('the public interface', () => {
       'partition',
       'prove',
       'rateOf',
+      'readEvidence',
       'readableText',
       'saturation',
       'scan',
@@ -61,6 +67,7 @@ describe('the public interface', () => {
       'wikiDocuments',
       'wikiPages',
       'withReadings',
+      'writeEvidence',
     ])
   })
 })

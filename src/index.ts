@@ -51,5 +51,14 @@ export { withReadings } from './readings.js'
 export { saturation } from './saturation.js'
 export type { Step } from './saturation.js'
 
-export { pageHolds, prove } from './verify.js'
+export { archiveUrl, pageHolds, prove } from './verify.js'
 export type { Checked, Outcome, Proof, Reader } from './verify.js'
+
+export {
+  EVIDENCE_DIR,
+  EVIDENCE_FILE,
+  SHARD_BYTES,
+  evidencePaths,
+  readEvidence,
+  writeEvidence,
+} from './store.js'
