@@ -26,7 +26,15 @@ process.stderr.write(`${LANGUAGE}: ${candidates.size} candidates\n`)
 const results = []
 for (const source of SOURCES) {
   const started = Date.now()
-  const result = await scan(source.id, source.documents(), candidates, fold)
+  let result
+  try {
+    result = await scan(source.id, source.documents(), candidates, fold)
+  } catch (cause) {
+    // Which collection failed, and which file it was reading. A truncated dump fails deep
+    // inside a decompressor with no clue as to whose it was, and hunting that down by hand has
+    // cost two builds already.
+    throw new Error(`${source.id} failed reading ${source.needs}: ${cause.message}`, { cause })
+  }
   results.push(result)
   process.stderr.write(
     `  ${source.id.padEnd(22)} ${String(result.hits.size).padStart(7)} words  ` +
