@@ -213,6 +213,31 @@ case-sensitive search against a page that renders its text lower-cased. **Check 
 the fold, not by eye.** A spot check that does not know what the fold knows will keep reporting
 faults that are not there, and the day it reports a real one nobody will believe it.
 
+## Proving it
+
+`verify.mjs` does what somebody who disbelieved us would do: take a word, expand each locator in
+its evidence into a URL, fetch that URL, and look for the word on the page. Through the fold,
+never by eye — a word ships under its folded key and almost never appears that way in print, and
+checking by eye has produced two false alarms already.
+
+The first real run, six Korean words, found something worth designing around:
+
+```
+3/6 words proved.  pages: 37 found, 3 absent, 6 unreachable
+
+  wiki:ko, wikisource:ko, tat   every locator resolved and held its word
+  fw2                           dead links and rewritten pages
+```
+
+**A citation to a stable id is permanent; a citation to a crawled URL decays.** A Wikipedia page
+id, a Tatoeba sentence id and a Gutenberg ebook number will resolve in ten years. A URL taken
+from a crawl was a snapshot of a page that has since moved, changed or gone — `book.daum.net`
+and a LEGO product page were dead within a few years of being crawled.
+
+That is a reason to prefer collections with durable identifiers where a language has them, and to
+read a failed verification carefully: a page that will not load says nothing about the word,
+while a page that loads without it is a finding.
+
 ## What lives where
 
 - **`blinkered-attestation`** (here): the workflow. Source registry, locator scheme, evidence
