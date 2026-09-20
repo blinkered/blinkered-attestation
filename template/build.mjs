@@ -1,0 +1,59 @@
+/**
+ * Builds this language's list from the evidence, and writes the three files it ships.
+ *
+ * Identical in every dictionary repository. Everything language-specific is in `sources.mjs`,
+ * so fifty-one repositories cannot drift into fifty-one definitions of "kept".
+ */
+import { readFileSync, writeFileSync } from 'node:fs'
+import { alphabetFor } from '@blinkered/engine'
+import { build, domainOf, scan, scanByDomain } from '@blinkered/attestation'
+import { LANGUAGE, SOURCES, HARVEST, COMMON_CUT } from './sources.mjs'
+
+const CANDIDATES =
+  process.env.CANDIDATES ??
+  `/Users/nick/work/tightline/blinkered/packages/words/data/${LANGUAGE}/words.txt`
+
+const candidates = new Set(
+  readFileSync(CANDIDATES, 'utf8')
+    .split('\n')
+    .slice(1)
+    .filter(Boolean)
+    .map((line) => line.split('\t')[0]),
+)
+const fold = alphabetFor(LANGUAGE).fold
+process.stderr.write(`${LANGUAGE}: ${candidates.size} candidates\n`)
+
+const results = []
+for (const source of SOURCES) {
+  const started = Date.now()
+  const result = await scan(source.id, source.documents(), candidates, fold)
+  results.push(result)
+  process.stderr.write(
+    `  ${source.id.padEnd(22)} ${String(result.hits.size).padStart(7)} words  ` +
+      `${String(result.tokens).padStart(12)} tokens  ${((Date.now() - started) / 1000).toFixed(0)}s\n`,
+  )
+}
+
+// Harvested pages become one collection per registrable domain, because a domain is a publisher
+// and every publisher is a family. A single `web` source would make ten sites one sighting.
+if (HARVEST !== undefined) {
+  const perDomain = await scanByDomain(HARVEST(), candidates, fold, domainOf)
+  results.push(...perDomain)
+  const words = new Set(perDomain.flatMap((result) => [...result.hits.keys()]))
+  process.stderr.write(
+    `  ${'harvest'.padEnd(22)} ${String(words.size).padStart(7)} words  ` +
+      `across ${String(perDomain.length)} domains\n`,
+  )
+}
+
+const today = new Date().toISOString().slice(0, 10)
+const built = build(LANGUAGE, today, candidates, results, COMMON_CUT)
+writeFileSync('ATTESTATIONS.tsv', built.attestations)
+writeFileSync('words.txt', built.words)
+writeFileSync('dropped.tsv', built.dropped)
+
+const total = built.kept + built.droppedCount
+process.stderr.write(
+  `\nkept ${built.kept} (${((100 * built.kept) / total).toFixed(1)}%)  ` +
+    `dropped ${built.droppedCount} (${((100 * built.droppedCount) / total).toFixed(1)}%)\n`,
+)

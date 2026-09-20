@@ -181,6 +181,14 @@ Only the final evidence file is ever tracked. Downloaded dumps and per-source in
 untracked `.cache/`, because git history full of large regenerable files is the failure mode this
 layout exists to avoid.
 
+**And the cache is deleted per language once its evidence is written.** The collections for one
+language run to tens of gigabytes — a Wikipedia dump is 1GB for Korean and 24GB for English, and
+a FineWeb-2 shard is 4.5GB apiece — so queueing six languages at once fills a disk, which is how
+this rule was learned. The evidence file is the artifact and the dumps are regenerable, so a
+language is scanned, its evidence committed, and its sources removed. A rebuild re-downloads,
+which is the right trade: rebuilds are deliberate and rare, and the evidence they would produce
+is already committed and checkable without them.
+
 ## Working on it
 
 ```sh
