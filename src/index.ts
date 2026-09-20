@@ -45,3 +45,5 @@ export {
 
 export { DISCOVERY_PATHS, discover, harvestSites, httpGet, sitePages } from './fetch.js'
 export type { Get, SiteHarvest } from './fetch.js'
+
+export { withReadings } from './readings.js'

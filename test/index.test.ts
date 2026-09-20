@@ -57,6 +57,7 @@ describe('the public interface', () => {
       'versesByChapter',
       'wikiDocuments',
       'wikiPages',
+      'withReadings',
     ])
   })
 })
