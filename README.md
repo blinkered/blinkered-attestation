@@ -400,3 +400,7 @@ is already committed and checkable without them.
 pnpm install
 pnpm check      # typecheck, format, and tests at 100% coverage
 ```
+
+This repository has no dependency on Blinkered itself. The templates it hands out import
+`@blinkered/engine` for the fold, but they run in the dictionary repositories, which declare it.
+Keeping it out of here is what lets the roll-up run in CI with nothing but this checkout.
