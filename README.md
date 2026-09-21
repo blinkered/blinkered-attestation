@@ -193,6 +193,31 @@ newspaper. Two guards: asset extensions are never requested, including behind a 
 and a response with no markup in it at all is not a page and is skipped. The second is the one
 that matters, because the first is a list somebody has to maintain.
 
+**A harvest cannot tell what language a page is in, and for some languages that matters.** It
+counts candidates, so it can never attest a word the list did not already propose — the danger is
+narrower and real: a candidate that is _also_ a word in another language can be confirmed by text
+in that other language. Tagalog is the case, because Philippine publishers code-switch and several
+write mostly in English. Measured per publisher, as the share of the words it contributed that
+also appear in Blinkered's English list:
+
+```
+  saksingayon.com    2,409 words   15.7%      a Tagalog tabloid
+  tribune.net.ph     1,044         42.4%
+  rappler.com          967         43.4%
+  gmanetwork.com       304         43.1%
+  abante.com.ph        230         50.9%
+  inquirer.net         127         71.7%      an English-language paper
+```
+
+The bound is the overlap between the two candidate lists: 1,048 words of Tagalog's 23,306 could
+be reached this way at all. The number separates the publishers cleanly enough to choose by, which
+is the practical answer — weight `DOMAINS` towards sites that write the language — and it is worth
+running for any language whose list overlaps a bigger neighbour's:
+
+```sh
+# per publisher: how much of what it contributed is shared with another language's list
+```
+
 **A publisher can own more than one domain, and nothing in a URL says so.** France Télévisions
 serves its journalism at `franceinfo.fr` and redirects `francetvinfo.fr` to it. Harvesting the
 second reached the first, and 250 pages of good French news arrived under a domain the family rule
