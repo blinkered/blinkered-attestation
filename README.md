@@ -193,6 +193,15 @@ newspaper. Two guards: asset extensions are never requested, including behind a 
 and a response with no markup in it at all is not a page and is skipped. The second is the one
 that matters, because the first is a list somebody has to maintain.
 
+**A publisher can own more than one domain, and nothing in a URL says so.** France Télévisions
+serves its journalism at `franceinfo.fr` and redirects `francetvinfo.fr` to it. Harvesting the
+second reached the first, and 250 pages of good French news arrived under a domain the family rule
+would have counted as a second, independent publisher. They were dropped rather than kept, which
+is the safe reading — an unrecognised sibling domain inflates independence, and independence is
+the whole rule — and the `DOMAINS` entry now names the domain the articles are actually on. There
+is no way to detect this automatically; it is a reason to check where a publisher's pages really
+live before adding it.
+
 **A harvest must stay on the publisher it is citing.** A sitemap or a feed names the fonts,
 scripts and trackers a page loads as readily as the article, and following those quietly turns a
 CDN into a family. French's harvest came back with three pages from Adobe Typekit, which duly
