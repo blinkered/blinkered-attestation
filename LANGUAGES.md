@@ -17,7 +17,7 @@ publisher.
 
 | language | candidates | proved | coverage  | families | returns stop at | evidence | conforms | published |
 | -------- | ---------- | ------ | --------- | -------- | --------------- | -------- | -------- | --------- |
-| `de`     | 36,493     | 35,725 | **97.9%** | 5        | 5               | 2 shards | yes      | no        |
+| `de`     | 36,493     | 35,725 | **97.9%** | 5        | 5               | 2 shards | yes      | yes       |
 | `en`     | not built  | —      | —         | —        | —               | —        | —        | no        |
 | `es`     | 201,655    | 96,350 | **47.8%** | 5        | 5               | one file | yes      | no        |
 | `fr`     | 144,105    | 69,104 | **48.0%** | 5        | 5               | one file | yes      | no        |
