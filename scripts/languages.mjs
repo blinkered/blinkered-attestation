@@ -23,7 +23,15 @@
 import { execFileSync } from 'node:child_process'
 import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { chart, conform, knee, readEvidence, saturation, sourceFor } from '../dist/src/index.js'
+import {
+  chart,
+  checkabilityOf,
+  conform,
+  knee,
+  readEvidence,
+  saturation,
+  sourceFor,
+} from '../dist/src/index.js'
 
 const HERE = new URL('..', import.meta.url).pathname
 const SIBLINGS = join(HERE, '..')
@@ -83,6 +91,21 @@ function fromDisk() {
     const evidence = readEvidence(root)
     const steps = saturation(evidence.words, familyOf, evidence.words.length)
     const failures = conform(list, evidence)
+
+    // Families somebody who disbelieved us could check for themselves, as against families whose
+    // locators are somebody else's crawl. It is a real difference in the strength of a language's
+    // evidence and it shows up in no coverage number.
+    const checkable = new Set()
+    for (const word of evidence.words) {
+      for (const attestation of word.attestations) {
+        try {
+          const spec = sourceFor(attestation.source)
+          if (checkabilityOf(spec) !== 'crawled') checkable.add(spec.family)
+        } catch {
+          // An unregistered source is a conformance failure, already reported above.
+        }
+      }
+    }
     return {
       tag,
       published,
@@ -90,6 +113,7 @@ function fromDisk() {
       candidates: evidence.words.length,
       shipped: list.split('\n').filter((line) => line !== '').length - 1,
       families: steps.length,
+      checkable: checkable.size,
       knee: knee(steps)?.families ?? null,
       conforms: failures.length === 0,
       shards: existsSync(join(root, 'attestations'))
@@ -151,6 +175,7 @@ async function fromGitHub() {
         candidates: curve.candidates,
         shipped: curve.shipped,
         families: curve.families,
+        checkable: curve.checkable ?? null,
         knee: curve.knee,
         conforms: curve.conforms ?? null,
         shards: null,
@@ -201,6 +226,7 @@ writeFileSync(
         candidates: row.built ? row.candidates : null,
         shipped: row.built ? row.shipped : null,
         families: row.built ? row.families : null,
+        checkable: row.built ? (row.checkable ?? null) : null,
         knee: row.built ? row.knee : null,
         steps: row.steps.map((step) => ({
           families: step.families,
@@ -227,7 +253,7 @@ const table = rows.map((row) => {
   const conforms = row.conforms === null ? '—' : row.conforms ? 'yes' : '**NO**'
   return (
     `| \`${row.tag}\` | ${row.candidates.toLocaleString()} | ${proved.toLocaleString()} | ` +
-    `**${coverage}** | ${String(row.families)} | ${stops} | ${conforms} | ` +
+    `**${coverage}** | ${String(row.families)} | ${row.checkable ?? '—'} | ${stops} | ${conforms} | ` +
     `${row.published ? 'yes' : 'no'} |`
   )
 })
@@ -255,9 +281,15 @@ the rule needs three; a curve that climbs steeply at three and then flattens has
 its families can see, and a curve still climbing at twenty has more to gain from another
 publisher.
 
-| language | candidates | proved | coverage | families | returns stop at | conforms | published |
-| --- | --- | --- | --- | --- | --- | --- | --- |
+| language | candidates | proved | coverage | families | checkable | returns stop at | conforms | published |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
 ${table.join('\n')}
+
+**Checkable** is how many of a language's families somebody who disbelieved us could confirm by
+fetching: a stable identifier, or a page we fetched ourselves. The rest are crawls somebody else
+made, where the document holding the word is their published corpus rather than the web. Russian
+passes the rule on four families and only two are checkable; Korean's twenty-three are all but one.
+That difference is invisible in a coverage number and is the thing a sceptic would attack.
 
 **Coverage is not a grade.** It is the share of somebody else's dictionary we could independently
 prove, and a big dictionary full of inflected forms will score lower than a small one of ordinary

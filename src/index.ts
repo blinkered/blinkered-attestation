@@ -1,5 +1,12 @@
-export { SOURCES, domainOf, expandLocator, sourceFor, validateSourceId } from './registry.js'
-export type { LocatorKind, SourceSpec } from './registry.js'
+export {
+  SOURCES,
+  checkabilityOf,
+  domainOf,
+  expandLocator,
+  sourceFor,
+  validateSourceId,
+} from './registry.js'
+export type { Checkability, LocatorKind, SourceSpec } from './registry.js'
 
 export { SAMPLES_PER_SOURCE, digestOf, formatEvidence, parseEvidence } from './evidence.js'
 export type { Attestation, EvidenceFile, WordEvidence } from './evidence.js'

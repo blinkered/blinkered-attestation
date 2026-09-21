@@ -10,6 +10,7 @@
  */
 import { readFileSync, writeFileSync } from 'node:fs'
 import {
+  checkabilityOf,
   conform,
   knee as kneeOf,
   readEvidence,
@@ -32,6 +33,28 @@ const familyOf = (source) => {
 }
 
 const steps = saturation(evidence.words, familyOf, total)
+
+/**
+ * How many of this language's families a sceptic could check for themselves.
+ *
+ * A family whose locators are somebody else's crawl cannot be confirmed from the web — the
+ * document holding the word is their corpus file. That is a real difference in how strong a
+ * language's evidence is, and it shows up in no coverage number: Russian passes the rule on four
+ * families and two of them are crawls.
+ */
+const checkable = new Set()
+const crawled = new Set()
+for (const word of evidence.words) {
+  for (const attestation of word.attestations) {
+    let spec
+    try {
+      spec = sourceFor(attestation.source)
+    } catch {
+      continue
+    }
+    ;(checkabilityOf(spec) === 'crawled' ? crawled : checkable).add(spec.family)
+  }
+}
 
 // The point of diminishing returns, stated rather than left to the eye. The threshold lives in
 // `@blinkered/attestation` so that fifty-one repositories cannot answer one question fifty-one
@@ -57,6 +80,11 @@ The first two families keep nothing, which is not padding — it is the shape of
 three independent sources.
 
 Candidates: ${total.toLocaleString()}. Shipped: ${shipped.toLocaleString()}.
+
+Of ${String(steps.length)} families, **${String(checkable.size)} can be checked by fetching** —
+a stable identifier or a page we fetched ourselves. The other ${String(crawled.size)} are crawls
+somebody else made, whose locators record where they found the sentence; the document that holds
+it is their published corpus, not the web.
 
 | families | added | kept | coverage | gained |
 | --- | --- | --- | --- | --- |
@@ -87,6 +115,7 @@ writeFileSync(
       // the roll-up, the chart, anyone — never has to take the number on trust.
       conforms: conform(list, evidence).length === 0,
       families: steps.length,
+      checkable: checkable.size,
       knee: knee === undefined ? null : knee.families,
       steps: steps.map((step) => ({
         families: step.families,

@@ -151,7 +151,9 @@
       <p class="lede">
         How much of its own candidate list each language could independently prove, against the
         number of independent families it took. The first two families of every language keep
-        nothing, because the rule needs three.
+        nothing, because the rule needs three. <b>Checkable</b> counts the families somebody who
+        disbelieved us could confirm by fetching; the rest are crawls somebody else made, where the
+        document holding the word is their corpus rather than the web.
       </p>
       <p id="status">Loading…</p>
 
@@ -169,6 +171,7 @@
             <th>proved</th>
             <th>coverage</th>
             <th>families</th>
+            <th>checkable</th>
             <th>returns stop</th>
             <th>conforms</th>
             <th>curve</th>
@@ -468,15 +471,16 @@
                 proved.toLocaleString(),
                 `${((100 * proved) / one.candidates).toFixed(1)}%`,
                 one.families,
+                one.checkable ?? '—',
                 one.knee ?? 'still paying',
                 one.conforms ? 'yes' : 'NO',
                 one.live ? 'live' : 'snapshot',
               ]
-            : [one.tag, 'not built', '—', '—', '—', '—', '—', '—']
+            : [one.tag, 'not built', '—', '—', '—', '—', '—', '—', '—']
           for (const [index, value] of cells.entries()) {
             const cell = document.createElement('td')
             cell.textContent = value
-            if (index === 6 && value === 'NO') cell.className = 'bad'
+            if (index === 7 && value === 'NO') cell.className = 'bad'
             row.append(cell)
           }
           tbody.append(row)

@@ -256,6 +256,30 @@ const DERIVED: Readonly<Record<string, (rest: string) => SourceSpec>> = {
   }),
 }
 
+/**
+ * How a sighting from this source can be checked by somebody who does not believe us.
+ *
+ * Not the same question as whether the sighting is real, and the difference is the one that
+ * decides how strong a language's evidence is:
+ *
+ * - **durable** — a stable identifier. A Wikipedia page id or a Gutenberg ebook number resolves
+ *   to the same document in ten years, so anybody can fetch it and look.
+ * - **live** — a page we fetched ourselves. Re-fetchable until the publisher moves it, and
+ *   recoverable from the archive for a while after.
+ * - **crawled** — a URL somebody else crawled. The document that holds the word is their corpus
+ *   file, which they publish; the URL is provenance. It cannot be confirmed from the web, because
+ *   the page it names has moved on.
+ *
+ * Russian passes the rule on four families and only two of them are checkable, which is a real
+ * difference from German's five and does not show up in any coverage number.
+ */
+export type Checkability = 'durable' | 'live' | 'crawled'
+
+export function checkabilityOf(spec: SourceSpec): Checkability {
+  if (spec.asOf !== undefined || spec.family === 'commoncrawl') return 'crawled'
+  return spec.id.startsWith('web:') ? 'live' : 'durable'
+}
+
 /** The four-digit year in a package name, if it has one, as a partial `SourceSpec`. */
 function yearIn(name: string): { asOf?: string } {
   const found = /(?:^|[^0-9])(19|20)([0-9]{2})(?:[^0-9]|$)/u.exec(name)

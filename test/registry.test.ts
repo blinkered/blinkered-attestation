@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { SOURCES, domainOf, expandLocator, sourceFor, validateSourceId } from '../src/registry.js'
+import {
+  SOURCES,
+  checkabilityOf,
+  domainOf,
+  expandLocator,
+  sourceFor,
+  validateSourceId,
+} from '../src/registry.js'
 
 describe('a collection that says when it looked', () => {
   it('reads the year out of a Leipzig package name, so its URLs are checked against it', () => {
@@ -31,6 +38,25 @@ describe('registrable domains with a two-label suffix', () => {
     expect(domainOf('https://www.punchng.com/a')).toBe('punchng.com')
     expect(domainOf('https://elcomercio.com.pe/a')).toBe('elcomercio.com.pe')
     expect(domainOf('https://www.gob.mx/a')).toBe('gob.mx')
+  })
+})
+
+describe('how a sighting can be checked', () => {
+  it('calls a stable identifier durable', () => {
+    expect(checkabilityOf(sourceFor('wiki:de'))).toBe('durable')
+    expect(checkabilityOf(sourceFor('gut'))).toBe('durable')
+    expect(checkabilityOf(sourceFor('tat'))).toBe('durable')
+  })
+
+  it('calls a page we fetched ourselves live', () => {
+    expect(checkabilityOf(sourceFor('web:lemonde.fr'))).toBe('live')
+  })
+
+  it('calls somebody else’s crawl crawled, however it names itself', () => {
+    // The document holding the word is their corpus file, not the URL. Leipzig says which year
+    // it looked; FineWeb-2 does not, and both are the same kind of citation.
+    expect(checkabilityOf(sourceFor('lz:deu_news_2021_1M'))).toBe('crawled')
+    expect(checkabilityOf(sourceFor('fw2'))).toBe('crawled')
   })
 })
 

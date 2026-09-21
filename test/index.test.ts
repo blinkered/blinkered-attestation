@@ -24,6 +24,7 @@ describe('the public interface', () => {
       'build',
       'byRate',
       'chart',
+      'checkabilityOf',
       'conform',
       'crawlRows',
       'digestOf',

@@ -11,6 +11,7 @@
       "candidates": 36493,
       "shipped": 35725,
       "families": 5,
+      "checkable": 4,
       "knee": 5,
       "steps": [
         {
@@ -59,6 +60,7 @@
       "candidates": null,
       "shipped": null,
       "families": null,
+      "checkable": null,
       "knee": null,
       "steps": []
     },
@@ -71,6 +73,7 @@
       "candidates": 201655,
       "shipped": 99587,
       "families": 23,
+      "checkable": 22,
       "knee": 5,
       "steps": [
         {
@@ -245,6 +248,7 @@
       "candidates": 144105,
       "shipped": 69123,
       "families": 6,
+      "checkable": 5,
       "knee": 5,
       "steps": [
         {
@@ -300,6 +304,7 @@
       "candidates": 191188,
       "shipped": 11448,
       "families": 3,
+      "checkable": 3,
       "knee": null,
       "steps": [
         {
@@ -334,6 +339,7 @@
       "candidates": 38467,
       "shipped": 17465,
       "families": 23,
+      "checkable": 22,
       "knee": 5,
       "steps": [
         {
@@ -508,6 +514,7 @@
       "candidates": 424352,
       "shipped": 210392,
       "families": 4,
+      "checkable": 2,
       "knee": null,
       "steps": [
         {
@@ -549,6 +556,7 @@
       "candidates": 23306,
       "shipped": 9247,
       "families": 6,
+      "checkable": 2,
       "knee": 6,
       "steps": [
         {

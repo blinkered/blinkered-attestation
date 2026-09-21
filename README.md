@@ -411,6 +411,25 @@ Nothing contradicted. Every word cleared three families on stable identifiers al
 makes the fifty-six unconfirmable ones tolerable: Leipzig is why German has the _breadth_ it has,
 and it is never the reason a word survives the rule on its own.
 
+Russian reads differently again, and worse: **1 of 4 words proved**, with 19 pages found, 2 in the
+archive, 1 absent and 13 unreachable. Not because its evidence is thin — it passes the rule on
+four families — but because two of those four are crawls. Confirming a Wikipedia and a Wikisource
+gives one family, so a Russian word can reach at most two checkable families however many pages
+resolve. The rule is satisfied and a sceptic can only get halfway to satisfying themselves.
+
+That is now a number in every language's curve and in the roll-up:
+
+```
+  ko   23 families   22 checkable      twenty publishers we fetched ourselves
+  es   23            22
+  fr    6             5
+  de    5             4
+  ru    4             2      ← published, and the weakest evidence we ship
+```
+
+Russian's twenty-publisher harvest is therefore not only a coverage win. It is the difference
+between evidence somebody can check and evidence they have to take our word for.
+
 Korean, whose families are mostly publishers we fetched ourselves, reads differently — 4 of 4
 proved, 78 pages found and 10 absent, every absence a news site's index page rather than an
 article. An index page changes daily, and it is the one kind of harvested URL worth not citing.
