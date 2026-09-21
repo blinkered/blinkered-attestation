@@ -104,9 +104,16 @@ function line(evidence: WordEvidence): string {
   const counts = sorted.map((attestation) => String(attestation.count)).join(',')
   const locators = sorted
     .flatMap((attestation) =>
-      attestation.locators
-        .slice(0, SAMPLES_PER_SOURCE)
-        .map((locator) => `${attestation.source}:${locator}`),
+      attestation.locators.slice(0, SAMPLES_PER_SOURCE).map((locator) => {
+        // The format spends spaces separating locators, so one cannot contain a space: it would
+        // split in two and each half would be read as a citation. Two thirds of Internet Archive
+        // filenames have spaces in them, so this is a live hazard rather than a theoretical one,
+        // and a corrupted citation is worse than a refused build.
+        if (locator.includes(' ')) {
+          throw new Error(`${evidence.word} has a locator with a space in it: ${locator}`)
+        }
+        return `${attestation.source}:${locator}`
+      }),
     )
     .join(' ')
   return `${evidence.word}\t${sources}\t${counts}\t${locators}`

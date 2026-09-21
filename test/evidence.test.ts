@@ -229,3 +229,14 @@ describe('how much text each collection held', () => {
     expect(() => parseEvidence(bad)).toThrow(/malformed total/u)
   })
 })
+
+describe('a locator that would split in two', () => {
+  it('is refused, because the format spends spaces as separators', () => {
+    // Two thirds of Internet Archive text filenames contain spaces. One reaching the file would
+    // become two citations, each pointing nowhere, and nothing downstream would notice.
+    const risky: WordEvidence[] = [
+      { word: 'SCHADE', attestations: [{ source: 'ia', count: 1, locators: ['item/a book.txt'] }] },
+    ]
+    expect(() => formatEvidence('de', '2026-09-21', risky)).toThrow(/space in it/u)
+  })
+})

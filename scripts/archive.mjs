@@ -17,7 +17,7 @@
  *
  *   node scripts/archive.mjs ru russian 2000
  */
-import { existsSync, mkdirSync, readdirSync, writeFileSync } from 'node:fs'
+import { appendFileSync, existsSync, mkdirSync, readdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { USER_AGENT } from '../dist/src/index.js'
 
@@ -91,6 +91,11 @@ for (const id of ids) {
   if (content.length < 20_000) continue
 
   writeFileSync(join(OUT, `${id}.txt`), content)
+  // The text file is rarely named after the item — none of twelve sampled were — so a citation
+  // built from the id alone points at the catalogue page, which holds no word of the book. That
+  // is the defect Gutenberg had, and verification would report every book absent. The name is
+  // recorded here so a locator can name the text itself.
+  appendFileSync(join(OUT, 'files.tsv'), `${id}\t${text.name}\n`)
   saved += 1
   bytes += content.length
   if (saved % 50 === 0) {

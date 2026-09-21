@@ -308,7 +308,9 @@ const FIXED: readonly SourceSpec[] = [
     'internetarchive',
     'Internet Archive',
     'Internet Archive contributors',
-    'https://archive.org/details/{id}',
+    // The text, not the catalogue page. A locator is `<item>/<file>`, so this expands to the
+    // file we actually read; trimming it back to the item gives a person the book to look at.
+    'https://archive.org/download/{id}',
   ),
   template(
     'tat',
