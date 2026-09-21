@@ -21,6 +21,13 @@ describe('where a dump came from', () => {
     expect(dumpUrl('zh-yuewiki.xml.bz2')).toContain('/zh-yuewiki/latest/')
   })
 
+  it('finds no extension in a name that has none', async () => {
+    // A Leipzig package is a directory. It never reaches the size check, and if it did there
+    // would be nothing to compare.
+    const bare = await checkDump('deu_news_2024_1M', 1, says(2), 'https://x/deu_news_2024_1M')
+    expect(bare.verdict).toBe('truncated')
+  })
+
   it('says nothing about a file that is not a Wikimedia dump', () => {
     expect(dumpUrl('fineweb2-jpn.parquet')).toBeNull()
     expect(dumpUrl('deu_sentences.tsv')).toBeNull()
