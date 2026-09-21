@@ -598,6 +598,13 @@ has arrived, then fails as a CRC error that reads exactly like a corrupt file. C
 against the server's `content-length`, or wait for the download to report done — never judge by
 the file existing and looking big enough.
 
+**But not while a language might still gain a family.** Korean's dumps were deleted the moment
+its evidence was committed, by the rule below, and then its drop list said sixteen thousand words
+— forty-four percent of its list — were one family short. Adding that family means rebuilding, and
+rebuilding means every one of its collections back, so the deletion bought a few gigabytes for an
+hour and cost a re-download. A language is finished when its drop list has stopped suggesting
+anything, not when its first build passes.
+
 **And the cache is deleted per language once its evidence is written.** The collections for one
 language run to tens of gigabytes — a Wikipedia dump is 1GB for Korean and 24GB for English, and
 a FineWeb-2 shard is 4.5GB apiece — so queueing six languages at once fills a disk, which is how

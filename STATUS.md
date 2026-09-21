@@ -10,6 +10,7 @@ and what to do next.
 - `blinkered-dictionary-de` — 35,725 words, 97.9% of its candidates, five families.
 - `blinkered-dictionary-ko` — 17,465 words, 45.4%, twenty-three families.
 - `blinkered-dictionary-ru` — 210,392 words, 49.6%, four families and still climbing.
+- `blinkered-dictionary-fr` — 71,064 words, 49.3%, fourteen families, thirteen checkable.
 
 All four are **public**, which is the stronger form of the claim: the evidence is there to be
 argued with. The chart is served from this repository at
@@ -80,18 +81,20 @@ free, which is why the German rebuild waits behind the Spanish and French ones.
 
 ## The build queue
 
-Running unattended, in order of what each is worth. Each build waits for its own harvest to drop
-`searched.tsv.harvesting`, which the build refuses to start without.
+Running unattended in `/tmp/run.sh`, ordered by what each build is worth. Each waits for its own
+harvest to release `searched.tsv.harvesting`, and waits again if `build.mjs` refuses because a
+dump is still downloading.
 
 ```
-fr  rebuilding with its converted harvest        /tmp/fr-rebuild.log
-de  waits for fr, then for dewiki to finish      /tmp/de-rebuild.log
-es  waits for de; drops a CDN from its record    /tmp/es-rebuild.log
-tl  ru  ja  en  in that order                    /tmp/queue.log
+ko  16,800 words one family short — literary tier added, dumps re-downloading
+ru  194,490 one family short, and only 2 of 4 families checkable
+es  40,172 one family short
+tl  also clears its stale source ids
+ja  with FineWeb-2 and the Sudachi harvest
+fr  de  en
 ```
 
-Harvests run alongside: `/tmp/{ru,tl,ja,en}-harvest-v2.log`. French's is stopped until its build
-finishes, because the two must not touch `searched.tsv` at once.
+Harvests run alongside, all with a literary tier: `/tmp/{de,en,es,fr,ja,ko,ru,tl}-harvest-v2.log`.
 
 ## What to do next, in order
 
