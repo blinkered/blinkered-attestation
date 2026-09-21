@@ -40,24 +40,45 @@ language, each needing an accepted board with a six-tile word.
 ## Running in the background — all of this is in /tmp and will not survive a reboot
 
 ```
-bash /tmp/watchdog.sh     every 60s: restarts a dead downloader with the right collection,
-                          marks an exhausted one done, warns under 5GB disk
-/tmp/refold.sh            refolds books into ru, ko, en and pushes; en in progress
+watchdog2.sh              every 60s: restarts a dead downloader with the right collection,
+                          marks an exhausted one done, warns under 5GB disk, and reports a
+                          refold that failed or stopped conforming
+/tmp/refold.sh            first refold pass: ru, ko, en
+refold2.sh                second pass: all eight, and regenerates the roll-up after each push
+retire-en.sh              waits for English's push, then retires its 27GB of dumps
 /tmp/ia-<lang>.log        eight book downloaders
-/tmp/names-<lang>.log     backfilling Archive text filenames
 ```
 
-Rebuild them from this file if they are gone. Nothing is lost if they die — every language is
-already published and conforming; the downloads only make the next refold better.
+The first three are in this session's scratchpad rather than `/tmp`; the point either way is that
+none of it survives a reboot. Rebuild them from this file if they are gone. Nothing is lost if they
+die — every language is already published and conforming; the downloads only make the next refold
+better.
 
 ## The last mile per language
 
 1. **More books.** Every language gains from them and none has finished downloading. A refold is
-   seconds, because the evidence records what every other collection held.
-2. **French** lost its shelf to a bug and is at ~90 books of 300. It will recover on its own.
+   seconds, because the evidence records what every other collection held — for every language
+   whose downloads have been retired. English has not been, so its refold costs an hour, almost
+   all of it re-deriving `wiki:en` numbers the record already holds. That is the argument for
+   retiring a language the moment it is pushed, not eventually.
+2. **French** lost its shelf to a bug, and has recovered: 279 books and still fetching.
 3. **Japanese** is the thinnest at 18.1% and the most expensive to rebuild — every collection goes
    through Sudachi. Its books are worth the most per unit of work.
 4. **Recalibrate**, then take the lists to `blinkered`.
+
+## Book citations name the text, not the catalogue page
+
+`https://archive.org/details/<id>` is the catalogue page and holds no word of the book, so every
+book attestation pointing there would have failed verification for a reason that has nothing to do
+with whether the sighting was real. A locator is now `<id>/<filename>`, percent-encoded because two
+thirds of Archive filenames contain spaces and the evidence format spends spaces as separators.
+
+Refolding is how a language picks the fix up. `ru` and `ko` have it; the second pass covers the
+rest. To check whether a language still has the defect:
+
+```
+grep -o 'ia:[^ \t]*' <evidence> | grep -vc /      # anything but zero is the old form
+```
 
 ## The cache
 
