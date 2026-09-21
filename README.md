@@ -15,10 +15,20 @@ This repository is the other way round. A word ships because we can show it is r
 Dictionaries still have a job — they supply **candidates**, the words worth looking up. What
 earns a word its place is evidence, recorded per word, in a file anybody can argue with.
 
-**[How every language is going](https://blinkered.github.io/blinkered-attestation/)** — the live
-chart: every language's saturation curve on one pair of axes, read from each repository's own
-`curve.json` on its main branch. [`LANGUAGES.md`](LANGUAGES.md) is the same thing as a table,
-for reading on GitHub.
+## How every language is going
+
+[![Every language's saturation curve](curves.svg)](https://blinkered.github.io/blinkered-attestation/)
+
+How much of its own candidate list each language could independently prove, against the number of
+independent families it took. Redrawn every morning from the `curve.json` each language publishes
+on its own main branch, so this picture cannot drift from the repositories behind it. Click it for
+[the live chart](https://blinkered.github.io/blinkered-attestation/), which is the same data with
+the numbers attached; [`LANGUAGES.md`](LANGUAGES.md) is the same data as a table.
+
+The shapes are the finding. German goes vertical at its third family and is finished by its
+fifth. Korean reaches thirty-six percent on its third and then crawls for twenty more. Russian was
+still gaining thirty-six thousand words when it ran out of families, which is a curve cut off
+rather than a curve flattening.
 
 ## The rule
 
@@ -316,10 +326,15 @@ who finds them stale learns not to trust them — at which point the comparison 
 happening. They are generated, so keeping them current costs one command:
 
 ```sh
-pnpm roll                         # regenerate LANGUAGES.md, curves.svg, languages.json
-node scripts/languages.mjs de ko  # only these languages
-pnpm chart                        # regenerate, then serve the live page on :8765
+pnpm roll         # from the published repositories — this is what gets committed
+pnpm roll:local   # from the working copies here, including languages not yet published
+pnpm chart        # roll up locally, then serve the live page on :8765
 ```
+
+`pnpm roll` is also what the scheduled workflow runs, so the committed roll-up describes the
+published world and nothing else. A curve only one laptop can see does not belong in a README
+that invites people to check it. `pnpm roll:local` is for finding out where an unpublished
+language stands, and its output is not meant to be committed.
 
 `pnpm chart` exists because GitHub Pages will not serve a private repository on this plan. Once
 these repositories are public the page is live at

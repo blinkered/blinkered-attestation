@@ -9,11 +9,12 @@
  * than the shape this repository's `sources.mjs` happened to produce.
  */
 import { readFileSync, writeFileSync } from 'node:fs'
-import { knee as kneeOf, readEvidence, saturation, sourceFor } from '@blinkered/attestation'
+import { conform, knee as kneeOf, readEvidence, saturation, sourceFor } from '@blinkered/attestation'
 import { LANGUAGE } from './sources.mjs'
 
 const evidence = readEvidence('.')
-const shipped = readFileSync('words.txt', 'utf8').split('\n').length - 2
+const list = readFileSync('words.txt', 'utf8')
+const shipped = list.split('\n').length - 2
 const total = evidence.words.length
 
 const familyOf = (source) => {
@@ -75,6 +76,10 @@ writeFileSync(
       built: evidence.built,
       candidates: total,
       shipped,
+      // Whether this repository's list said only what its evidence supported at the moment the
+      // curve was measured. It travels with the curve so that a reader of curve.json alone —
+      // the roll-up, the chart, anyone — never has to take the number on trust.
+      conforms: conform(list, evidence).length === 0,
       families: steps.length,
       knee: knee === undefined ? null : knee.families,
       steps: steps.map((step) => ({

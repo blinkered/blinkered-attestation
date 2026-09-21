@@ -1,0 +1,47 @@
+# Keeps the chart in the README current without anybody remembering to run anything.
+#
+# The rule says a language repository updates this one before it is pushed, and that rule is
+# about the *method* — what was learned, what the workflow now is. The numbers should not need a
+# human at all: every language publishes its own curve.json, so redrawing the chart is a matter
+# of reading them. This does that on a schedule, when a language repository says it has changed,
+# and on demand.
+#
+# It reads only what the world can read — each published repository's main branch — so the chart
+# in the README shows exactly what a sceptic would find, and never a language whose evidence is
+# only on one laptop.
+name: Roll up the languages
+
+on:
+  schedule:
+    - cron: '17 6 * * *'
+  workflow_dispatch:
+  repository_dispatch:
+    types: [language-changed]
+
+permissions:
+  contents: write
+
+jobs:
+  roll:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: corepack enable && pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: node scripts/languages.mjs --remote
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Commit if the picture changed
+        run: |
+          if [ -z "$(git status --porcelain LANGUAGES.md curves.svg languages.json)" ]; then
+            echo "nothing moved"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add LANGUAGES.md curves.svg languages.json
+          git commit -m "Roll up the languages"
+          git push

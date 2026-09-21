@@ -14,8 +14,9 @@
     "format:check": "prettier --check .",
     "check": "pnpm typecheck && pnpm format:check && pnpm coverage",
     "attest": "tsc --build && node dist/src/main.js",
-    "roll": "node scripts/languages.mjs",
-    "chart": "node scripts/languages.mjs && python3 -m http.server 8765"
+    "roll": "node scripts/languages.mjs --remote",
+    "chart": "node scripts/languages.mjs && python3 -m http.server 8765",
+    "roll:local": "node scripts/languages.mjs"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "^2.1.8",

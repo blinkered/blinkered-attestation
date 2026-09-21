@@ -1,19 +1,24 @@
 /**
- * Reads every `blinkered-dictionary-*` beside this repository and writes the roll-up: the state
- * of each language, and all of their saturation curves on one pair of axes.
+ * The roll-up: the state of every language, and all of their saturation curves on one chart.
  *
- * The division of labour is deliberate and has not changed. A language's statistics are a fact
- * about that language and live in its own repository, measured from its own committed evidence.
- * This reads those repositories and reports them together, because "where do the returns stop"
- * is a question you can only answer by looking across languages, and there is nowhere else that
- * comparison can live.
+ * The division of labour has not changed. A language's statistics are a fact about that language
+ * and are measured in its own repository from its own committed evidence; this only puts the
+ * measurements side by side, because "where do the returns stop" is a question you can only
+ * answer by looking across languages and there is nowhere else that comparison can live.
  *
- * Nothing here is authoritative. If this disagrees with a language repository, the language
- * repository is right and this is stale — which is exactly why regenerating it is part of the
- * rule for pushing one.
+ * Two ways to collect them, and they disagree only in what they can see:
  *
- *   node scripts/languages.mjs        # every sibling repository
- *   node scripts/languages.mjs de ko  # only these
+ *   node scripts/languages.mjs           # from the sibling repositories on this machine
+ *   node scripts/languages.mjs de ko     # only these
+ *   node scripts/languages.mjs --remote  # from each published repository's main branch
+ *
+ * The local reader re-measures from the evidence, so it sees languages that are built and not
+ * yet committed. The remote reader fetches the `curve.json` each language publishes, so it sees
+ * exactly what the world sees and needs no corpora, no evidence and no checkout — which is what
+ * lets the scheduled workflow keep the chart in the README current without this machine.
+ *
+ * Nothing either of them writes is authoritative. If the roll-up disagrees with a language
+ * repository, the language repository is right and the roll-up is stale.
  */
 import { execFileSync } from 'node:child_process'
 import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
@@ -25,12 +30,9 @@ const SIBLINGS = join(HERE, '..')
 const PREFIX = 'blinkered-dictionary-'
 const ORG = 'blinkered'
 
-const asked = process.argv.slice(2)
-const tags = readdirSync(SIBLINGS)
-  .filter((name) => name.startsWith(PREFIX))
-  .map((name) => name.slice(PREFIX.length))
-  .filter((tag) => asked.length === 0 || asked.includes(tag))
-  .sort()
+const args = process.argv.slice(2)
+const remote = args.includes('--remote')
+const asked = args.filter((arg) => !arg.startsWith('--'))
 
 const familyOf = (source) => {
   try {
@@ -44,73 +46,124 @@ const familyOf = (source) => {
 function gitState(root) {
   // stderr goes nowhere: "no upstream configured" is the answer to the question being asked,
   // not a fault, and printing it eight times makes a clean run look broken.
-  const git = (...args) =>
-    execFileSync('git', ['-C', root, ...args], {
+  const git = (...more) =>
+    execFileSync('git', ['-C', root, ...more], {
       encoding: 'utf8',
       stdio: ['ignore', 'pipe', 'ignore'],
     }).trim()
   try {
-    const head = git('rev-parse', '--short', 'HEAD')
-    const subject = git('log', '-1', '--format=%s')
-    let published = false
+    git('rev-parse', 'HEAD')
     try {
-      // `@{upstream}` fails loudly when there is no upstream, which is the common case here and
-      // is not an error — it is the thing being reported.
-      published = git('rev-list', '--count', `${git('rev-parse', '@{upstream}')}..HEAD`) === '0'
+      return {
+        published: git('rev-list', '--count', `${git('rev-parse', '@{upstream}')}..HEAD`) === '0',
+      }
     } catch {
-      published = false
+      return { published: false }
     }
-    return { head, subject, published }
   } catch {
-    return { head: null, subject: 'not committed', published: false }
+    return { published: false }
   }
 }
 
-const rows = []
-const curves = []
+/** Every sibling repository on this machine, re-measured from its committed evidence. */
+function fromDisk() {
+  const tags = readdirSync(SIBLINGS)
+    .filter((name) => name.startsWith(PREFIX))
+    .map((name) => name.slice(PREFIX.length))
+    .filter((tag) => asked.length === 0 || asked.includes(tag))
+    .sort()
 
-for (const tag of tags) {
-  const root = join(SIBLINGS, `${PREFIX}${tag}`)
-  const words = join(root, 'words.txt')
-  const state = gitState(root)
+  return tags.map((tag) => {
+    const root = join(SIBLINGS, `${PREFIX}${tag}`)
+    const words = join(root, 'words.txt')
+    const published = gitState(root).published
+    if (!existsSync(words)) return { tag, published, built: false, steps: [] }
 
-  if (!existsSync(words)) {
-    rows.push({ tag, state, built: false })
-    continue
-  }
-
-  const list = readFileSync(words, 'utf8')
-  const shipped = list.split('\n').filter((line) => line !== '').length - 1
-  const evidence = readEvidence(root)
-  const steps = saturation(evidence.words, familyOf, evidence.words.length)
-  const failures = conform(list, evidence)
-
-  curves.push({ language: tag, steps })
-  rows.push({
-    tag,
-    state,
-    built: true,
-    candidates: evidence.words.length,
-    shipped,
-    families: steps.length,
-    knee: knee(steps),
-    conforms: failures.length === 0,
-    failures,
-    shards: (existsSync(join(root, 'attestations')) ? readdirSync(join(root, 'attestations')) : [])
-      .length,
+    const list = readFileSync(words, 'utf8')
+    const evidence = readEvidence(root)
+    const steps = saturation(evidence.words, familyOf, evidence.words.length)
+    const failures = conform(list, evidence)
+    return {
+      tag,
+      published,
+      built: true,
+      candidates: evidence.words.length,
+      shipped: list.split('\n').filter((line) => line !== '').length - 1,
+      families: steps.length,
+      knee: knee(steps)?.families ?? null,
+      conforms: failures.length === 0,
+      shards: existsSync(join(root, 'attestations'))
+        ? readdirSync(join(root, 'attestations')).length
+        : 0,
+      steps,
+    }
   })
-  process.stderr.write(
-    `${tag}: ${String(shipped)}/${String(evidence.words.length)} across ${String(steps.length)} families` +
-      `${failures.length === 0 ? '' : `  ${String(failures.length)} CONFORMANCE FAILURES`}\n`,
+}
+
+/** Every published repository, as the world sees it: the curve each one publishes. */
+async function fromGitHub() {
+  const headers = { accept: 'application/vnd.github+json' }
+  if (process.env.GITHUB_TOKEN) headers.authorization = `Bearer ${process.env.GITHUB_TOKEN}`
+  const listed = await fetch(`https://api.github.com/orgs/${ORG}/repos?per_page=100`, { headers })
+  if (!listed.ok) throw new Error(`listing ${ORG} failed: ${String(listed.status)}`)
+
+  const tags = (await listed.json())
+    .map((repo) => repo.name)
+    .filter((name) => name.startsWith(PREFIX))
+    .map((name) => name.slice(PREFIX.length))
+    .filter((tag) => asked.length === 0 || asked.includes(tag))
+    .sort()
+
+  return Promise.all(
+    tags.map(async (tag) => {
+      // Through the API rather than raw.githubusercontent, which serves from a CDN that holds
+      // a copy for several minutes and ignores a cache-busting query string. That staleness is
+      // harmless for the chart in a browser and not harmless here: a roll-up run straight after
+      // a push would redraw the previous curve and commit it as current.
+      const answer = await fetch(
+        `https://api.github.com/repos/${ORG}/${PREFIX}${tag}/contents/curve.json`,
+        { headers: { ...headers, accept: 'application/vnd.github.raw' } },
+      )
+      // A repository that exists and publishes no curve has not been measured yet, which is a
+      // state worth showing rather than an error worth stopping for.
+      if (!answer.ok) return { tag, published: true, built: false, steps: [] }
+      const curve = await answer.json()
+      return {
+        tag,
+        published: true,
+        built: true,
+        candidates: curve.candidates,
+        shipped: curve.shipped,
+        families: curve.families,
+        knee: curve.knee,
+        conforms: curve.conforms ?? null,
+        shards: null,
+        steps: curve.steps,
+      }
+    }),
   )
 }
+
+const rows = remote ? await fromGitHub() : fromDisk()
+for (const row of rows) {
+  process.stderr.write(
+    row.built
+      ? `${row.tag}: ${String(row.shipped)}/${String(row.candidates)} across ${String(row.families)} families` +
+          `${row.conforms === false ? '  CONFORMANCE FAILURES' : ''}\n`
+      : `${row.tag}: not built\n`,
+  )
+}
+
+const curves = rows
+  .filter((row) => row.steps.length > 0)
+  .map((row) => ({ language: row.tag, steps: row.steps }))
 
 writeFileSync(join(HERE, 'curves.svg'), chart(curves))
 
 // The manifest the live chart reads. It carries a snapshot of every curve, so `index.html` draws
-// something the moment it loads and while the language repositories are private; once they are
-// public the page refetches each `curve.json` from its own main branch and says which languages
-// came back live. Same data either way — this is the fallback, not the source of truth.
+// something the moment it loads; it then refetches each `curve.json` from its own main branch and
+// says which languages came back live. Same data either way — this is the starting point, not the
+// source of truth.
 writeFileSync(
   join(HERE, 'languages.json'),
   `${JSON.stringify(
@@ -120,22 +173,20 @@ writeFileSync(
       languages: rows.map((row) => ({
         tag: row.tag,
         repo: `${PREFIX}${row.tag}`,
-        published: row.state.published,
+        published: row.published,
         built: row.built,
         conforms: row.built ? row.conforms : null,
         candidates: row.built ? row.candidates : null,
         shipped: row.built ? row.shipped : null,
         families: row.built ? row.families : null,
-        knee: row.built && row.knee !== undefined ? row.knee.families : null,
-        steps: row.built
-          ? (curves.find((curve) => curve.language === row.tag)?.steps ?? []).map((step) => ({
-              families: step.families,
-              added: step.added,
-              kept: step.kept,
-              share: Number(step.share.toFixed(6)),
-              gained: step.gained,
-            }))
-          : [],
+        knee: row.built ? row.knee : null,
+        steps: row.steps.map((step) => ({
+          families: step.families,
+          added: step.added,
+          kept: step.kept,
+          share: Number(step.share.toFixed(6)),
+          gained: step.gained,
+        })),
       })),
     },
     null,
@@ -143,34 +194,36 @@ writeFileSync(
   )}\n`,
 )
 
-const count = (value) => (value === undefined ? '—' : value.toLocaleString())
 const table = rows.map((row) => {
-  if (!row.built) return `| \`${row.tag}\` | not built | — | — | — | — | — | — | no |`
-  const coverage = `${((100 * row.shipped) / row.candidates).toFixed(1)}%`
-  const stops = row.knee === undefined ? 'still paying' : `${String(row.knee.families)}`
-  const evidence = row.shards === 0 ? 'one file' : `${String(row.shards)} shards`
+  if (!row.built)
+    return `| \`${row.tag}\` | not built | — | — | — | — | — | — | ${row.published ? 'yes' : 'no'} |`
+  const proved = row.steps.at(-1).kept
+  const coverage = `${((100 * proved) / row.candidates).toFixed(1)}%`
+  const stops = row.knee === null ? 'still paying' : String(row.knee)
+  const evidence =
+    row.shards === null ? '—' : row.shards === 0 ? 'one file' : `${String(row.shards)} shards`
+  const conforms = row.conforms === null ? '—' : row.conforms ? 'yes' : '**NO**'
   return (
-    `| \`${row.tag}\` | ${count(row.candidates)} | ${count(row.shipped)} | **${coverage}** | ` +
-    `${String(row.families)} | ${stops} | ${evidence} | ` +
-    `${row.conforms ? 'yes' : '**NO**'} | ${row.state.published ? 'yes' : 'no'} |`
+    `| \`${row.tag}\` | ${row.candidates.toLocaleString()} | ${proved.toLocaleString()} | ` +
+    `**${coverage}** | ${String(row.families)} | ${stops} | ${conforms} | ` +
+    `${row.published ? 'yes' : 'no'} |`
   )
 })
 
-const worst = rows.filter((row) => row.built && !row.conforms)
+const worst = rows.filter((row) => row.built && row.conforms === false)
 
 writeFileSync(
   join(HERE, 'LANGUAGES.md'),
   `# The languages, and where each one stands
 
-Generated by \`node scripts/languages.mjs\`, which reads every \`blinkered-dictionary-*\` beside
-this repository. **Nothing here is authoritative**: each language's numbers are measured in its
-own repository from its own committed evidence, and this is the roll-up. If the two disagree,
-the language repository is right and this is stale.
+**The live version of this is [the chart](https://${ORG}.github.io/blinkered-attestation/)**, which
+reads each language's \`curve.json\` from its own main branch. This file is the same thing as a
+table, for reading on GitHub, and is regenerated by \`pnpm roll\`. Regenerating both is part of
+[the rule for pushing a language](README.md#the-rule-for-changing-a-language).
 
-**The live version of this is [the chart](https://blinkered.github.io/blinkered-attestation/)**,
-which reads each language's \`curve.json\` from its own main branch and so cannot go stale between
-roll-ups. This file is the same thing as a table, for reading on GitHub. Regenerating both is part
-of [the rule for pushing a language](README.md#pushing-a-language).
+**Nothing here is authoritative**: each language's numbers are measured in its own repository from
+its own committed evidence. If the two disagree, the language repository is right and this is
+stale.
 
 ![Every language's saturation curve](curves.svg)
 
@@ -180,8 +233,8 @@ the rule needs three; a curve that climbs steeply at three and then flattens has
 its families can see, and a curve still climbing at twenty has more to gain from another
 publisher.
 
-| language | candidates | proved | coverage | families | returns stop at | evidence | conforms | published |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| language | candidates | proved | coverage | families | returns stop at | conforms | published |
+| --- | --- | --- | --- | --- | --- | --- | --- |
 ${table.join('\n')}
 
 **Coverage is not a grade.** It is the share of somebody else's dictionary we could independently
@@ -193,11 +246,11 @@ ${
   worst.length === 0
     ? 'Every built language conforms: each ships only what its evidence supports.'
     : `**${String(worst.length)} language${worst.length === 1 ? ' fails' : 's fail'} conformance and must not be published:** ` +
-      worst.map((row) => `\`${row.tag}\` (${row.failures[0].check})`).join(', ') +
+      worst.map((row) => `\`${row.tag}\``).join(', ') +
       '.'
 }
 
-Generated ${new Date().toISOString().slice(0, 10)}.
+Generated ${new Date().toISOString().slice(0, 10)} ${remote ? 'from the published repositories' : 'from the working copies on one machine'}.
 `,
 )
 
