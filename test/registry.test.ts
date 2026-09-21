@@ -1,9 +1,29 @@
 import { describe, expect, it } from 'vitest'
 import { SOURCES, domainOf, expandLocator, sourceFor, validateSourceId } from '../src/registry.js'
 
+describe('a collection that says when it looked', () => {
+  it('reads the year out of a Leipzig package name, so its URLs are checked against it', () => {
+    expect(sourceFor('lz:deu_news_2021_1M').asOf).toBe('2021')
+    expect(sourceFor('lz:deu_newscrawl-public_2018_1M').asOf).toBe('2018')
+  })
+
+  it('says nothing about a package with no year in its name', () => {
+    // Then its locators are checked as they stand, which is the safe reading: a source that does
+    // not say when it looked cannot have an archive year invented for it.
+    expect(sourceFor('lz:deu_mixed_1M').asOf).toBeUndefined()
+  })
+
+  it('leaves permanent citations alone', () => {
+    expect(sourceFor('wiki:de').asOf).toBeUndefined()
+    expect(sourceFor('gut').asOf).toBeUndefined()
+  })
+})
+
 describe('the source registry', () => {
   it('expands a short id into a link somebody can open', () => {
-    expect(expandLocator(sourceFor('gut'), '21034')).toBe('https://www.gutenberg.org/ebooks/21034')
+    expect(expandLocator(sourceFor('gut'), '21034')).toBe(
+      'https://www.gutenberg.org/cache/epub/21034/pg21034.txt',
+    )
     expect(expandLocator(sourceFor('wiki:de'), '9912847')).toBe(
       'https://de.wikipedia.org/?curid=9912847',
     )

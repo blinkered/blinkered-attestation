@@ -44,7 +44,7 @@ describe('proving a word', () => {
       fold,
       pages({
         'https://de.wikipedia.org/?curid=2129': 'wirklich schade',
-        'https://www.gutenberg.org/ebooks/21034': 'ach, schade!',
+        'https://www.gutenberg.org/cache/epub/21034/pg21034.txt': 'ach, schade!',
         'https://tatoeba.org/en/sentences/show/230': 'Es ist schade, dass …',
       }),
       3,
@@ -58,7 +58,7 @@ describe('proving a word', () => {
     const proof = await prove(schade, fold, pages({}), 3)
     expect(proof.checked.map((check) => check.url)).toEqual([
       'https://de.wikipedia.org/?curid=2129',
-      'https://www.gutenberg.org/ebooks/21034',
+      'https://www.gutenberg.org/cache/epub/21034/pg21034.txt',
       'https://tatoeba.org/en/sentences/show/230',
     ])
   })
@@ -69,7 +69,7 @@ describe('proving a word', () => {
       fold,
       pages({
         'https://de.wikipedia.org/?curid=2129': 'wirklich schade',
-        'https://www.gutenberg.org/ebooks/21034': 'etwas ganz anderes',
+        'https://www.gutenberg.org/cache/epub/21034/pg21034.txt': 'etwas ganz anderes',
         'https://tatoeba.org/en/sentences/show/230': 'Es ist schade, dass …',
       }),
       3,
@@ -83,6 +83,40 @@ describe('proving a word', () => {
     const proof = await prove(schade, fold, pages({}), 3)
     expect(proof.checked.every((check) => check.outcome === 'unreachable')).toBe(true)
     expect(proof.holds).toBe(false)
+  })
+
+  it('checks a dated locator against the archive of its year, not against the page today', async () => {
+    // A Leipzig news URL from 2021 cites that page in 2021. Today's version of it is a different
+    // article, and finding the word missing from it says nothing about the sighting.
+    const crawled: WordEvidence = {
+      word: 'SCHADE',
+      attestations: [{ source: 'lz:deu_news_2021_1M', count: 5, locators: ['https://news/x'] }],
+    }
+    const proof = await prove(
+      crawled,
+      fold,
+      pages({
+        'https://web.archive.org/web/2021/https://news/x': 'wirklich schade',
+        'https://news/x': 'ein ganz anderer Artikel',
+      }),
+      1,
+    )
+    expect(proof.checked[0]?.outcome).toBe('archived')
+    expect(proof.holds).toBe(true)
+  })
+
+  it('falls back to the live page when the archive never saw it, and trusts it less', async () => {
+    const crawled: WordEvidence = {
+      word: 'SCHADE',
+      attestations: [{ source: 'lz:deu_news_2021_1M', count: 5, locators: ['https://news/y'] }],
+    }
+    const held = await prove(crawled, fold, pages({ 'https://news/y': 'schade' }), 1)
+    expect(held.checked[0]?.outcome).toBe('found')
+
+    // Neither the archive nor the live page shows it: that is a page we could not read as it was,
+    // not a page that contradicted us.
+    const gone = await prove(crawled, fold, pages({ 'https://news/y': 'anderer Text' }), 1)
+    expect(gone.checked[0]?.outcome).toBe('unreachable')
   })
 
   it('counts families rather than pages, like the rule it is checking', async () => {
@@ -149,7 +183,7 @@ describe('the Internet Archive', () => {
     }
     const archiveOnly = pages({
       'https://de.wikipedia.org/?curid=1': 'schade',
-      'https://www.gutenberg.org/ebooks/2': 'schade',
+      'https://www.gutenberg.org/cache/epub/2/pg2.txt': 'schade',
       // The live Tatoeba page is gone; the archive has it.
       'https://web.archive.org/web/2020/https://tatoeba.org/en/sentences/show/3': 'es ist schade',
     })

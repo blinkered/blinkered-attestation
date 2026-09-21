@@ -52,6 +52,18 @@ export interface SourceSpec {
    * they are the only ones anybody looked for.
    */
   readonly ranks?: false
+  /**
+   * The year this collection's locators describe, for a collection that cites the live web as it
+   * was when somebody crawled it.
+   *
+   * A Leipzig news URL from 2021 is a citation to that page *in 2021*. Fetching it today gets
+   * whatever the publisher has there now — usually a different article, often a consent wall —
+   * and finding the word absent says nothing at all about the sighting. So a source that says
+   * when it looked is verified against the archive of that year, and the live page is the
+   * fallback rather than the authority. A source with no `asOf` cites something permanent and is
+   * checked as it stands.
+   */
+  readonly asOf?: string
 }
 
 /**
@@ -79,7 +91,8 @@ export function validateSourceId(id: string): void {
  */
 export function expandLocator(spec: SourceSpec, locator: string): string {
   if (spec.locator.kind === 'url') return locator
-  return spec.locator.template.replace('{id}', locator)
+  // Every occurrence, not the first: Gutenberg's plain-text URL names the book twice.
+  return spec.locator.template.replaceAll('{id}', locator)
 }
 
 const template = (
@@ -189,7 +202,11 @@ const DERIVED: Readonly<Record<string, (rest: string) => SourceSpec>> = {
       `https://${lang}.wikisource.org/?curid={id}`,
     ),
   // Every Leipzig package is one family: five years of the same crawler is not five opinions.
-  lz: (pkg) => urlSource(`lz:${pkg}`, 'leipzig', `Leipzig ${pkg}`, `Leipzig Corpora, ${pkg}`),
+  lz: (pkg) => ({
+    ...urlSource(`lz:${pkg}`, 'leipzig', `Leipzig ${pkg}`, `Leipzig Corpora, ${pkg}`),
+    // `deu_news_2021_1M` says when it was gathered, so its URLs are checked against that year.
+    ...yearIn(pkg),
+  }),
   ebible: (translation) =>
     template(
       `ebible:${translation}`,
@@ -206,6 +223,12 @@ const DERIVED: Readonly<Record<string, (rest: string) => SourceSpec>> = {
   }),
 }
 
+/** The four-digit year in a package name, if it has one, as a partial `SourceSpec`. */
+function yearIn(name: string): { asOf?: string } {
+  const found = /(?:^|[^0-9])(19|20)([0-9]{2})(?:[^0-9]|$)/u.exec(name)
+  return found === null ? {} : { asOf: `${found[1] as string}${found[2] as string}` }
+}
+
 /** Sources with nothing in their name to derive from. */
 const FIXED: readonly SourceSpec[] = [
   template(
@@ -213,7 +236,10 @@ const FIXED: readonly SourceSpec[] = [
     'gutenberg',
     'Project Gutenberg',
     'Project Gutenberg contributors',
-    'https://www.gutenberg.org/ebooks/{id}',
+    // The plain text, not the catalogue page. The catalogue page is what a person would want to
+    // look at and does not contain a word of the book, so citing it made every Gutenberg
+    // attestation fail verification against a page that was never the evidence.
+    'https://www.gutenberg.org/cache/epub/{id}/pg{id}.txt',
   ),
   template(
     'tat',

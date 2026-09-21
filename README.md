@@ -300,6 +300,19 @@ That is a reason to prefer collections with durable identifiers where a language
 read a failed verification carefully: a page that will not load says nothing about the word,
 while a page that loads without it is a finding.
 
+**Unless the citation is dated, in which case today's page is the wrong document.** A Leipzig news
+URL from 2021 cites that page _in 2021_; fetching it now gets whatever the publisher has there
+today, which is usually a different article. Checking it live and reporting the word absent is
+checking the wrong thing and calling it a failure. So a source whose locators are dated says so —
+Leipzig packages name their year — and is verified against the archive of that year, with the live
+page as the weaker fallback. German's first verification run failed five words out of six this
+way, every miss a Leipzig URL, and not one of them was a bad sighting.
+
+**And cite the thing you actually read.** Gutenberg locators pointed at the catalogue page, which
+is what a person would want to open and contains not one word of the book. Every Gutenberg
+attestation therefore failed verification against a page that was never the evidence. They point
+at the plain text now.
+
 ## Pushing a language
 
 A language repository becomes public when its **record is honest and checkable**, not when its

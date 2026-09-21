@@ -110,12 +110,18 @@ export async function prove(
 
     for (const locator of attestation.locators) {
       const url = expandLocator(spec, locator)
-      const live = await read(url)
+
+      // A source that says when it looked is checked against the archive of that year, because
+      // its locator cites the page as it was and today's version of a news URL is a different
+      // document. Everything else cites something permanent and is checked as it stands.
+      const first = spec.asOf === undefined ? url : archiveUrl(url, spec.asOf)
+      const live = await read(first)
 
       let outcome: Outcome
       if (live !== null) {
-        outcome = pageHolds(live, evidence.word, fold) ? 'found' : 'absent'
-      } else {
+        const holds = pageHolds(live, evidence.word, fold)
+        outcome = holds ? (spec.asOf === undefined ? 'found' : 'archived') : 'absent'
+      } else if (spec.asOf === undefined) {
         // Only when the live page is gone. A page that loaded and did not hold the word is a
         // finding, and going to the archive for a second opinion would bury it.
         const archived = await read(archiveUrl(url))
@@ -125,6 +131,11 @@ export async function prove(
             : pageHolds(archived, evidence.word, fold)
               ? 'archived'
               : 'absent'
+      } else {
+        // The archive has no snapshot from that year. The live page is then the only thing left
+        // to ask, and it is a weaker witness, so a miss on it is unreachable rather than absent.
+        const now = await read(url)
+        outcome = now !== null && pageHolds(now, evidence.word, fold) ? 'found' : 'unreachable'
       }
 
       if (outcome === 'found' || outcome === 'archived') proven.add(spec.family)
