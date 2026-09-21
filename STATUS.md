@@ -11,10 +11,13 @@ and what to do next.
 - `blinkered-dictionary-ko` — 17,465 words, 45.4%, twenty-three families.
 - `blinkered-dictionary-ru` — 210,392 words, 49.6%, four families and still climbing.
 
-All four are **private**. Going public is the stronger form of the claim and is the intent, but
-it publishes the candidate lists too — the evidence records every candidate, including the ones
-nothing attested, and those rows are somebody else's dictionary rather than our observation.
-Worth a decision before the flip.
+All four are **public**, which is the stronger form of the claim: the evidence is there to be
+argued with. The chart is served from this repository at
+<https://blinkered.github.io/blinkered-attestation/> and redrawn every morning by
+`.github/workflows/roll-up.yml`.
+
+**Verified, not just conforming.** German proves 4 words of 4 with 35 pages held and nothing
+contradicted; Korean 3 of 3 with 31 held. Both runs are reproducible with `pnpm verify --sample`.
 
 Everything else is built but unpublished, or not built. [LANGUAGES.md](LANGUAGES.md) has the
 current table; [the push rule](README.md#pushing-a-language) has what a language must clear
@@ -26,14 +29,20 @@ first.
   **not yet in the evidence**: the build finished forty minutes before the harvest did. German is
   at 97.9% without it, so this is a gain of at most a few hundred words and ten families on the
   curve, and it waits for the disk. Rebuilding needs `dewiki` re-downloaded.
-- **tl** — fails `conform`: its evidence still carries pre-migration source ids (`tlwiki`,
-  `ebibletl`). Needs its sources re-fetched and a rebuild. **Must not be published until then.**
-- **es**, **fr** — built at ~48% from five families, with harvests of 4,360 and 3,206 pages
-  waiting to be folded in. Both need their wiki dumps back.
-- **ja** — 6.0% from three families. Needs the FineWeb-2 `jpn_Jpan` shard (downloaded) and its
-  eighteen-publisher harvest.
-- **ru** — published at 49.6%, but its fourth family was still worth 36,739 words when it ran
-  out. Twenty publishers listed in `DOMAINS`, none harvested. The clearest remaining win.
+- **tl** — fails `conform` on pre-migration source ids. `sources.mjs` is fixed (`wiki:tl`,
+  `wikisource:tl`, `ebible:tglulb`) and it has 23 Filipino publishers harvesting now; needs a
+  rebuild. Its FineWeb-2 shard is not downloaded, so it will rebuild one family short.
+  **Must not be published until it conforms.**
+- **fr** — its `searched.tsv` held **verbatim article text** for 1,744 of its 3,206 pages, written
+  by the first version of the harvest. Converted in place to counts and checked: zero prose rows
+  remain, all 3,206 pages kept. It was never pushed, so nothing was published. Rebuilding.
+- **es** — building, with a clean 4,360-page harvest.
+- **ja** — 6.0% from three families. Its first harvest read 1,324 pages and found 1,436 words,
+  because the harvest matched text with a regular expression and the only thing that picks out of
+  a Japanese page is the katakana in the navigation bar. It re-harvests through Sudachi now.
+  FineWeb-2 `jpn_Jpan` is downloaded and waiting.
+- **ru** — published at 49.6%, and its fourth family was still worth 36,739 words when it ran out.
+  Twenty publishers harvesting now; a rebuild after that is the clearest remaining win.
 - **en** — not started. `enwiki` (25.7GB) and `enwikisource` (3.4GB) are cached and verified.
 
 ## Per-repo commands
@@ -71,14 +80,12 @@ free, which is why the German rebuild waits behind the Spanish and French ones.
 
 ## What to do next, in order
 
-1. **Spanish and French**, once their wiki dumps finish: rebuild with their harvests, regenerate
-   curves, roll up, push. Both sit at 48% with five families; Korean's harvest took it from 6.8%
-   to 45.4%.
-2. **Japanese**: rebuild with FineWeb-2 and the harvest.
-3. **Russian**: finish the build, measure, push.
-4. **Tagalog**: re-fetch, rebuild, fix the stale ids, push.
+1. **Spanish**: building. Then French's rebuild, already queued behind it.
+2. **Russian**: rebuild once its harvest finishes. Twenty publishers against four families.
+3. **Tagalog**: rebuild once its harvest finishes, which also clears its stale ids.
+4. **Japanese**: rebuild with FineWeb-2 and the Sudachi harvest.
 5. **German**: rebuild with its harvest once there is disk for `dewiki`.
-6. **English**: not started, dumps ready.
+6. **English**: not started, dumps ready and verified.
 7. **Re-measure the common-tier cut** before any of this reaches the game — `sources.mjs` carries
    Blinkered's old calibration, and `blinkered/data/README.md` is explicit that skipping it is a
    silent fault rather than a loud one.
