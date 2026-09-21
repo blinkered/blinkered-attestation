@@ -86,6 +86,12 @@ const mine = [...claims]
   .filter(([, langs]) => langs.length > 0 && langs.every((one) => one === tag))
   .map(([file]) => file)
   .filter((file) => existsSync(join(CACHE, file)))
+  // Books are exempt while they are still being gathered. Retirement asks "can the evidence
+  // stand without this", and for a finished collection the answer is yes — but a collection
+  // still growing is not finished, and deleting it mid-fetch throws away the next rebuild's
+  // gain and sends the downloader back to the start. French lost three hundred books this way,
+  // one minute after they earned it seventeen points.
+  .filter((file) => !file.startsWith('archive-'))
 
 let freed = 0
 for (const file of mine) {
