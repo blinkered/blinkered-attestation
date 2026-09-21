@@ -20,8 +20,14 @@ earns a word its place is evidence, recorded per word, in a file anybody can arg
 [![Every language's saturation curve](docs/curves.svg)](https://blinkered.github.io/blinkered-attestation/)
 
 How much of its own candidate list each language could independently prove, against the number of
-independent families it took. Redrawn every morning from the `curve.json` each language publishes
-on its own main branch, so this picture cannot drift from the repositories behind it. Click it for
+independent families it took. Redrawn from the `curve.json` each language publishes on its own
+main branch, by a GitHub Actions workflow on a daily schedule.
+
+**On a schedule is not a guarantee.** GitHub runs scheduled workflows best-effort — often late,
+occasionally not at all — and disables them entirely after sixty days without repository activity.
+So this picture is usually current and can be stale, and the honest check is the date at the foot
+of [`LANGUAGES.md`](LANGUAGES.md). Anybody can force it: `pnpm roll` here, or the workflow's
+**Run workflow** button. Click it for
 [the live chart](https://blinkered.github.io/blinkered-attestation/), which is the same data with
 the numbers attached; [`LANGUAGES.md`](LANGUAGES.md) is the same data as a table.
 
