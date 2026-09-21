@@ -20,7 +20,8 @@ earns a word its place is evidence, recorded per word, in a file anybody can arg
 [![Every language's saturation curve](docs/curves.svg)](https://blinkered.github.io/blinkered-attestation/)
 
 How much of its own candidate list each language could independently prove, against the number of
-independent families it took. Redrawn from the `curve.json` each language publishes on its own
+independent families it took. A solid line is a language that ships; a dashed one is still being
+worked on. Redrawn from the `status.json` each language publishes on its own
 main branch, by a GitHub Actions workflow on a daily schedule.
 
 **On a schedule is not a guarantee.** GitHub runs scheduled workflows best-effort — often late,
@@ -652,7 +653,7 @@ reading on GitHub, and `languages.json` for the live chart. Nothing in it is aut
 disagrees with a language repository, the language repository is right.
 
 **The live chart reads the repositories, not this roll-up.** `index.html` fetches every published
-language's `curve.json` from its own main branch, so it is as current as the repositories are and
+language's `status.json` from its own main branch, so it is as current as the repositories are and
 cannot go stale between roll-ups. `languages.json` is what it draws before those answers arrive,
 and what it falls back to for a language it cannot reach — which is every language while these
 repositories are private. The page says which languages it read live and which it did not, rather
