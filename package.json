@@ -15,7 +15,7 @@
     "check": "pnpm typecheck && pnpm format:check && pnpm coverage",
     "attest": "tsc --build && node dist/src/main.js",
     "roll": "node scripts/languages.mjs --remote",
-    "chart": "node scripts/languages.mjs && python3 -m http.server 8765",
+    "chart": "node scripts/languages.mjs && python3 -m http.server 8765 --directory docs",
     "roll:local": "node scripts/languages.mjs"
   },
   "devDependencies": {

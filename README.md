@@ -17,7 +17,7 @@ earns a word its place is evidence, recorded per word, in a file anybody can arg
 
 ## How every language is going
 
-[![Every language's saturation curve](curves.svg)](https://blinkered.github.io/blinkered-attestation/)
+[![Every language's saturation curve](docs/curves.svg)](https://blinkered.github.io/blinkered-attestation/)
 
 How much of its own candidate list each language could independently prove, against the number of
 independent families it took. Redrawn every morning from the `curve.json` each language publishes
@@ -535,7 +535,7 @@ happening. They are generated, so keeping them current costs one command:
 ```sh
 pnpm roll         # from the published repositories — this is what gets committed
 pnpm roll:local   # from the working copies here, including languages not yet published
-pnpm chart        # roll up locally, then serve the live page on :8765
+pnpm chart        # roll up locally, then serve docs/ on :8765
 ```
 
 `pnpm roll` is also what the scheduled workflow runs, so the committed roll-up describes the
