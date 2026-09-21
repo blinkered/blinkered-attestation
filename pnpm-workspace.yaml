@@ -1,0 +1,5 @@
+# esbuild is vitest's, and it does need to build. Named here as well as in package.json because
+# pnpm moved where it reads the approvals from between 10 and 12, and the roll-up workflow should
+# not break the next time a runner image moves on.
+onlyBuiltDependencies:
+  - esbuild
