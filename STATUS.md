@@ -30,6 +30,25 @@ the fault cannot erase.
 registered, every shipped word has evidence from three independent families, and every attestation
 says where to look. It says nothing about whether a list _plays_. Nothing has tested that yet.
 
+## Seven ship; Japanese does not, for now
+
+Nick's call, 2026-09-21. The seven are `de` 99.6%, `ru` 85.4%, `es` 70.9%, `fr` 68.4%, `ko` 63.1%,
+`en` 61.7%, `tl` 53.9%. Japanese is 20.4% and the only one below fifty, and the reason is not that
+it needs more books.
+
+**`blinkered-dictionary-ja` stays published, conforming and building.** It is held back from the
+app, not abandoned. Its numbers stay in `LANGUAGES.md` and on the chart, which is the honest
+presentation of a language we can build but would not ship.
+
+Its reader cannot produce compound words at all: `SudachiDict-small` has no compound entries, so
+mode C has nothing to join, and Japanese vocabulary is largely compounds. The fix is measured and
+parked. Mark a boundary where the reader currently drops a particle silently — without it, two
+nouns either side of a particle look adjacent — then rejoin only within a boundary. That found
+about 400 words across four pages that cannot be matched otherwise, at roughly a 10% per-join
+error rate against a shuffled control, which the three-family rule largely absorbs. It needs
+Japanese re-downloaded and re-read end to end, every collection through Sudachi, so it is a
+deliberate rebuild rather than a refold.
+
 ## What this does not mean
 
 **`conforms` is not `plays`.** The two are separate questions and only one of them is answered
