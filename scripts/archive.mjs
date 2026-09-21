@@ -21,10 +21,14 @@ import { existsSync, mkdirSync, readdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { USER_AGENT } from '../dist/src/index.js'
 
-const [tag, collection, wanted = '1500'] = process.argv.slice(2)
-if (tag === undefined || collection === undefined) {
-  throw new Error('usage: node scripts/archive.mjs <language tag> <archive collection> [count]')
+const [tag, where, wanted = '1500'] = process.argv.slice(2)
+if (tag === undefined || where === undefined) {
+  throw new Error('usage: node scripts/archive.mjs <language tag> <collection or query> [count]')
 }
+// A bare name is a collection; anything with a field in it is a query. English needed the
+// second: `booksbylanguage_english` holds 599 items while `americana` — the American Libraries
+// scans — holds 2.7 million with text, and neither is Project Gutenberg.
+const query = where.includes(':') ? where : `collection:${where}`
 
 const OUT = join(new URL('..', import.meta.url).pathname, '.cache', 'raw', `archive-${tag}`)
 mkdirSync(OUT, { recursive: true })
@@ -52,12 +56,12 @@ const read = async (url, as) => {
 
 // Only items that have extracted text, most-downloaded first: popularity is a rough but honest
 // proxy for "a real book somebody scanned properly" rather than a stray upload.
-const query =
+const url =
   `https://archive.org/advancedsearch.php?q=` +
-  `collection%3A${collection}+AND+format%3A%22DjVuTXT%22` +
+  `${encodeURIComponent(`${query} AND format:"DjVuTXT"`)}` +
   `&fl%5B%5D=identifier&sort%5B%5D=downloads+desc&rows=${String(Number(wanted) * 2)}&output=json`
 
-const listed = await read(query, 'json')
+const listed = await read(url, 'json')
 if (listed === null) throw new Error('the Archive would not answer the search')
 const ids = listed.response.docs.map((one) => one.identifier)
 process.stderr.write(
