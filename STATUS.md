@@ -81,22 +81,31 @@ the Japanese readings pass (`resources/readings.py`).
 Disk is the binding constraint, not time: the cache runs to 79GB and the volume has under 20GB
 free, which is why the German rebuild waits behind the Spanish and French ones.
 
-## The build queue
+## Recording totals, then deleting the collections
 
-Running unattended in `/tmp/run.sh`, ordered by what each build is worth. Each waits for its own
-harvest to release `searched.tsv.harvesting`, and waits again if `build.mjs` refuses because a
-dump is still downloading.
+Every language's evidence is version 1 and records no token totals, so each needs **one more full
+build** before its downloads can go. After that a build reuses the record and only scans what is
+actually on disk.
+
+Per language, in order:
 
 ```
-ko  16,800 words one family short — literary tier added, dumps re-downloading
-ru  194,490 one family short, and only 2 of 4 families checkable
-es  40,172 one family short
-tl  also clears its stale source ids
-ja  with FineWeb-2 and the Sudachi harvest
-fr  de  en
+node build.mjs        # full scan, writes #tokens
+node conform.mjs
+node saturation.mjs
+node collections.mjs  # COLLECTIONS.md — the pointer back to every download
+git commit && git push
+                      # then, and only then, delete that language's files from ../blinkered-cache/raw
 ```
 
-Harvests run alongside, all with a literary tier: `/tmp/{de,en,es,fr,ja,ko,ru,tl}-harvest-v2.log`.
+**Before deleting anything at scale, the round trip is proved on one language**: delete a single
+collection, rebuild, and check the family and its attestations survive unchanged. The premise of
+deleting ninety gigabytes is that the record is as good as the text; that is a claim to test, not
+to assume.
+
+Order: `de` (frees ~13GB) → `ru` (~12GB) → `fr` (~11GB) → `es` (~6GB) → `ko` (~6GB) → `tl`.
+Japanese and English come last: Japanese because every collection goes through Sudachi, English
+because its Wikipedia alone is 24GB and it has never been built at all.
 
 ## What to do next, in order
 
