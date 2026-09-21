@@ -3,58 +3,68 @@
 Operational state. The **findings** live in [README.md](README.md) and the **numbers** in
 [LANGUAGES.md](LANGUAGES.md); this is the bit that goes stale.
 
-## Published
+## All eight are published and conforming
 
 |      |   words | coverage | families | checkable |
 | ---- | ------: | -------: | -------: | --------: |
 | `de` |  35,895 |    98.4% |       20 |        19 |
-| `ru` | 297,071 |    70.0% |       10 |         8 |
-| `ko` |  23,433 |    60.9% |       24 |        23 |
-| `en` |  70,673 |    40.5% |       16 |         — |
-| `fr` |  71,064 |    49.3% |       14 |        13 |
+| `ru` | 344,401 |    81.2% |       10 |         8 |
+| `fr` |  96,387 |    66.9% |       17 |        16 |
+| `es` | 128,809 |    63.9% |       25 |        24 |
+| `ko` |  23,707 |    61.6% |       24 |        23 |
+| `tl` |   9,716 |    41.7% |       11 |        10 |
+| `en` |  70,673 |    40.5% |       14 |        13 |
+| `ja` |  34,636 |    18.1% |       13 |        12 |
 
-All public, all conforming. `es`, `ja` and `tl` are not published; `tl` does not yet conform.
+**`conforms` means the paperwork matches the goods** — the evidence parses, every source is
+registered, every shipped word has evidence from three independent families, and every attestation
+says where to look. It says nothing about whether a list _plays_. Nothing has tested that yet.
 
-## What changed today, and why the numbers moved
+## What this does not mean, and must happen before the game
 
-**The collections became disposable.** The evidence records each collection's token total now,
-which is the denominator every rate needs and the only thing that was forcing ninety-two gigabytes
-of downloads to be kept. A build reads the evidence already present, scans only what is on disk,
-and reuses the rest. German rebuilds from nothing in four seconds instead of twenty-six minutes,
-and produces byte-identical evidence.
-
-**Books were the missing family.** Every drop list said the same thing and it took too long to
-hear it: the stranded words are attested by a Wikipedia and one other thing and need a third, and
-for ABALANZAR and АБАЖУРАМИ that third is books. German has a Gutenberg shelf and sits at 98%;
-Russian had none and sat at 51%. Scanned books from the Internet Archive took Russian to 70.0% and
-Korean to 60.9%, in builds of twenty-eight and seven seconds.
-
-The literary _harvest_ that preceded this rescued three percent of Russian's stranded words. The
-archives that hold literature predate sitemaps and returned nothing, and half the domains that did
-answer were book reviews — journalism in the register the newspapers already covered.
-
-## Running
+**The common-tier cut in every `sources.mjs` is Blinkered's old calibration**, against lists that
+were a different size. `blinkered/data/README.md` is explicit that skipping recalibration is a
+silent fault rather than a loud one: the word floor ends up above what any board can reach, every
+draw is rejected, and the generator plays its best failed attempt while reporting failure. Some of
+these lists moved thirty points today, so this is not optional.
 
 ```
-/tmp/watchdog.sh        checks every 60s, restarts crashes, leaves exhausted collections alone
-/tmp/after-en.log       fr build, then es and tl
-/tmp/ia-<lang>.log      seven book downloaders
-/tmp/names-<lang>.log   backfilling text filenames for books fetched before names were recorded
+pnpm dictionary weights   # paste into packages/engine/src/languages.ts
+pnpm dictionary floor     # paste MEDIAN_WORDS, SHARE_BY_MINIMUM, DENSITY_SCALE
+                          # into packages/engine/src/difficulty.ts
 ```
 
-## Next
+Then `packages/words/test/everyLanguagePlays.test.ts` is the guard that matters — three seeds per
+language, each needing an accepted board with a six-tile word.
 
-1. **es** and **tl** full builds; `tl` needs its stale ids cleared, which a rebuild does.
-2. **Refold books into `ru`, `ko`, `fr`, `en`** once their filenames are backfilled, so book
-   citations name the text rather than the catalogue page. Seconds each.
-3. **ja** last: every collection goes through Sudachi, including its books.
-4. **Re-measure the common-tier cut** before any of this reaches the game. `sources.mjs` carries
-   Blinkered's old calibration and `blinkered/data/README.md` is explicit that skipping it is a
-   silent fault rather than a loud one.
+## Running in the background — all of this is in /tmp and will not survive a reboot
+
+```
+bash /tmp/watchdog.sh     every 60s: restarts a dead downloader with the right collection,
+                          marks an exhausted one done, warns under 5GB disk
+/tmp/refold.sh            refolds books into ru, ko, en and pushes; en in progress
+/tmp/ia-<lang>.log        eight book downloaders
+/tmp/names-<lang>.log     backfilling Archive text filenames
+```
+
+Rebuild them from this file if they are gone. Nothing is lost if they die — every language is
+already published and conforming; the downloads only make the next refold better.
+
+## The last mile per language
+
+1. **More books.** Every language gains from them and none has finished downloading. A refold is
+   seconds, because the evidence records what every other collection held.
+2. **French** lost its shelf to a bug and is at ~90 books of 300. It will recover on its own.
+3. **Japanese** is the thinnest at 18.1% and the most expensive to rebuild — every collection goes
+   through Sudachi. Its books are worth the most per unit of work.
+4. **Recalibrate**, then take the lists to `blinkered`.
 
 ## The cache
 
-`../blinkered-cache/raw`, outside every repository and symlinked in. `node scripts/cache.mjs` says
-which language each part belongs to; `node scripts/retire.mjs <lang>` deletes what a language no
-longer needs, refusing unless its evidence records every collection's total, its repository is
-clean, and `COLLECTIONS.md` exists.
+`../blinkered-cache/raw`, outside every repository. `node scripts/cache.mjs` says which language
+each part belongs to; `node scripts/retire.mjs <lang>` deletes what a language no longer needs and
+refuses unless its evidence records every collection's total. **Books are exempt from retirement**
+while they are still being gathered.
+
+`node weed.mjs` in a language repository removes books that are not in that language, by the same
+legibility test the build applies. It refuses a language that reads through an analyser.
