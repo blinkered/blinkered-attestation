@@ -298,6 +298,18 @@ const FIXED: readonly SourceSpec[] = [
     // attestation fail verification against a page that was never the evidence.
     'https://www.gutenberg.org/cache/epub/{id}/pg{id}.txt',
   ),
+  // Books, and the family four languages were missing entirely. The near-miss analysis says the
+  // stranded words are attested by a Wikipedia and one other thing and need a third, and for
+  // inflected literary vocabulary that third is a shelf of books — which is why German, with a
+  // Gutenberg, is at 98% and Russian, without one, is at 51%. Crawling literary archives page by
+  // page was the wrong tool: this is bulk, permanent, and identified per work.
+  template(
+    'ia',
+    'internetarchive',
+    'Internet Archive',
+    'Internet Archive contributors',
+    'https://archive.org/details/{id}',
+  ),
   template(
     'tat',
     'tatoeba',
