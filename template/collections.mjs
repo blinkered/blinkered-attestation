@@ -9,7 +9,7 @@
  * dumps knowing anybody can fetch them again.
  */
 import { writeFileSync } from 'node:fs'
-import { readEvidence } from '@blinkered/attestation'
+import { dumpUrl, readEvidence } from '@blinkered/attestation'
 import * as language from './sources.mjs'
 
 const { LANGUAGE, SOURCES } = language
@@ -20,12 +20,17 @@ const rows = [...evidence.totals]
   .sort((left, right) => right[1] - left[1])
   .map(([id, tokens]) => {
     const source = origin.get(id)
+    const file = source?.needs?.split('/').pop()
+    // Wikimedia names its dumps predictably, so their URL needs no declaring. Everything else
+    // says where it came from in `sources.mjs`, because a deleted download whose origin is not
+    // written down is a claim nobody can re-derive.
+    const url = source?.from ?? (file === undefined ? null : dumpUrl(file))
     const where =
-      source?.from !== undefined
-        ? `[${source.needs.split('/').pop()}](${source.from})`
+      url !== null && url !== undefined
+        ? `[${file}](${url})`
         : id.startsWith('web:')
           ? `fetched from \`${id.slice(4)}\`, recorded in \`searched.tsv\``
-          : (source?.needs?.split('/').pop() ?? '—')
+          : (file ?? '—')
     return `| \`${id}\` | ${tokens.toLocaleString()} | ${source?.what ?? ''} | ${where} |`
   })
 

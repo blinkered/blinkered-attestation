@@ -56,6 +56,41 @@ describe('whether a dump is all there', () => {
     expect(checked.verdict).toBe('truncated')
   })
 
+  it('leaves alone a file that was unpacked from its download', async () => {
+    // Tatoeba's cached .tsv comes out of a .bz2 and an eBible .txt out of a .zip. Comparing the
+    // unpacked size against the archive's reports every complete file as a partial one, which is
+    // what it did to English, French, Spanish and Tagalog in one run.
+    const unpacked = await checkDump(
+      'engwebp_vpl.txt',
+      4_327_897,
+      says(4_281_537),
+      'https://ebible.org/Scriptures/engwebp_vpl.zip',
+    )
+    expect(unpacked.verdict).toBe('not a dump')
+
+    const sentences = await checkDump(
+      'deu_sentences.tsv',
+      47_560_809,
+      says(12_044_731),
+      'https://downloads.tatoeba.org/exports/per_language/deu/deu_sentences.tsv.bz2',
+    )
+    expect(sentences.verdict).toBe('not a dump')
+  })
+
+  it('still checks a file saved exactly as it was downloaded', async () => {
+    // Wikimedia saves under a shorter name and FineWeb-2 under a different one, but both keep
+    // the extension, which is what says the bytes are the same bytes.
+    const wiki = await checkDump('dewiki.xml.bz2', 1, says(7_962_534_106))
+    expect(wiki.verdict).toBe('truncated')
+    const shard = await checkDump(
+      'fineweb2-kor.parquet',
+      14_229_504,
+      says(4_844_133_014),
+      'https://huggingface.co/datasets/HuggingFaceFW/fineweb-2/resolve/main/x/000_00000.parquet',
+    )
+    expect(shard.verdict).toBe('truncated')
+  })
+
   it('leaves alone a file it has no way to check', async () => {
     const checked = await checkDump('gutenberg-de', 0, says(999))
     expect(checked.verdict).toBe('not a dump')

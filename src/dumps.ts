@@ -24,6 +24,17 @@ export function dumpUrl(name: string): string | null {
   )
 }
 
+/**
+ * Everything from the first dot of a filename: `.xml.bz2`, `.tsv`, `.parquet`.
+ *
+ * The whole chain, not the last part, so an extracted `.tsv` is not mistaken for the `.tsv.bz2`
+ * it came out of.
+ */
+function extensionOf(name: string): string {
+  const at = name.indexOf('.')
+  return at < 0 ? '' : name.slice(at)
+}
+
 /** How many bytes the server says a dump has, or null if it will not say. */
 export type SizeOf = (url: string) => Promise<number | null>
 
@@ -55,6 +66,11 @@ export async function checkDump(
   // than a decompressor, which is no easier to read.
   const url = from ?? dumpUrl(name)
   if (url === null) return { name, have, expect: null, verdict: 'not a dump' }
+  // Only when the cached file is the download. Tatoeba's 47MB .tsv is unpacked from a 12MB
+  // .bz2 and an eBible .txt out of a .zip, so comparing the two sizes reports every complete
+  // file as a partial one — which it did, for four languages at once. Derived from the
+  // extensions rather than declared, because a flag on each collection is a thing to forget.
+  if (!url.endsWith(extensionOf(name))) return { name, have, expect: null, verdict: 'not a dump' }
   const expect = await sizeOf(url)
   if (expect === null) return { name, have, expect: null, verdict: 'unknown' }
   return { name, have, expect, verdict: have === expect ? 'ok' : 'truncated' }
