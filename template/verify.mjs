@@ -15,10 +15,10 @@
  */
 import { readFileSync } from 'node:fs'
 import { alphabetFor } from '@blinkered/engine'
-import { MINIMUM_SOURCES, httpGet, parseEvidence, prove } from '@blinkered/attestation'
+import { MINIMUM_SOURCES, httpGet, prove, readEvidence } from '@blinkered/attestation'
 import { LANGUAGE } from './sources.mjs'
 
-const evidence = parseEvidence(readFileSync('ATTESTATIONS.tsv', 'utf8'))
+const evidence = readEvidence('.')
 const shipped = new Set(
   readFileSync('words.txt', 'utf8')
     .split('\n')

@@ -7,7 +7,7 @@
  *
  * Three files, and the third is the one people will actually argue about:
  *
- * - `ATTESTATIONS.tsv` — the evidence, every candidate that any collection saw.
+ * - the evidence, every candidate that any collection saw, written by `writeEvidence`.
  * - `words.txt` — what survived, in Blinkered's own format, commonest first.
  * - `dropped.tsv` — what did not, with the evidence that was not enough.
  *
@@ -18,14 +18,20 @@
 
 import { byRate, independence, partition } from './attest.js'
 import { sourceFor } from './registry.js'
-import { formatEvidence } from './evidence.js'
 import type { WordEvidence } from './evidence.js'
 import { merge } from './scan.js'
 import type { ScanResult } from './scan.js'
 
 export interface Built {
   readonly language: string
-  readonly attestations: string
+  /**
+   * The evidence, as records rather than as text.
+   *
+   * German's evidence passed sixty megabytes once it had a harvest behind it, and GitHub warns
+   * above fifty a file. Formatting it here would force every caller to write one file; handing
+   * back the records lets `writeEvidence` decide whether this language still fits in one.
+   */
+  readonly evidence: readonly WordEvidence[]
   readonly words: string
   readonly dropped: string
   readonly kept: number
@@ -79,7 +85,6 @@ function dropList(dropped: readonly WordEvidence[]): string {
 
 export function build(
   language: string,
-  built: string,
   candidates: Iterable<string>,
   results: readonly ScanResult[],
   commonCut: number,
@@ -104,7 +109,7 @@ export function build(
     language,
     // The evidence records every candidate, kept or not, so a drop can be checked as easily
     // as a keep. It is the larger file and the more useful one.
-    attestations: formatEvidence(language, built, byRate(allCandidates(candidates, seen), totals)),
+    evidence: byRate(allCandidates(candidates, seen), totals),
     words: wordList(language, ranked, commonCut),
     dropped: dropList(dropped),
     kept: kept.length,

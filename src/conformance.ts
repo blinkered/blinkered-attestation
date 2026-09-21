@@ -49,16 +49,23 @@ function sample(words: readonly string[]): string {
  * A repository with three things wrong should say so once. Stopping at the first turns fixing a
  * rebuild into three rebuilds.
  */
-export function conform(wordList: string, evidenceText: string): readonly Failure[] {
+export function conform(wordList: string, given: EvidenceFile | string): readonly Failure[] {
   const failures: Failure[] = []
 
+  // A sharded repository has no single body of text to hand over, so it reads its evidence with
+  // `readEvidence` and passes the records. A single-file one can still pass the text and have
+  // the parse itself checked, which is the first thing a sceptic would try to break.
   let evidence: EvidenceFile
-  try {
-    evidence = parseEvidence(evidenceText)
-  } catch (error) {
-    // Nothing else can be checked against evidence that did not parse, and guessing at what it
-    // might have said would turn one clear failure into a page of invented ones.
-    return [{ check: 'evidence parses', detail: (error as Error).message }]
+  if (typeof given === 'string') {
+    try {
+      evidence = parseEvidence(given)
+    } catch (error) {
+      // Nothing else can be checked against evidence that did not parse, and guessing at what it
+      // might have said would turn one clear failure into a page of invented ones.
+      return [{ check: 'evidence parses', detail: (error as Error).message }]
+    }
+  } else {
+    evidence = given
   }
 
   const unregistered = new Set<string>()

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="420" viewBox="0 0 720 420" font-family="system-ui, sans-serif">
+<line x1="52" y1="376.0" x2="616" y2="376.0" stroke="#888" stroke-opacity="0.25" />
+<text x="44" y="376.0" fill="#888" font-size="11" text-anchor="end" dominant-baseline="middle">0%</text>
+<line x1="52" y1="304.8" x2="616" y2="304.8" stroke="#888" stroke-opacity="0.25" />
+<text x="44" y="304.8" fill="#888" font-size="11" text-anchor="end" dominant-baseline="middle">20%</text>
+<line x1="52" y1="233.6" x2="616" y2="233.6" stroke="#888" stroke-opacity="0.25" />
+<text x="44" y="233.6" fill="#888" font-size="11" text-anchor="end" dominant-baseline="middle">40%</text>
+<line x1="52" y1="162.4" x2="616" y2="162.4" stroke="#888" stroke-opacity="0.25" />
+<text x="44" y="162.4" fill="#888" font-size="11" text-anchor="end" dominant-baseline="middle">60%</text>
+<line x1="52" y1="91.2" x2="616" y2="91.2" stroke="#888" stroke-opacity="0.25" />
+<text x="44" y="91.2" fill="#888" font-size="11" text-anchor="end" dominant-baseline="middle">80%</text>
+<line x1="52" y1="20.0" x2="616" y2="20.0" stroke="#888" stroke-opacity="0.25" />
+<text x="44" y="20.0" fill="#888" font-size="11" text-anchor="end" dominant-baseline="middle">100%</text>
+<line x1="52" y1="20" x2="52" y2="376" stroke="#888" />
+<line x1="52" y1="376" x2="616" y2="376" stroke="#888" />
+<text x="52.0" y="394" fill="#888" font-size="11" text-anchor="middle">1</text>
+<text x="128.9" y="394" fill="#888" font-size="11" text-anchor="middle">4</text>
+<text x="205.8" y="394" fill="#888" font-size="11" text-anchor="middle">7</text>
+<text x="282.7" y="394" fill="#888" font-size="11" text-anchor="middle">10</text>
+<text x="359.6" y="394" fill="#888" font-size="11" text-anchor="middle">13</text>
+<text x="436.5" y="394" fill="#888" font-size="11" text-anchor="middle">16</text>
+<text x="513.5" y="394" fill="#888" font-size="11" text-anchor="middle">19</text>
+<text x="590.4" y="394" fill="#888" font-size="11" text-anchor="middle">22</text>
+<text x="334" y="412" fill="#888" font-size="12" text-anchor="middle">independent families consulted</text>
+<text x="14" y="198" fill="#888" font-size="12" text-anchor="middle" transform="rotate(-90 14 198)">candidate list proved</text>
+<polyline points="52.0,376.0 77.6,376.0 103.3,46.4 128.9,27.6 154.5,27.5" fill="none" stroke="#1f77b4" stroke-width="2" stroke-linejoin="round" /><line x1="154.5" y1="27.5" x2="621" y2="27.5" stroke="#1f77b4" stroke-opacity="0.35" stroke-dasharray="2 3" /><text x="624" y="27.5" fill="#1f77b4" font-size="12" dominant-baseline="middle">de 98%</text>
+<polyline points="52.0,376.0 77.6,376.0 103.3,231.9 128.9,211.9 154.5,205.9" fill="none" stroke="#d62728" stroke-width="2" stroke-linejoin="round" /><line x1="154.5" y1="205.9" x2="621" y2="220.3" stroke="#d62728" stroke-opacity="0.35" stroke-dasharray="2 3" /><text x="624" y="220.3" fill="#d62728" font-size="12" dominant-baseline="middle">es 48%</text>
+<polyline points="52.0,376.0 77.6,376.0 103.3,244.3 128.9,209.1 154.5,205.3" fill="none" stroke="#2ca02c" stroke-width="2" stroke-linejoin="round" /><line x1="154.5" y1="205.3" x2="621" y2="205.3" stroke="#2ca02c" stroke-opacity="0.35" stroke-dasharray="2 3" /><text x="624" y="205.3" fill="#2ca02c" font-size="12" dominant-baseline="middle">fr 48%</text>
+<polyline points="52.0,376.0 77.6,376.0 103.3,354.7" fill="none" stroke="#9467bd" stroke-width="2" stroke-linejoin="round" /><line x1="103.3" y1="354.7" x2="621" y2="354.7" stroke="#9467bd" stroke-opacity="0.35" stroke-dasharray="2 3" /><text x="624" y="354.7" fill="#9467bd" font-size="12" dominant-baseline="middle">ja 6%</text>
+<polyline points="52.0,376.0 77.6,376.0 103.3,247.3 128.9,238.0 154.5,233.6 180.2,231.0 205.8,228.6 231.5,226.3 257.1,224.2 282.7,222.6 308.4,221.1 334.0,219.7 359.6,218.5 385.3,217.3 410.9,216.3 436.5,215.6 462.2,215.0 487.8,214.7 513.5,214.4 539.1,214.4 564.7,214.4 590.4,214.4 616.0,214.4" fill="none" stroke="#ff7f0e" stroke-width="2" stroke-linejoin="round" /><line x1="616.0" y1="214.4" x2="621" y2="235.3" stroke="#ff7f0e" stroke-opacity="0.35" stroke-dasharray="2 3" /><text x="624" y="235.3" fill="#ff7f0e" font-size="12" dominant-baseline="middle">ko 45%</text>
+<polyline points="52.0,376.0 77.6,376.0 103.3,278.9 128.9,242.9 154.5,234.1 180.2,230.1" fill="none" stroke="#17becf" stroke-width="2" stroke-linejoin="round" /><line x1="180.2" y1="230.1" x2="621" y2="250.3" stroke="#17becf" stroke-opacity="0.35" stroke-dasharray="2 3" /><text x="624" y="250.3" fill="#17becf" font-size="12" dominant-baseline="middle">tl 41%</text>
+</svg>

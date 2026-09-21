@@ -9,10 +9,10 @@
  * than the shape this repository's `sources.mjs` happened to produce.
  */
 import { readFileSync, writeFileSync } from 'node:fs'
-import { parseEvidence, saturation, sourceFor } from '@blinkered/attestation'
+import { knee as kneeOf, readEvidence, saturation, sourceFor } from '@blinkered/attestation'
 import { LANGUAGE } from './sources.mjs'
 
-const evidence = parseEvidence(readFileSync('ATTESTATIONS.tsv', 'utf8'))
+const evidence = readEvidence('.')
 const shipped = readFileSync('words.txt', 'utf8').split('\n').length - 2
 const total = evidence.words.length
 
@@ -26,10 +26,10 @@ const familyOf = (source) => {
 
 const steps = saturation(evidence.words, familyOf, total)
 
-// The point of diminishing returns, stated rather than left to the eye: the first family after
-// the rule is satisfiable whose gain falls below a twentieth of the best single gain.
-const best = Math.max(...steps.map((step) => step.gained))
-const knee = steps.find((step) => step.families > 3 && step.gained < best / 20)
+// The point of diminishing returns, stated rather than left to the eye. The threshold lives in
+// `@blinkered/attestation` so that fifty-one repositories cannot answer one question fifty-one
+// different ways, and so the roll-up in that repository draws the same line this one reports.
+const knee = kneeOf(steps)
 
 const rows = steps.map((step) => {
   const share = `${(step.share * 100).toFixed(1)}%`

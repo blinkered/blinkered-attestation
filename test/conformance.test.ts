@@ -31,6 +31,16 @@ describe('a conforming repository', () => {
     expect(conform(list('SCHADE', 'HAUS'), evidence)).toEqual([])
   })
 
+  it('takes parsed evidence as readily as text, for a repository whose evidence is sharded', () => {
+    const evidence = {
+      language: 'de',
+      built: '2026-09-18',
+      digest: 'x',
+      words: [supported('SCHADE', THREE)],
+    }
+    expect(conform(list('SCHADE'), evidence)).toEqual([])
+  })
+
   it('does not mind evidence holding words the list does not ship', () => {
     // The evidence is the record of what was looked up, so it is legitimately the larger set.
     const evidence = evidenceFor(supported('SCHADE', THREE), supported('ABSEITS', THREE))

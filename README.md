@@ -15,6 +15,9 @@ This repository is the other way round. A word ships because we can show it is r
 Dictionaries still have a job — they supply **candidates**, the words worth looking up. What
 earns a word its place is evidence, recorded per word, in a file anybody can argue with.
 
+**[Where every language stands](LANGUAGES.md)** — coverage, families consulted, and all of their
+saturation curves on one pair of axes.
+
 ## The rule
 
 ```
@@ -226,6 +229,14 @@ cc:<url>       ->  the URL itself; a crawl has no durable per-document id
 Sources are sorted and counts are written in the same order, so a rebuild over unchanged evidence
 produces identical bytes and a diff means something really changed.
 
+**One evidence file, or a directory of them, never both.** German's evidence passed sixty
+megabytes once it had a harvest behind it, and GitHub warns above fifty a file. So `writeEvidence`
+splits past forty megabytes into `attestations/000.tsv`, `001.tsv` and so on, each a complete and
+independently valid evidence file with its own header and digest — a fragment that only parses
+when reassembled would make a corrupt shard indistinguishable from a missing one. Readers go
+through `readEvidence`, which refuses a repository holding both layouts rather than quietly
+counting half its words twice.
+
 ## Checking a locator, and checking your check
 
 Spot-checking the German evidence, `dewiki:2129` looked wrong: the page is the Hamburg article
@@ -266,6 +277,60 @@ That is a reason to prefer collections with durable identifiers where a language
 read a failed verification carefully: a page that will not load says nothing about the word,
 while a page that loads without it is a finding.
 
+## Pushing a language
+
+A language repository becomes public when its **record is honest and checkable**, not when its
+coverage is high. Those are different questions and conflating them would be the one mistake that
+undoes the whole method: a thin language published with its thinness stated is fine, and a thick
+one published with a claim its evidence cannot support is not fine at any coverage.
+
+So the bar for publishing is:
+
+1. **`node conform.mjs` passes.** The list ships only words the evidence supports, from registered
+   sources, each with somewhere to look.
+2. **No file is over the limit.** `writeEvidence` shards past 40MB; nothing tracked approaches
+   GitHub's 50MB warning.
+3. **Nothing republishes a source.** A harvest file records counts, never prose:
+   `awk -F'\t' '$2 !~ /:[0-9]+( |$)/' searched.tsv` must print nothing.
+4. **`SATURATION.md` is regenerated** from the committed evidence, so the curve describes the
+   evidence actually in the repository.
+5. **The roll-up here is regenerated too** — see the rule below.
+
+Coverage gates something else entirely: whether a list is good enough to go into the game. That is
+Blinkered's own question, answered by its board-density floor and its `everyLanguagePlays` test,
+and a repository can be published long before its language is playable.
+
+## The rule for changing a language
+
+> **Any change to a `blinkered-dictionary-*` repository, before it is pushed, must also update
+> the summary statistics in `blinkered-attestation` — and its workflow rules, if the change
+> taught us something about the method.**
+
+Both halves matter, and for different reasons.
+
+**The statistics**, because a roll-up that lags is worse than no roll-up. [`LANGUAGES.md`](LANGUAGES.md)
+and `curves.svg` are the only place anybody can see all fifty-one languages at once, and a reader
+who finds them stale learns not to trust them — at which point the comparison they exist for stops
+happening. They are generated, so keeping them current costs one command:
+
+```sh
+node scripts/languages.mjs        # every sibling repository
+node scripts/languages.mjs de ko  # only these
+```
+
+It reads each `blinkered-dictionary-*` beside this one, measures its committed evidence with the
+same code that language used, and writes `LANGUAGES.md` and `curves.svg`. Nothing in it is
+authoritative: if it disagrees with a language repository, the language repository is right.
+
+**The workflow rules**, because every hard-won fact in this README was learned in a language
+repository and would have been lost there. The truncated dump that failed as a CRC error, the
+harvest file that was quietly republishing newspapers, the saturation tie-break that made French
+report a fifteen-thousand-word family ahead of a hundred-and-twenty-thousand-word one — each was
+found while building one language and each applies to all of them. A fix that stays in the
+repository where it was found is a fix the next language gets to discover again.
+
+The test is simple: **if you learned it, it goes here; if you measured it, it goes there.**
+
 ## What lives where
 
 - **`blinkered-attestation`** (here): the workflow. Source registry, locator scheme, evidence
@@ -273,6 +338,10 @@ while a page that loads without it is a finding.
 - **`blinkered-dictionary-<tag>`**: one repository per language, holding that language's
   evidence, its candidates, and its built list.
 - **`blinkered`**: the game. Untouched until this model is proven.
+
+The roll-up files here — [`LANGUAGES.md`](LANGUAGES.md) and `curves.svg` — are the exception that
+proves the split: they are generated from the language repositories and are the only thing here
+that is about particular languages. They are derived, never edited, and never authoritative.
 
 Only the final evidence file is ever tracked. Downloaded dumps and per-source indexes live in an
 untracked `.cache/`, because git history full of large regenerable files is the failure mode this

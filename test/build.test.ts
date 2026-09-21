@@ -27,7 +27,7 @@ const THREE = [
 const CANDIDATES = ['OKAY', 'PIZZA', 'ERFUNDEN']
 
 describe('building a language', () => {
-  const built = build('de', '2026-09-18', CANDIDATES, THREE, 1)
+  const built = build('de', CANDIDATES, THREE, 1)
 
   it('keeps what three collections attest and drops the rest', () => {
     expect(built.kept).toBe(1)
@@ -41,8 +41,8 @@ describe('building a language', () => {
   it('records every candidate in the evidence, including ones nothing saw', () => {
     // "We looked and found nothing" is a finding. Leaving it out would make the evidence file
     // quietly smaller than the question it answers.
-    expect(built.attestations).toContain('ERFUNDEN')
-    expect(built.attestations).toContain('words=3')
+    expect(built.evidence.map((word) => word.word)).toContain('ERFUNDEN')
+    expect(built.evidence).toHaveLength(3)
   })
 
   it('puts the near misses at the top of the drop list', () => {
@@ -61,7 +61,7 @@ describe('building a language', () => {
   })
 
   it('caps the common tier at the number of words there are', () => {
-    const small = build('de', '2026-09-18', CANDIDATES, THREE, 9999)
+    const small = build('de', CANDIDATES, THREE, 9999)
     expect(small.words).toContain('common=1 full=1')
   })
 
@@ -73,7 +73,7 @@ describe('building a language', () => {
         ['OKAY', 1, ['8']],
       ]),
     ]
-    const ranked = build('de', '2026-09-18', CANDIDATES, four, 2)
+    const ranked = build('de', CANDIDATES, four, 2)
     expect(ranked.words.split('\n').slice(1, 3)).toEqual(['PIZZA', 'OKAY'])
   })
 
@@ -90,7 +90,7 @@ describe('building a language', () => {
         ['APFEL', 1, ['4']],
       ]),
     ]
-    const tied = build('de', '2026-09-18', ['ZEBRA', 'APFEL'], two, 1)
+    const tied = build('de', ['ZEBRA', 'APFEL'], two, 1)
     expect(tied.dropped.split('\n').slice(1, 3)).toEqual([
       'APFEL\t2\ttat,gut\t1,1',
       'ZEBRA\t2\ttat,gut\t1,1',
@@ -98,7 +98,7 @@ describe('building a language', () => {
   })
 
   it('builds nothing from nothing without falling over', () => {
-    const empty = build('de', '2026-09-18', [], [], 10)
+    const empty = build('de', [], [], 10)
     expect(empty.kept).toBe(0)
     expect(empty.droppedCount).toBe(0)
     expect(empty.words).toBe('#blinkered/wordlist/2 language=de common=0 full=0\n\n')
@@ -122,7 +122,7 @@ describe('a source that attests but does not rank', () => {
       result('tat', 1_000_000, [['ALLTAG', 3000, ['5']]]),
       result('web:example.de', 12, [['KURZSCHLIESSEN', 6, ['https://example.de/x']]]),
     ]
-    const built = build('de', '2026-09-18', ['ALLTAG', 'KURZSCHLIESSEN'], withSearch, 2)
+    const built = build('de', ['ALLTAG', 'KURZSCHLIESSEN'], withSearch, 2)
     // Both kept: three families each, search supplying the third for the rare one.
     expect(built.kept).toBe(2)
     // And the common word still ranks first, which it would not if six hits in twelve tokens
@@ -139,6 +139,6 @@ describe('a source that attests but does not rank', () => {
       result('gut', 1_000_000, [['NEU', 1, ['3']]]),
     ]
     // mystery counts as its own family, so NEU has three and is kept.
-    expect(build('de', '2026-09-18', ['NEU'], unknown, 1).kept).toBe(1)
+    expect(build('de', ['NEU'], unknown, 1).kept).toBe(1)
   })
 })

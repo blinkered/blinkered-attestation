@@ -6,7 +6,7 @@
  */
 import { readFileSync, writeFileSync } from 'node:fs'
 import { alphabetFor } from '@blinkered/engine'
-import { build, domainOf, scan, scanByDomain } from '@blinkered/attestation'
+import { build, domainOf, scan, scanByDomain, writeEvidence } from '@blinkered/attestation'
 import { LANGUAGE, SOURCES, HARVEST, COMMON_CUT } from './sources.mjs'
 
 const CANDIDATES =
@@ -55,10 +55,13 @@ if (HARVEST !== undefined) {
 }
 
 const today = new Date().toISOString().slice(0, 10)
-const built = build(LANGUAGE, today, candidates, results, COMMON_CUT)
-writeFileSync('ATTESTATIONS.tsv', built.attestations)
+const built = build(LANGUAGE, candidates, results, COMMON_CUT)
+// Sharded only when one file would be too large for GitHub to take comfortably; a language whose
+// evidence still fits stays a single `ATTESTATIONS.tsv`, and never both at once.
+const written = writeEvidence('.', LANGUAGE, today, built.evidence)
 writeFileSync('words.txt', built.words)
 writeFileSync('dropped.tsv', built.dropped)
+process.stderr.write(`evidence: ${written.join(' ')}\n`)
 
 const total = built.kept + built.droppedCount
 process.stderr.write(

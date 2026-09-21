@@ -51,6 +51,9 @@ export { withReadings } from './readings.js'
 export { saturation } from './saturation.js'
 export type { Step } from './saturation.js'
 
+export { chart, knee } from './curves.js'
+export type { Curve } from './curves.js'
+
 export { archiveUrl, pageHolds, prove } from './verify.js'
 export type { Checked, Outcome, Proof, Reader } from './verify.js'
 

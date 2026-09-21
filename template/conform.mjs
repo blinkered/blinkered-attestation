@@ -1,11 +1,8 @@
 /** Checks that what this repository ships is what its evidence supports. */
 import { readFileSync } from 'node:fs'
-import { conform } from '@blinkered/attestation'
+import { conform, readEvidence } from '@blinkered/attestation'
 
-const failures = conform(
-  readFileSync('words.txt', 'utf8'),
-  readFileSync('ATTESTATIONS.tsv', 'utf8'),
-)
+const failures = conform(readFileSync('words.txt', 'utf8'), readEvidence('.'))
 if (failures.length === 0) {
   process.stderr.write('conforms\n')
 } else {
