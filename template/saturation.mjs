@@ -9,7 +9,13 @@
  * than the shape this repository's `sources.mjs` happened to produce.
  */
 import { readFileSync, writeFileSync } from 'node:fs'
-import { conform, knee as kneeOf, readEvidence, saturation, sourceFor } from '@blinkered/attestation'
+import {
+  conform,
+  knee as kneeOf,
+  readEvidence,
+  saturation,
+  sourceFor,
+} from '@blinkered/attestation'
 import { LANGUAGE } from './sources.mjs'
 
 const evidence = readEvidence('.')
