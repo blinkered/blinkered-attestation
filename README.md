@@ -382,6 +382,21 @@ word is.
 This is not circular. It does not decide whether a word is real. It decides whether a document is
 legible enough to be evidence about anything, which is a question about the document.
 
+**Ask for a language, not a collection.** The Archive's curated per-language book collections are
+far smaller than its language metadata, and the gap is not small:
+
+```
+  booksbylanguage_english      599        collection:americana AND language:"eng"   2,710,934
+  booksbylanguage_korean       441        language:"kor"                               30,839
+  booksbylanguage_tagalog      227        language:"Tagalog"                            2,412
+  booksbylanguage_russian   73,991
+  booksbylanguage_german   236,249
+```
+
+English, Korean and Tagalog each looked exhausted after a few hundred books and were not: they had
+run out of one curated shelf while tens of thousands of books sat behind a different query. Korean
+reached 60.9% on a hundred and seventy books. It has thirty thousand available.
+
 **The same floor catches a book in the wrong language.** A watchdog restarted three downloaders
 with a fourth language's collection, and French's shelf ended up holding fourteen French books and
 a hundred and forty-six Japanese ones. Every one of those scores between nought and twenty-seven
