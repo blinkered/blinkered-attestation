@@ -169,3 +169,42 @@ describe('taking part of a collection', () => {
     expect(found).toEqual([])
   })
 })
+
+describe('a document too garbled to be evidence', () => {
+  const candidates = new Set(['SCHADE', 'HAUS', 'OKAY'])
+  const fold = (raw: string): string => raw.toUpperCase()
+
+  it('drops one whose tokens are mostly not words of the language', async () => {
+    // OCR fails in a way that looks like text: an English book run through a Cyrillic model gives
+    // РКЕРА СЕ for PREFACE. One such book attests a hundred words nobody wrote.
+    const documents = [
+      { locator: 'good', text: 'schade haus okay schade haus' },
+      { locator: 'ocr', text: 'ркера се веесетш ао шеемое схарткк schade' },
+    ]
+    const result = await scan('ia', documents, candidates, fold, 0.35)
+    expect(result.hits.get('SCHADE')?.locators).toEqual(['good'])
+    expect(result.hits.get('SCHADE')?.count).toBe(2)
+  })
+
+  it('leaves its tokens out of the denominator too', async () => {
+    // Letting them count would still be letting noise decide how common every other word is.
+    const documents = [
+      { locator: 'good', text: 'schade haus okay' },
+      { locator: 'ocr', text: 'aaa bbb ccc ddd eee fff ggg hhh iii jjj' },
+    ]
+    const result = await scan('ia', documents, candidates, fold, 0.35)
+    expect(result.tokens).toBe(3)
+  })
+
+  it('counts everything when no floor is asked for', async () => {
+    const documents = [{ locator: 'ocr', text: 'aaa bbb ccc schade' }]
+    const result = await scan('ia', documents, candidates, fold)
+    expect(result.tokens).toBe(4)
+    expect(result.hits.get('SCHADE')?.count).toBe(1)
+  })
+
+  it('keeps an empty document rather than dividing by zero over it', async () => {
+    const result = await scan('ia', [{ locator: 'blank', text: '' }], candidates, fold, 0.35)
+    expect(result.tokens).toBe(0)
+  })
+})

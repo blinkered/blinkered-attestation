@@ -85,7 +85,7 @@ for (const source of SOURCES) {
   const started = Date.now()
   let result
   try {
-    result = await scan(source.id, source.documents(), candidates, fold)
+    result = await scan(source.id, source.documents(), candidates, fold, source.legible)
   } catch (cause) {
     // Which collection failed, and which file it was reading. A truncated dump fails deep
     // inside a decompressor with no clue as to whose it was, and hunting that down by hand has

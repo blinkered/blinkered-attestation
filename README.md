@@ -330,6 +330,39 @@ build used three collections of pre-1930s literature and curated sentences, and 
 PIZZA. Spanish's build used twenty-two newspapers and dropped ABALANZAR. A language needs both
 ends, and the drop list is what says which end is missing.
 
+## OCR is not text
+
+Scanned books arrive as OCR, and OCR fails in a way that looks like language. The first Russian
+book fetched from the Internet Archive reads `РКЕРА СЕ: ВЕЕСЕтШ АО ШЕЕЯОЕ` — an English book run
+through a Cyrillic model, where PREFACE has become РКЕРА СЕ. Pure Cyrillic, plausible shape,
+meaning nothing. One such book in the evidence attests a hundred words nobody ever wrote.
+
+Measured against clean text, the problem and its answer are both clear:
+
+```
+                    median known-word rate
+  Gutenberg es              55%    never below 46%
+  Gutenberg fr              52%    never below 36%
+
+  Archive es                52%    21 of 39 books at 50% or better
+  Archive fr                49%    17 of 40
+  Archive ru                24%    11 of 32      worst book: 1%
+```
+
+Good OCR is indistinguishable from clean text; bad OCR is nowhere near it. So `scan` takes a
+**legibility floor** — the share of a document's tokens that are words the language's list already
+proposes — set at 0.35, below Gutenberg's worst. A document under it is dropped whole, tokens and
+all: letting its tokens into the denominator would still let noise decide how common every other
+word is.
+
+This is not circular. It does not decide whether a word is real. It decides whether a document is
+legible enough to be evidence about anything, which is a question about the document.
+
+**And the Archive is not Gutenberg.** Worth checking rather than assuming, since one library
+hosting another's texts would be one family wearing two names: of 409 books fetched across four
+languages, none mention Project Gutenberg. They are library scans, gathered by people with no
+connection to it.
+
 ## What decides a language's coverage
 
 Four languages built, and the number that predicts coverage is not the number of families. It is

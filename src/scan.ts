@@ -60,11 +60,24 @@ const SAMPLES = 2
  * costs the in-memory case nothing and saves a second copy of the counting logic — which is the
  * copy that would have drifted.
  */
+/**
+ * How much of a document has to be words of the language before it counts as one.
+ *
+ * Scanned books come as OCR, and OCR fails in a way that looks like text. An English book run
+ * through a Cyrillic model produces РКЕРА СЕ for PREFACE — pure Cyrillic, plausible shape,
+ * meaning nothing. One such book in the evidence attests a hundred words that nobody ever wrote.
+ *
+ * The test is the share of a document's tokens that are words this language's list already
+ * proposes. That is not circular: it does not decide whether a word is real, only whether a
+ * document is legible enough to be evidence about anything. Clean Gutenberg text scores a median
+ * of 52% in Spanish and French and never below 36%; the Russian OCR that caused this scored 1%.
+ */
 export async function scan(
   source: string,
   documents: Iterable<Document> | AsyncIterable<Document>,
   candidates: ReadonlySet<string>,
   fold: (raw: string) => string,
+  legible = 0,
 ): Promise<ScanResult> {
   // One entry per word, built up in place. Counting into one map and sampling into another
   // would leave the two to be recombined at the end against a key that must be in both — and a
@@ -73,18 +86,30 @@ export async function scan(
   let tokens = 0
 
   for await (const document of documents) {
+    // Read the document into its own tally first, so an illegible one can be dropped whole. A
+    // filter that let its tokens into the denominator would still be letting OCR noise decide
+    // how common every other word is.
+    const found = new Map<string, number>()
+    let counted = 0
+    let known = 0
     for (const match of document.text.matchAll(TOKEN)) {
       const key = fold(match[0].normalize('NFC'))
       if (key.length < SHORTEST) continue
-      tokens += 1
+      counted += 1
       if (!candidates.has(key)) continue
+      known += 1
+      found.set(key, (found.get(key) ?? 0) + 1)
+    }
+    if (legible > 0 && counted > 0 && known / counted < legible) continue
 
+    tokens += counted
+    for (const [key, count] of found) {
       const hit = hits.get(key)
       if (hit === undefined) {
-        hits.set(key, { count: 1, locators: [document.locator] })
+        hits.set(key, { count, locators: [document.locator] })
         continue
       }
-      hit.count += 1
+      hit.count += count
       // Distinct documents only. Two samples pointing at the same page prove one sighting
       // twice, which is the opposite of what a second sample is for.
       if (hit.locators.length < SAMPLES && !hit.locators.includes(document.locator)) {
