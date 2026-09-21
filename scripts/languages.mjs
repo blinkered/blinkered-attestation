@@ -23,6 +23,7 @@ import { chart, conform, knee, readEvidence, saturation, sourceFor } from '../di
 const HERE = new URL('..', import.meta.url).pathname
 const SIBLINGS = join(HERE, '..')
 const PREFIX = 'blinkered-dictionary-'
+const ORG = 'blinkered'
 
 const asked = process.argv.slice(2)
 const tags = readdirSync(SIBLINGS)
@@ -106,6 +107,42 @@ for (const tag of tags) {
 
 writeFileSync(join(HERE, 'curves.svg'), chart(curves))
 
+// The manifest the live chart reads. It carries a snapshot of every curve, so `index.html` draws
+// something the moment it loads and while the language repositories are private; once they are
+// public the page refetches each `curve.json` from its own main branch and says which languages
+// came back live. Same data either way — this is the fallback, not the source of truth.
+writeFileSync(
+  join(HERE, 'languages.json'),
+  `${JSON.stringify(
+    {
+      generated: new Date().toISOString().slice(0, 10),
+      org: ORG,
+      languages: rows.map((row) => ({
+        tag: row.tag,
+        repo: `${PREFIX}${row.tag}`,
+        published: row.state.published,
+        built: row.built,
+        conforms: row.built ? row.conforms : null,
+        candidates: row.built ? row.candidates : null,
+        shipped: row.built ? row.shipped : null,
+        families: row.built ? row.families : null,
+        knee: row.built && row.knee !== undefined ? row.knee.families : null,
+        steps: row.built
+          ? (curves.find((curve) => curve.language === row.tag)?.steps ?? []).map((step) => ({
+              families: step.families,
+              added: step.added,
+              kept: step.kept,
+              share: Number(step.share.toFixed(6)),
+              gained: step.gained,
+            }))
+          : [],
+      })),
+    },
+    null,
+    2,
+  )}\n`,
+)
+
 const count = (value) => (value === undefined ? '—' : value.toLocaleString())
 const table = rows.map((row) => {
   if (!row.built) return `| \`${row.tag}\` | not built | — | — | — | — | — | — | no |`
@@ -161,4 +198,6 @@ Generated ${new Date().toISOString().slice(0, 10)}.
 `,
 )
 
-process.stderr.write(`wrote LANGUAGES.md and curves.svg for ${String(rows.length)} languages\n`)
+process.stderr.write(
+  `wrote LANGUAGES.md, curves.svg and languages.json for ${String(rows.length)} languages\n`,
+)

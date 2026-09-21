@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Blinkered attestation: where every language stands</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --ink: #1a1a1a;
+        --dim: #6b6b6b;
+        --rule: #d8d8d8;
+        --paper: #ffffff;
+        --panel: #f7f7f7;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --ink: #e8e8e8;
+          --dim: #9a9a9a;
+          --rule: #3a3a3a;
+          --paper: #101013;
+          --panel: #1a1a1f;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        padding: 32px 24px 64px;
+        background: var(--paper);
+        color: var(--ink);
+        font:
+          15px/1.55 system-ui,
+          -apple-system,
+          sans-serif;
+      }
+      main {
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+      h1 {
+        font-size: 24px;
+        margin: 0 0 4px;
+        font-weight: 620;
+      }
+      p.lede {
+        margin: 0 0 24px;
+        color: var(--dim);
+        max-width: 68ch;
+      }
+      #status {
+        font-size: 13px;
+        color: var(--dim);
+        margin: 0 0 16px;
+      }
+      #status b {
+        color: var(--ink);
+        font-weight: 600;
+      }
+      figure {
+        margin: 0;
+        background: var(--panel);
+        border: 1px solid var(--rule);
+        border-radius: 10px;
+        padding: 12px 8px 4px;
+      }
+      svg {
+        display: block;
+        width: 100%;
+        height: auto;
+        touch-action: none;
+      }
+      #legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin: 16px 0 28px;
+      }
+      #legend button {
+        font: inherit;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding: 5px 11px;
+        border: 1px solid var(--rule);
+        border-radius: 999px;
+        background: var(--panel);
+        color: var(--ink);
+        cursor: pointer;
+      }
+      #legend button[aria-pressed='false'] {
+        opacity: 0.4;
+      }
+      #legend .swatch {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      #legend .pct {
+        color: var(--dim);
+        font-variant-numeric: tabular-nums;
+      }
+      #legend .live {
+        font-size: 10px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--dim);
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        font-variant-numeric: tabular-nums;
+      }
+      th,
+      td {
+        text-align: right;
+        padding: 7px 10px;
+        border-bottom: 1px solid var(--rule);
+      }
+      th:first-child,
+      td:first-child {
+        text-align: left;
+      }
+      th {
+        font-weight: 600;
+        color: var(--dim);
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+      td.bad {
+        color: #d62728;
+        font-weight: 600;
+      }
+      footer {
+        margin-top: 32px;
+        font-size: 13px;
+        color: var(--dim);
+      }
+      a {
+        color: inherit;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>How every language is going</h1>
+      <p class="lede">
+        How much of its own candidate list each language could independently prove, against the
+        number of independent families it took. The first two families of every language keep
+        nothing, because the rule needs three.
+      </p>
+      <p id="status">Loading…</p>
+
+      <figure>
+        <svg id="chart" viewBox="0 0 900 460" role="img" aria-label="Saturation curves"></svg>
+      </figure>
+
+      <div id="legend"></div>
+
+      <table id="table">
+        <thead>
+          <tr>
+            <th>language</th>
+            <th>candidates</th>
+            <th>proved</th>
+            <th>coverage</th>
+            <th>families</th>
+            <th>returns stop</th>
+            <th>conforms</th>
+            <th>curve</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <footer>
+        Each language measures its own curve from its own committed evidence and publishes it as
+        <code>curve.json</code>. This page reads those files from each repository's main branch, so
+        it is as current as the repositories are. Nothing here is authoritative: if this disagrees
+        with a language repository, the language repository is right.
+      </footer>
+    </main>
+
+    <script type="module">
+      const INK = [
+        '#1f77b4',
+        '#d62728',
+        '#2ca02c',
+        '#9467bd',
+        '#ff7f0e',
+        '#17becf',
+        '#8c564b',
+        '#e377c2',
+        '#7f7f7f',
+        '#bcbd22',
+      ]
+      const SVG = 'http://www.w3.org/2000/svg'
+      const W = 900
+      const H = 460
+      const PAD = { left: 56, right: 24, top: 18, bottom: 52 }
+      const PLOT_W = W - PAD.left - PAD.right
+      const PLOT_H = H - PAD.top - PAD.bottom
+
+      const chart = document.getElementById('chart')
+      const legend = document.getElementById('legend')
+      const status = document.getElementById('status')
+      const tbody = document.querySelector('#table tbody')
+
+      const hidden = new Set()
+      let state = { org: 'blinkered', generated: '', languages: [] }
+
+      const node = (name, attrs, text) => {
+        const made = document.createElementNS(SVG, name)
+        for (const [key, value] of Object.entries(attrs)) made.setAttribute(key, String(value))
+        if (text !== undefined) made.textContent = text
+        return made
+      }
+
+      const drawable = () =>
+        state.languages.filter((one) => one.steps.length > 0 && !hidden.has(one.tag))
+
+      function draw() {
+        chart.replaceChildren()
+        const shown = drawable()
+        const maxFamilies = Math.max(1, ...shown.map((one) => one.steps.length))
+        const x = (families) =>
+          PAD.left + (maxFamilies === 1 ? 0 : ((families - 1) / (maxFamilies - 1)) * PLOT_W)
+        const y = (share) => PAD.top + PLOT_H - share * PLOT_H
+
+        for (let percent = 0; percent <= 100; percent += 20) {
+          const at = y(percent / 100)
+          chart.append(
+            node('line', {
+              x1: PAD.left,
+              y1: at,
+              x2: PAD.left + PLOT_W,
+              y2: at,
+              stroke: 'currentColor',
+              'stroke-opacity': 0.14,
+            }),
+            node(
+              'text',
+              {
+                x: PAD.left - 10,
+                y: at,
+                fill: 'currentColor',
+                'fill-opacity': 0.55,
+                'font-size': 12,
+                'text-anchor': 'end',
+                'dominant-baseline': 'middle',
+              },
+              `${percent}%`,
+            ),
+          )
+        }
+
+        const every = Math.max(1, Math.ceil(maxFamilies / 10))
+        for (let families = 1; families <= maxFamilies; families += every) {
+          chart.append(
+            node(
+              'text',
+              {
+                x: x(families),
+                y: PAD.top + PLOT_H + 20,
+                fill: 'currentColor',
+                'fill-opacity': 0.55,
+                'font-size': 12,
+                'text-anchor': 'middle',
+              },
+              families,
+            ),
+          )
+        }
+
+        chart.append(
+          node('line', {
+            x1: PAD.left,
+            y1: PAD.top + PLOT_H,
+            x2: PAD.left + PLOT_W,
+            y2: PAD.top + PLOT_H,
+            stroke: 'currentColor',
+            'stroke-opacity': 0.35,
+          }),
+          node(
+            'text',
+            {
+              x: PAD.left + PLOT_W / 2,
+              y: H - 10,
+              fill: 'currentColor',
+              'fill-opacity': 0.55,
+              'font-size': 13,
+              'text-anchor': 'middle',
+            },
+            'independent families consulted',
+          ),
+          node(
+            'text',
+            {
+              x: 16,
+              y: PAD.top + PLOT_H / 2,
+              fill: 'currentColor',
+              'fill-opacity': 0.55,
+              'font-size': 13,
+              'text-anchor': 'middle',
+              transform: `rotate(-90 16 ${PAD.top + PLOT_H / 2})`,
+            },
+            'candidate list proved',
+          ),
+        )
+
+        for (const one of shown) {
+          chart.append(
+            node('polyline', {
+              points: one.steps.map((step) => `${x(step.families)},${y(step.share)}`).join(' '),
+              fill: 'none',
+              stroke: one.ink,
+              'stroke-width': 2.25,
+              'stroke-linejoin': 'round',
+            }),
+          )
+          const last = one.steps.at(-1)
+          chart.append(
+            node('circle', { cx: x(last.families), cy: y(last.share), r: 3.5, fill: one.ink }),
+          )
+        }
+
+        // The readout: one vertical rule and a dot per language at whatever family count the
+        // pointer is nearest, because the interesting comparison is always across languages at
+        // the same number of families.
+        const rule = node('line', {
+          x1: 0,
+          y1: PAD.top,
+          x2: 0,
+          y2: PAD.top + PLOT_H,
+          stroke: 'currentColor',
+          'stroke-opacity': 0.3,
+          visibility: 'hidden',
+        })
+        const readout = node('g', { visibility: 'hidden' })
+        chart.append(rule, readout)
+
+        const move = (event) => {
+          const box = chart.getBoundingClientRect()
+          const at = ((event.clientX - box.left) / box.width) * W
+          if (at < PAD.left - 8 || at > PAD.left + PLOT_W + 8) return leave()
+          const families = Math.min(
+            maxFamilies,
+            Math.max(
+              1,
+              Math.round(
+                maxFamilies === 1 ? 1 : 1 + ((at - PAD.left) / PLOT_W) * (maxFamilies - 1),
+              ),
+            ),
+          )
+          const here = x(families)
+          rule.setAttribute('x1', here)
+          rule.setAttribute('x2', here)
+          rule.setAttribute('visibility', 'visible')
+
+          readout.replaceChildren()
+          const found = shown
+            .map((one) => ({ one, step: one.steps[families - 1] }))
+            .filter((row) => row.step !== undefined)
+            .sort((left, right) => right.step.share - left.step.share)
+
+          for (const row of found) {
+            readout.append(
+              node('circle', {
+                cx: here,
+                cy: y(row.step.share),
+                r: 4,
+                fill: row.one.ink,
+                stroke: 'var(--panel)',
+                'stroke-width': 1.5,
+              }),
+            )
+          }
+          const lines = found.map(
+            (row) =>
+              `${row.one.tag} ${(row.step.share * 100).toFixed(1)}%  ${row.step.kept.toLocaleString()}`,
+          )
+          const boxWidth = 132
+          const boxHeight = 20 + lines.length * 16
+          const left = here > PAD.left + PLOT_W - boxWidth - 12 ? here - boxWidth - 10 : here + 10
+          readout.append(
+            node('rect', {
+              x: left,
+              y: PAD.top + 6,
+              width: boxWidth,
+              height: boxHeight,
+              rx: 6,
+              fill: 'var(--paper)',
+              stroke: 'currentColor',
+              'stroke-opacity': 0.2,
+            }),
+            node(
+              'text',
+              {
+                x: left + 10,
+                y: PAD.top + 23,
+                fill: 'currentColor',
+                'fill-opacity': 0.6,
+                'font-size': 11,
+              },
+              `${families} famil${families === 1 ? 'y' : 'ies'}`,
+            ),
+          )
+          found.forEach((row, index) => {
+            readout.append(
+              node(
+                'text',
+                {
+                  x: left + 10,
+                  y: PAD.top + 40 + index * 16,
+                  fill: row.one.ink,
+                  'font-size': 12,
+                  'font-variant-numeric': 'tabular-nums',
+                },
+                lines[index],
+              ),
+            )
+          })
+          readout.setAttribute('visibility', 'visible')
+        }
+        const leave = () => {
+          rule.setAttribute('visibility', 'hidden')
+          readout.setAttribute('visibility', 'hidden')
+        }
+        chart.onpointermove = move
+        chart.onpointerleave = leave
+      }
+
+      function paint() {
+        legend.replaceChildren()
+        for (const one of state.languages) {
+          if (one.steps.length === 0) continue
+          const on = !hidden.has(one.tag)
+          const button = document.createElement('button')
+          button.setAttribute('aria-pressed', String(on))
+          button.innerHTML =
+            `<span class="swatch" style="background:${one.ink}"></span>` +
+            `<span>${one.tag}</span>` +
+            `<span class="pct">${(one.steps.at(-1).share * 100).toFixed(1)}%</span>` +
+            (one.live ? '<span class="live">live</span>' : '')
+          button.onclick = () => {
+            if (hidden.has(one.tag)) hidden.delete(one.tag)
+            else hidden.add(one.tag)
+            paint()
+          }
+          legend.append(button)
+        }
+
+        tbody.replaceChildren()
+        for (const one of state.languages) {
+          const row = document.createElement('tr')
+          // Every number on this page comes off the curve, including these, so a row can never
+          // disagree with the line above it. Where a repository's words.txt and its evidence
+          // have drifted apart the conforms column is the place that says so.
+          const proved = one.built ? one.steps.at(-1).kept : 0
+          const cells = one.built
+            ? [
+                one.tag,
+                one.candidates.toLocaleString(),
+                proved.toLocaleString(),
+                `${((100 * proved) / one.candidates).toFixed(1)}%`,
+                one.families,
+                one.knee ?? 'still paying',
+                one.conforms ? 'yes' : 'NO',
+                one.live ? 'live' : 'snapshot',
+              ]
+            : [one.tag, 'not built', '—', '—', '—', '—', '—', '—']
+          for (const [index, value] of cells.entries()) {
+            const cell = document.createElement('td')
+            cell.textContent = value
+            if (index === 6 && value === 'NO') cell.className = 'bad'
+            row.append(cell)
+          }
+          tbody.append(row)
+        }
+
+        draw()
+      }
+
+      /** Each published language's own curve, from its own main branch. */
+      async function refresh() {
+        const live = await Promise.all(
+          state.languages.map(async (one) => {
+            if (!one.published) return false
+            const url = `https://raw.githubusercontent.com/${state.org}/${one.repo}/main/curve.json`
+            try {
+              const answer = await fetch(url, { cache: 'no-store' })
+              if (!answer.ok) return false
+              const curve = await answer.json()
+              Object.assign(one, {
+                steps: curve.steps,
+                candidates: curve.candidates,
+                shipped: curve.shipped,
+                families: curve.families,
+                knee: curve.knee,
+                built: true,
+                live: true,
+              })
+              return true
+            } catch {
+              // A private repository answers this with a network error, which is the honest
+              // answer to "is it published yet" and not a fault to shout about.
+              return false
+            }
+          }),
+        )
+        const count = live.filter(Boolean).length
+        const total = state.languages.filter((one) => one.steps.length > 0).length
+        status.innerHTML =
+          count === 0
+            ? `<b>${total}</b> languages, all from the roll-up of ${state.generated}. ` +
+              `No repository answered — they are private, so the chart cannot read them yet.`
+            : `<b>${total}</b> languages: <b>${count}</b> read live from ${state.org}, ` +
+              `the rest from the roll-up of ${state.generated}.`
+        paint()
+      }
+
+      const manifest = await fetch('languages.json').then((answer) => answer.json())
+      state = manifest
+      state.languages.forEach((one, index) => {
+        one.ink = INK[index % INK.length]
+        one.live = false
+      })
+      paint()
+      await refresh()
+    </script>
+  </body>
+</html>

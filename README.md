@@ -15,8 +15,10 @@ This repository is the other way round. A word ships because we can show it is r
 Dictionaries still have a job — they supply **candidates**, the words worth looking up. What
 earns a word its place is evidence, recorded per word, in a file anybody can argue with.
 
-**[Where every language stands](LANGUAGES.md)** — coverage, families consulted, and all of their
-saturation curves on one pair of axes.
+**[How every language is going](https://blinkered.github.io/blinkered-attestation/)** — the live
+chart: every language's saturation curve on one pair of axes, read from each repository's own
+`curve.json` on its main branch. [`LANGUAGES.md`](LANGUAGES.md) is the same thing as a table,
+for reading on GitHub.
 
 ## The rule
 
@@ -319,8 +321,19 @@ node scripts/languages.mjs de ko  # only these
 ```
 
 It reads each `blinkered-dictionary-*` beside this one, measures its committed evidence with the
-same code that language used, and writes `LANGUAGES.md` and `curves.svg`. Nothing in it is
-authoritative: if it disagrees with a language repository, the language repository is right.
+same code that language used, and writes three things: `LANGUAGES.md` and `curves.svg` for
+reading on GitHub, and `languages.json` for the live chart. Nothing in it is authoritative: if it
+disagrees with a language repository, the language repository is right.
+
+**The live chart reads the repositories, not this roll-up.** `index.html` fetches every published
+language's `curve.json` from its own main branch, so it is as current as the repositories are and
+cannot go stale between roll-ups. `languages.json` is what it draws before those answers arrive,
+and what it falls back to for a language it cannot reach — which is every language while these
+repositories are private. The page says which languages it read live and which it did not, rather
+than letting a reader assume.
+
+That division is the same one as everywhere else here: each language measures itself, and this
+repository only puts the measurements side by side.
 
 **The workflow rules**, because every hard-won fact in this README was learned in a language
 repository and would have been lost there. The truncated dump that failed as a CRC error, the

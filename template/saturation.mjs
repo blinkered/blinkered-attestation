@@ -63,7 +63,34 @@ ${
 `,
 )
 
-process.stderr.write(`${LANGUAGE}: ${String(steps.length)} families, wrote SATURATION.md\n`)
+// The same curve as machine-readable data, so the roll-up in `blinkered-attestation` can pull it
+// from this repository's main branch rather than re-reading sixty megabytes of evidence. This
+// file is the published form of the measurement: small, stable, and the only thing the chart
+// needs.
+writeFileSync(
+  'curve.json',
+  `${JSON.stringify(
+    {
+      language: LANGUAGE,
+      built: evidence.built,
+      candidates: total,
+      shipped,
+      families: steps.length,
+      knee: knee === undefined ? null : knee.families,
+      steps: steps.map((step) => ({
+        families: step.families,
+        added: step.added,
+        kept: step.kept,
+        share: Number(step.share.toFixed(6)),
+        gained: step.gained,
+      })),
+    },
+    null,
+    2,
+  )}\n`,
+)
+
+process.stderr.write(`${LANGUAGE}: ${String(steps.length)} families, wrote SATURATION.md and curve.json\n`)
 for (const step of steps) {
   process.stderr.write(
     `  ${String(step.families).padStart(2)}  ${step.added.padEnd(26)} ` +

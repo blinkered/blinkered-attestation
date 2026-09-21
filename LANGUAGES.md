@@ -15,16 +15,16 @@ the rule needs three; a curve that climbs steeply at three and then flattens has
 its families can see, and a curve still climbing at twenty has more to gain from another
 publisher.
 
-| language | candidates | proved | coverage  | families | returns stop at | evidence | conforms | published |
-| -------- | ---------- | ------ | --------- | -------- | --------------- | -------- | -------- | --------- |
-| `de`     | 36,493     | 35,725 | **97.9%** | 5        | 5               | 2 shards | yes      | yes       |
-| `en`     | not built  | —      | —         | —        | —               | —        | —        | no        |
-| `es`     | 201,655    | 96,350 | **47.8%** | 5        | 5               | one file | yes      | no        |
-| `fr`     | 144,105    | 69,104 | **48.0%** | 5        | 5               | one file | yes      | no        |
-| `ja`     | 191,188    | 11,448 | **6.0%**  | 3        | still paying    | one file | yes      | no        |
-| `ko`     | 38,467     | 17,465 | **45.4%** | 23       | 5               | one file | yes      | yes       |
-| `ru`     | not built  | —      | —         | —        | —               | —        | —        | no        |
-| `tl`     | 23,306     | 9,247  | **39.7%** | 6        | 6               | one file | **NO**   | no        |
+| language | candidates | proved  | coverage  | families | returns stop at | evidence | conforms | published |
+| -------- | ---------- | ------- | --------- | -------- | --------------- | -------- | -------- | --------- |
+| `de`     | 36,493     | 35,725  | **97.9%** | 5        | 5               | 2 shards | yes      | yes       |
+| `en`     | not built  | —       | —         | —        | —               | —        | —        | no        |
+| `es`     | 201,655    | 96,350  | **47.8%** | 5        | 5               | one file | yes      | no        |
+| `fr`     | 144,105    | 69,104  | **48.0%** | 5        | 5               | one file | yes      | no        |
+| `ja`     | 191,188    | 11,448  | **6.0%**  | 3        | still paying    | one file | yes      | no        |
+| `ko`     | 38,467     | 17,465  | **45.4%** | 23       | 5               | one file | yes      | yes       |
+| `ru`     | 424,352    | 210,392 | **49.6%** | 4        | still paying    | 5 shards | yes      | no        |
+| `tl`     | 23,306     | 9,247   | **39.7%** | 6        | 6               | one file | **NO**   | no        |
 
 **Coverage is not a grade.** It is the share of somebody else's dictionary we could independently
 prove, and a big dictionary full of inflected forms will score lower than a small one of ordinary
