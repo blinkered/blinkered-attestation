@@ -604,10 +604,10 @@
       "built": true,
       "conforms": true,
       "candidates": 191188,
-      "shipped": 34636,
+      "shipped": 39058,
       "families": 13,
       "checkable": 12,
-      "knee": 5,
+      "knee": 4,
       "steps": [
         {
           "families": 1,
@@ -626,78 +626,78 @@
         {
           "families": 3,
           "added": "internetarchive",
-          "kept": 30594,
-          "share": 0.160021,
-          "gained": 30594
+          "kept": 36801,
+          "share": 0.192486,
+          "gained": 36801
         },
         {
           "families": 4,
           "added": "tatoeba",
-          "kept": 33476,
-          "share": 0.175095,
-          "gained": 2882
+          "kept": 38391,
+          "share": 0.200802,
+          "gained": 1590
         },
         {
           "families": 5,
           "added": "gutenberg",
-          "kept": 34578,
-          "share": 0.180859,
-          "gained": 1102
+          "kept": 39029,
+          "share": 0.204139,
+          "gained": 638
         },
         {
           "families": 6,
           "added": "yomiuri.co.jp",
-          "kept": 34605,
-          "share": 0.181,
-          "gained": 27
+          "kept": 39044,
+          "share": 0.204218,
+          "gained": 15
         },
         {
           "families": 7,
           "added": "hokkaido-np.co.jp",
-          "kept": 34617,
-          "share": 0.181063,
-          "gained": 12
+          "kept": 39050,
+          "share": 0.204249,
+          "gained": 6
         },
         {
           "families": 8,
-          "added": "sankei.com",
-          "kept": 34623,
-          "share": 0.181094,
-          "gained": 6
+          "added": "chunichi.co.jp",
+          "kept": 39054,
+          "share": 0.20427,
+          "gained": 4
         },
         {
           "families": 9,
           "added": "asahi.com",
-          "kept": 34629,
-          "share": 0.181125,
-          "gained": 6
+          "kept": 39057,
+          "share": 0.204286,
+          "gained": 3
         },
         {
           "families": 10,
-          "added": "chunichi.co.jp",
-          "kept": 34633,
-          "share": 0.181146,
-          "gained": 4
+          "added": "sankei.com",
+          "kept": 39058,
+          "share": 0.204291,
+          "gained": 1
         },
         {
           "families": 11,
           "added": "tokyo-np.co.jp",
-          "kept": 34636,
-          "share": 0.181162,
-          "gained": 3
+          "kept": 39058,
+          "share": 0.204291,
+          "gained": 0
         },
         {
           "families": 12,
           "added": "nikkei.com",
-          "kept": 34636,
-          "share": 0.181162,
+          "kept": 39058,
+          "share": 0.204291,
           "gained": 0
         },
         {
           "families": 13,
           "added": "mainichi.jp",
-          "kept": 34636,
-          "share": 0.181162,
+          "kept": 39058,
+          "share": 0.204291,
           "gained": 0
         }
       ]
@@ -975,10 +975,10 @@
       "built": true,
       "conforms": true,
       "candidates": 23306,
-      "shipped": 9716,
-      "families": 11,
-      "checkable": 10,
-      "knee": 6,
+      "shipped": 12573,
+      "families": 12,
+      "checkable": 11,
+      "knee": 5,
       "steps": [
         {
           "families": 1,
@@ -996,66 +996,73 @@
         },
         {
           "families": 3,
-          "added": "gutenberg",
-          "kept": 6513,
-          "share": 0.279456,
-          "gained": 6513
+          "added": "internetarchive",
+          "kept": 11341,
+          "share": 0.486613,
+          "gained": 11341
         },
         {
           "families": 4,
-          "added": "tatoeba",
-          "kept": 8860,
-          "share": 0.38016,
-          "gained": 2347
+          "added": "gutenberg",
+          "kept": 11959,
+          "share": 0.51313,
+          "gained": 618
         },
         {
           "families": 5,
-          "added": "ebible",
-          "kept": 9247,
-          "share": 0.396765,
-          "gained": 387
+          "added": "tatoeba",
+          "kept": 12423,
+          "share": 0.533039,
+          "gained": 464
         },
         {
           "families": 6,
-          "added": "saksingayon.com",
-          "kept": 9536,
-          "share": 0.409165,
-          "gained": 289
+          "added": "ebible",
+          "kept": 12504,
+          "share": 0.536514,
+          "gained": 81
         },
         {
           "families": 7,
-          "added": "tribune.net.ph",
-          "kept": 9648,
-          "share": 0.413971,
-          "gained": 112
+          "added": "saksingayon.com",
+          "kept": 12542,
+          "share": 0.538145,
+          "gained": 38
         },
         {
           "families": 8,
-          "added": "rappler.com",
-          "kept": 9693,
-          "share": 0.415901,
-          "gained": 45
+          "added": "tribune.net.ph",
+          "kept": 12559,
+          "share": 0.538874,
+          "gained": 17
         },
         {
           "families": 9,
-          "added": "gmanetwork.com",
-          "kept": 9705,
-          "share": 0.416416,
-          "gained": 12
+          "added": "rappler.com",
+          "kept": 12565,
+          "share": 0.539132,
+          "gained": 6
         },
         {
           "families": 10,
-          "added": "abante.com.ph",
-          "kept": 9715,
-          "share": 0.416845,
-          "gained": 10
+          "added": "gmanetwork.com",
+          "kept": 12570,
+          "share": 0.539346,
+          "gained": 5
         },
         {
           "families": 11,
+          "added": "abante.com.ph",
+          "kept": 12573,
+          "share": 0.539475,
+          "gained": 3
+        },
+        {
+          "families": 12,
           "added": "inquirer.net",
-          "kept": 9716,
-          "share": 0.416888,
-          "gained": 1
+          "kept": 12573,
+          "share": 0.539475,
+          "gained": 0
         }
       ]
     }
