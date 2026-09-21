@@ -27,6 +27,21 @@ describe('discovering what a publisher has', () => {
     expect((await discover('hani.co.kr', get, undefined, 0)).urls).toEqual(['https://hani.co.kr/a'])
   })
 
+  it('leaves a site’s stylesheets and scripts where they are', async () => {
+    const get = web({
+      'https://inquirer.net/robots.txt': 'User-agent: *\nSitemap: https://inquirer.net/s.xml',
+      'https://inquirer.net/s.xml':
+        '<urlset>' +
+        '<url><loc>https://inquirer.net/article</loc></url>' +
+        '<url><loc>https://inquirer.net/cache/swiper.css?ver=1789017481</loc></url>' +
+        '<url><loc>https://inquirer.net/app.js</loc></url>' +
+        '</urlset>',
+    })
+    expect((await discover('inquirer.net', get, undefined, 0)).urls).toEqual([
+      'https://inquirer.net/article',
+    ])
+  })
+
   it('keeps the publisher’s own pages and drops everybody else’s', async () => {
     // A feed names the fonts and scripts a page loads as readily as the article. French's harvest
     // came back with three pages from a font CDN, which then appeared in its saturation curve as
@@ -153,6 +168,19 @@ describe('fetching a publisher’s pages', () => {
   it('skips a page that will not load', async () => {
     const get = web({ 'https://hani.co.kr/a': article('본문 ') })
     expect(await collect(sitePages(harvest, get, undefined, 0))).toHaveLength(1)
+  })
+
+  it('skips a response with no markup in it, which is a file and not a page', async () => {
+    // Tagalog's harvest fetched a minified stylesheet that got past the extension filter on a
+    // query string, and read BASE, STYLE, NORMAL, RIGHT, TOP, WHITE and BLACK out of it as
+    // sightings. We asked a website for a page; something with no tags in it is not one.
+    const css = '@font-face{font-family:swiper-icons;font-display:swap}'.repeat(20)
+    const get = web({
+      'https://hani.co.kr/a': article('본문 '),
+      'https://hani.co.kr/thin': css,
+    })
+    const found = await collect(sitePages(harvest, get, undefined, 0))
+    expect(found.map((document) => document.locator)).toEqual(['https://hani.co.kr/a'])
   })
 
   it('skips a page with almost no text, which is a cookie wall and not evidence', async () => {

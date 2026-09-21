@@ -185,6 +185,14 @@ chain). Deutsches Textarchiv and Zeno.org for German. Gallica for French. Biblio
 Miguel de Cervantes for Spanish. Lib.ru for Russian. These are Gutenberg's equivalents and nobody
 thinks of them because Gutenberg is the one with the English name.
 
+**A harvest must fetch pages, not files.** A sitemap lists everything a site serves, and a
+publisher's own stylesheet is on the same domain as its journalism. Tagalog's harvest fetched
+`inquirer.net/.../swiper-v6.css` and read BASE, STYLE, NORMAL, RIGHT, TOP, WHITE and BLACK out of
+it — ordinary words in more than one language, duly recorded as sightings at a Philippine
+newspaper. Two guards: asset extensions are never requested, including behind a `?ver=` query,
+and a response with no markup in it at all is not a page and is skipped. The second is the one
+that matters, because the first is a list somebody has to maintain.
+
 **A harvest must stay on the publisher it is citing.** A sitemap or a feed names the fonts,
 scripts and trackers a page loads as readily as the article, and following those quietly turns a
 CDN into a family. French's harvest came back with three pages from Adobe Typekit, which duly

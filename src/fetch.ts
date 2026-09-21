@@ -114,8 +114,16 @@ export async function discover(
 
   const urls = [...new Set(found)]
     .filter((url) => url.startsWith('https://') || url.startsWith('http://'))
-    // A sitemap lists every page a site has, including its own sitemaps and images.
-    .filter((url) => !/\.(?:xml|jpe?g|png|gif|svg|webp|mp4|mp3|pdf|zip)(?:\?|$)/iu.test(url))
+    // A sitemap lists every file a site has, not only its articles: its own sitemaps, its
+    // images, and — this cost Tagalog a harvest — its stylesheets. A minified CSS file read as
+    // prose yields BASE, STYLE, NORMAL, RIGHT, TOP, WHITE, BLACK, which are ordinary words in
+    // more than one language and were duly recorded as sightings.
+    .filter(
+      (url) =>
+        !/\.(?:xml|jpe?g|png|gif|svg|webp|avif|ico|mp4|mp3|pdf|zip|css|m?js|json|woff2?|ttf|eot)(?:\?|$)/iu.test(
+          url,
+        ),
+    )
     // This publisher's own pages, and nobody else's. A feed names the stylesheets and fonts a
     // page loads as readily as the article, and French's harvest came back with three pages from
     // a font CDN — which then appeared in its saturation curve as an independent family called
@@ -144,6 +152,10 @@ export async function* sitePages(
     const html = await get(url)
     await wait(delayMs)
     if (html === null) continue
+    // We asked a website for a page. A response with no markup in it at all is a stylesheet, a
+    // script or a data file that slipped past the extension filter, and reading it as prose
+    // attests whatever keywords its syntax happens to share with the language.
+    if (!/<[a-z!/][^>]*>/iu.test(html)) continue
     const text = readableText(html)
     if (text.length < shortest) continue
     yield { locator: url, text }
