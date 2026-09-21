@@ -15,6 +15,14 @@
  * It appends. A harvest is slow by design — one request at a time, a second apart — so stopping
  * one halfway should cost the pages not yet fetched, not the ones already in hand.
  *
+ * **A language that needs an analyser needs it here too.** Matching a fetched page with a regular
+ * expression assumes two things that are not true everywhere: that words are separated by
+ * something, and that the page is written in the script the list is written in. Japanese fails
+ * both — a run of kanji has no boundaries in it, and the list is kana — so its harvest found one
+ * word across three national newspapers before this. Such a language exports `READ` from
+ * `sources.mjs`, the same analyser its collections already go through, and the pages are read
+ * with it rather than with a second, worse answer to the same question.
+ *
  * Usage:
  *   node harvest.mjs           # every domain in sources.mjs
  *   node harvest.mjs 200       # at most 200 pages per domain
@@ -22,7 +30,7 @@
 import { appendFileSync, existsSync, readFileSync } from 'node:fs'
 import { alphabetFor } from '@blinkered/engine'
 import { domainOf, harvestSites } from '@blinkered/attestation'
-import { DOMAINS, LANGUAGE } from './sources.mjs'
+import { DOMAINS, LANGUAGE, READ } from './sources.mjs'
 
 const OUT = new URL('searched.tsv', import.meta.url).pathname
 const perDomain = Number(process.argv[2] ?? 300)
@@ -58,12 +66,18 @@ process.stderr.write(
 )
 if (already.size > 0) process.stderr.write(`${String(already.size)} pages already harvested\n`)
 
+/** Pages we have not seen before. Filtered before the analyser, which is the expensive part. */
+async function* fetched() {
+  for await (const page of harvestSites(DOMAINS, undefined, perDomain)) {
+    if (already.has(page.locator)) continue
+    already.add(page.locator)
+    yield page
+  }
+}
+
 const counts = new Map()
 let added = 0
-for await (const page of harvestSites(DOMAINS, undefined, perDomain)) {
-  if (already.has(page.locator)) continue
-  already.add(page.locator)
-
+for await (const page of READ === undefined ? fetched() : READ(fetched())) {
   const found = new Map()
   for (const match of page.text.matchAll(TOKEN)) {
     const key = fold(match[0].normalize('NFC'))

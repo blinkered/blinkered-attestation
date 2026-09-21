@@ -185,6 +185,17 @@ chain). Deutsches Textarchiv and Zeno.org for German. Gallica for French. Biblio
 Miguel de Cervantes for Spanish. Lib.ru for Russian. These are Gutenberg's equivalents and nobody
 thinks of them because Gutenberg is the one with the English name.
 
+**A harvest needs the same analyser the collections need.** Fetching a page and matching it with
+a regular expression quietly assumes two things: that the language puts something between its
+words, and that the page is written in the script the list is written in. Japanese fails both. Its
+first harvest read 1,324 pages from ten national newspapers and found 1,436 distinct words — about
+one percent of what the same effort returned for Korean — because the only thing a letter-run
+regular expression can pick out of a Japanese page is the katakana, and the katakana on a news
+page is mostly the navigation bar. The kanji body, which is the actual article, is one
+boundary-less token. So a language that reads its collections through an analyser exports `READ`
+from its `sources.mjs` and the harvest reads pages through it too. The alternative is a file full
+of menu labels that looks like evidence.
+
 **What does not work, and why it keeps looking like it will.** A collection with no document
 identifiers cannot attest anything, however much text it holds — CC-100 has 700MB of Tagalog and
 not one URL in it. And a dataset that re-processes a crawl somebody else made is the same family
