@@ -52,6 +52,7 @@ describe('the public interface', () => {
       'leipzigSentences',
       'merge',
       'pageHolds',
+      'pageLinks',
       'parseEvidence',
       'partition',
       'prove',

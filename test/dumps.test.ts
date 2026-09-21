@@ -46,6 +46,16 @@ describe('whether a dump is all there', () => {
     expect(checked.verdict).toBe('unknown')
   })
 
+  it('checks a collection that says where it came from, whatever it is called', async () => {
+    const checked = await checkDump(
+      'fineweb2-kor.parquet',
+      14_229_504,
+      says(4_844_133_014),
+      'https://huggingface.co/datasets/HuggingFaceFW/fineweb-2/resolve/main/x.parquet',
+    )
+    expect(checked.verdict).toBe('truncated')
+  })
+
   it('leaves alone a file it has no way to check', async () => {
     const checked = await checkDump('gutenberg-de', 0, says(999))
     expect(checked.verdict).toBe('not a dump')
@@ -58,7 +68,10 @@ describe('asking a server how big a file is', () => {
   })
 
   it('reads content-length without downloading the body', async () => {
-    const fetched = vi.fn(async () => new Response(null, { headers: { 'content-length': '42' } }))
+    const fetched = vi.fn(
+      async (_url: string, options?: RequestInit) =>
+        new Response(null, { headers: { 'content-length': '42' } }),
+    )
     vi.stubGlobal('fetch', fetched)
     expect(await headSize('https://dumps.wikimedia.org/x')).toBe(42)
     // HEAD, because the body is eight gigabytes and the number is in the headers.

@@ -26,11 +26,39 @@ const CANDIDATES =
 // page some of its words and not others, which no check downstream would catch. If a harvest was
 // killed outright the marker can outlive it; delete it by hand once nothing is fetching.
 const HARVESTING = new URL('searched.tsv.harvesting', import.meta.url).pathname
+// The evidence as committed, read only for its source column; whichever layout this language has.
+const EVIDENCE = [
+  new URL('ATTESTATIONS.tsv', import.meta.url).pathname,
+  new URL('attestations/000.tsv', import.meta.url).pathname,
+].find((path) => existsSync(path))
 if (existsSync(HARVESTING)) {
   throw new Error(
     `a harvest is writing searched.tsv (${readFileSync(HARVESTING, 'utf8').trim()}). ` +
       'Wait for it, or remove searched.tsv.harvesting if nothing is running.',
   )
+}
+
+// A rebuild must not quietly ship fewer collections than the evidence it replaces. A source
+// whose file has gone missing is skipped with a warning, which is right for a first build and
+// dangerous for a rebuild: Korean's FineWeb-2 shard was deleted between builds, and rebuilding
+// without it would have dropped the Common Crawl family that half its evidence rests on — with
+// nothing in the output saying so except a line in a log nobody reads.
+if (existsSync(EVIDENCE)) {
+  const had = new Set()
+  for (const line of readFileSync(EVIDENCE, 'utf8').split('\n').slice(1, 20000)) {
+    const [, sources] = line.split('\t')
+    if (sources === undefined || sources === '') continue
+    for (const source of sources.split(',')) had.add(source)
+  }
+  const having = new Set(SOURCES.map((source) => source.id))
+  const lost = [...had].filter((id) => !id.startsWith('web:') && !having.has(id))
+  if (lost.length > 0) {
+    throw new Error(
+      `the evidence here was built with ${lost.join(', ')} and this build cannot see ${
+        lost.length === 1 ? 'it' : 'them'
+      }. Restore the collection, or delete the evidence to rebuild deliberately smaller.`,
+    )
+  }
 }
 
 const candidates = new Set(
@@ -49,7 +77,12 @@ process.stderr.write(`${LANGUAGE}: ${candidates.size} candidates\n`)
 // this language's sources, because German has no reason to stop over a Japanese download.
 for (const source of SOURCES) {
   if (source.needs === undefined || !statSync(source.needs).isFile()) continue
-  const checked = await checkDump(basename(source.needs), statSync(source.needs).size, headSize)
+  const checked = await checkDump(
+    basename(source.needs),
+    statSync(source.needs).size,
+    headSize,
+    source.from,
+  )
   if (checked.verdict === 'truncated') {
     throw new Error(
       `${source.id} would read a partial ${checked.name}: ` +

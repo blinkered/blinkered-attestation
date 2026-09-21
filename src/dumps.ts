@@ -43,8 +43,17 @@ export interface Checked {
  * file: not being able to ask is not evidence of a problem, and refusing to build on it would
  * make every build depend on Wikimedia being up.
  */
-export async function checkDump(name: string, have: number, sizeOf: SizeOf): Promise<Checked> {
-  const url = dumpUrl(name)
+export async function checkDump(
+  name: string,
+  have: number,
+  sizeOf: SizeOf,
+  from?: string,
+): Promise<Checked> {
+  // Wikimedia names its dumps predictably and everything else does not, so a collection that
+  // knows where it came from says so. A FineWeb-2 shard is four gigabytes over HTTP like any
+  // other download and fails the same way half-finished — deep inside a parquet reader rather
+  // than a decompressor, which is no easier to read.
+  const url = from ?? dumpUrl(name)
   if (url === null) return { name, have, expect: null, verdict: 'not a dump' }
   const expect = await sizeOf(url)
   if (expect === null) return { name, have, expect: null, verdict: 'unknown' }

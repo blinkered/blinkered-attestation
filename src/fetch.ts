@@ -17,6 +17,7 @@ import {
   disallowedPaths,
   feedLinks,
   isSitemapIndex,
+  pageLinks,
   readableText,
   sitemapLinks,
 } from './web.js'
@@ -110,6 +111,17 @@ export async function discover(
       continue
     }
     found.push(...sitemapLinks(body), ...feedLinks(body))
+  }
+
+  // Nothing declared and nothing at the conventional places. That is not a dead site — it is an
+  // older one, and older is exactly the register a news harvest cannot reach. Five of the eight
+  // Spanish literary archives tried here have neither a sitemap nor a feed, including the two
+  // largest. So read the front page and follow what it links to, one level, which is what a
+  // person would do and is bounded by the same limit as everything else.
+  if (found.length === 0) {
+    const front = await get(`https://${domain}/`)
+    await wait(delayMs)
+    if (front !== null) found.push(...pageLinks(front, `https://${domain}/`))
   }
 
   const urls = [...new Set(found)]

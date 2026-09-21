@@ -46,6 +46,7 @@ export {
   disallowedPaths,
   feedLinks,
   isSitemapIndex,
+  pageLinks,
   readableText,
   sitemapLinks,
 } from './web.js'

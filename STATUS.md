@@ -71,7 +71,9 @@ read a stale `dist/`.
 
 ## The cache
 
-`.cache/raw` here, symlinked as `.cache/raw` from every dictionary repository. Gitignored.
+`../blinkered-cache/raw`, **outside every repository** and symlinked in. It holds 87GB, which is
+not something a source repository should appear to contain; `node scripts/cache.mjs` says which
+language each part of it belongs to and what, if anything, is safe to delete.
 **Delete a language's dumps once its evidence is committed** — the disk filled once already and
 cost several partial downloads. `.cache/sudachi-venv` holds SudachiPy and SudachiDict-small for
 the Japanese readings pass (`resources/readings.py`).

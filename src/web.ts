@@ -102,6 +102,34 @@ export function feedLinks(xml: string): string[] {
 }
 
 /**
+ * Links out of an ordinary HTML page, made absolute against the page they were found on.
+ *
+ * The fallback for a publisher with no sitemap and no feed, which is most of the interesting
+ * ones. Literary archives, university collections and national libraries — exactly the register
+ * a news harvest cannot reach — were built before sitemaps were a habit, and five of the eight
+ * Spanish literary domains tried here declare neither. Following links off the front page is what
+ * a person would do.
+ *
+ * Fragments and query strings are dropped, because `/text?page=2#note` and `/text` are the same
+ * document for our purposes and fetching both wastes a request on somebody's server.
+ */
+export function pageLinks(html: string, base: string): string[] {
+  const found = new Set<string>()
+  for (const match of html.matchAll(/<a\b[^>]*\bhref=["']([^"'#]+)["']/giu)) {
+    const href = match[1] as string
+    if (/^(?:mailto|javascript|tel):/iu.test(href)) continue
+    try {
+      const url = new URL(href, base)
+      url.hash = ''
+      found.add(url.toString())
+    } catch {
+      // A link that is not a URL relative to anything is not a page we can fetch.
+    }
+  }
+  return [...found]
+}
+
+/**
  * Readable text out of an HTML page.
  *
  * Scripts and styles go first, because their contents are not prose and would otherwise be

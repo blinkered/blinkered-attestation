@@ -596,6 +596,19 @@ Only the final evidence file is ever tracked. Downloaded dumps and per-source in
 untracked `.cache/`, because git history full of large regenerable files is the failure mode this
 layout exists to avoid.
 
+**A rebuild must not quietly ship fewer collections than the evidence it replaces.** A source
+whose file has gone missing is skipped with a warning, which is right for a first build and
+dangerous for a second: Korean's FineWeb-2 shard was deleted between builds, and rebuilding
+without it would have dropped the Common Crawl family that half its evidence rests on — including
+both families behind the sixteen thousand words its drop list says are one short. Nothing in the
+output would have said so except a line in a log. So a build reads the source column of the
+evidence already here and refuses if it cannot see a collection that evidence was built from.
+
+**A collection says where it came from.** Wikimedia names its dumps predictably and nothing else
+does, so `existsSync` was the only check a four-gigabyte FineWeb-2 shard ever got — and a
+half-finished parquet exists exactly as hard as a whole one. Each such source now declares `from`,
+the URL it was fetched from, and the same size check that guards the wiki dumps guards it too.
+
 **A build checks its own dumps before it starts.** Not the script's job, and not a shared cache's:
 German has no reason to stop because a Japanese dump is half-downloaded. `build.mjs` asks each of
 _its_ sources' files how big the server says they are and refuses by name if one is short, which

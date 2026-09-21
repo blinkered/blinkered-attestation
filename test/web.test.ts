@@ -4,6 +4,7 @@ import {
   disallowedPaths,
   feedLinks,
   isSitemapIndex,
+  pageLinks,
   readableText,
   sitemapLinks,
 } from '../src/web.js'
@@ -119,5 +120,37 @@ describe('readable text', () => {
 
   it('collapses whitespace so tokens do not carry layout with them', () => {
     expect(readableText('<p>one</p>\n\n   <p>two</p>')).toBe('one two')
+  })
+})
+
+describe('links off an ordinary page', () => {
+  it('makes them absolute against the page they were found on', () => {
+    const html = '<a href="/texto/casa-tomada/">Casa tomada</a><a href="otro.html">Otro</a>'
+    expect(pageLinks(html, 'https://ciudadseva.com/')).toEqual([
+      'https://ciudadseva.com/texto/casa-tomada/',
+      'https://ciudadseva.com/otro.html',
+    ])
+  })
+
+  it('drops fragments, because a page and an anchor in it are one document', () => {
+    const html = '<a href="/texto#nota">a</a><a href="/texto">b</a>'
+    expect(pageLinks(html, 'https://x.es/')).toEqual(['https://x.es/texto'])
+  })
+
+  it('leaves alone what cannot be fetched', () => {
+    const html = '<a href="mailto:a@b.c">mail</a><a href="javascript:void(0)">js</a>'
+    expect(pageLinks(html, 'https://x.es/')).toEqual([])
+  })
+
+  it('skips an href that is not a URL relative to anything', () => {
+    // Malformed markup is ordinary on an old site, and one bad link must not cost the page.
+    const html = '<a href="http://[">broken</a><a href="/good">good</a>'
+    expect(pageLinks(html, 'https://x.es/')).toEqual(['https://x.es/good'])
+  })
+
+  it('keeps links to other sites, which the harvest filters by domain later', () => {
+    // Separation of concerns: this reads a page, `discover` decides whose pages count.
+    const html = '<a href="https://elsewhere.org/a">a</a>'
+    expect(pageLinks(html, 'https://x.es/')).toEqual(['https://elsewhere.org/a'])
   })
 })

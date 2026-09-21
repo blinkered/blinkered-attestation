@@ -27,6 +27,32 @@ describe('discovering what a publisher has', () => {
     expect((await discover('hani.co.kr', get, undefined, 0)).urls).toEqual(['https://hani.co.kr/a'])
   })
 
+  it('reads the front page when a site declares neither sitemap nor feed', async () => {
+    // Literary archives, university collections and national libraries were built before
+    // sitemaps were a habit, and that is exactly the register a news harvest cannot reach. Five
+    // of the eight Spanish literary domains tried declare neither, including the two largest.
+    const get = web({
+      'https://cervantesvirtual.com/robots.txt': 'User-agent: *',
+      'https://cervantesvirtual.com/':
+        '<a href="/obra/la-regenta/">La Regenta</a><a href="/obra/niebla/">Niebla</a>',
+    })
+    expect((await discover('cervantesvirtual.com', get, undefined, 0)).urls).toEqual([
+      'https://cervantesvirtual.com/obra/la-regenta/',
+      'https://cervantesvirtual.com/obra/niebla/',
+    ])
+  })
+
+  it('does not read the front page when a sitemap already answered', async () => {
+    // One request per host that does not need making. A site with a sitemap has told us what it
+    // has, and its front page is a worse version of the same answer.
+    const get = web({
+      'https://hani.co.kr/robots.txt': 'User-agent: *\nSitemap: https://hani.co.kr/news.xml',
+      'https://hani.co.kr/news.xml': '<urlset><url><loc>https://hani.co.kr/a</loc></url></urlset>',
+      'https://hani.co.kr/': '<a href="/front-page-only">no</a>',
+    })
+    expect((await discover('hani.co.kr', get, undefined, 0)).urls).toEqual(['https://hani.co.kr/a'])
+  })
+
   it('leaves a site’s stylesheets and scripts where they are', async () => {
     const get = web({
       'https://inquirer.net/robots.txt': 'User-agent: *\nSitemap: https://inquirer.net/s.xml',
