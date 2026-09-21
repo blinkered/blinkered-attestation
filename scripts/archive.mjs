@@ -17,7 +17,14 @@
  *
  *   node scripts/archive.mjs ru russian 2000
  */
-import { appendFileSync, existsSync, mkdirSync, readdirSync, writeFileSync } from 'node:fs'
+import {
+  appendFileSync,
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  renameSync,
+  writeFileSync,
+} from 'node:fs'
 import { join } from 'node:path'
 import { USER_AGENT } from '../dist/src/index.js'
 
@@ -90,15 +97,23 @@ for (const id of ids) {
   // A few kilobytes is a title page or a failed scan, not a book.
   if (content.length < 20_000) continue
 
-  // The directory can go while this is running — retirement deleted French's out from under it
-  // mid-fetch, and the write failed with ENOENT and took the whole run down. Recreating it costs
-  // nothing and a download in flight should not be lost to housekeeping elsewhere.
+  // Written under another name and renamed into place, because a build may be reading this
+  // directory at the same time — Tagalog's was, while its downloader ran. A rename is atomic on
+  // one filesystem, so a scan sees either no file or a whole one, never half a book. The same
+  // hazard as a harvest appending to searched.tsv under a build, which has its own interlock;
+  // this one is cheaper to make impossible than to coordinate.
+  //
+  // The directory can also go while this runs — retirement deleted French's out from under it
+  // mid-fetch and the write died with ENOENT — so it is recreated rather than given up on.
+  const written = join(OUT, `${id}.txt`)
+  const partial = `${written}.part`
   try {
-    writeFileSync(join(OUT, `${id}.txt`), content)
+    writeFileSync(partial, content)
   } catch {
     mkdirSync(OUT, { recursive: true })
-    writeFileSync(join(OUT, `${id}.txt`), content)
+    writeFileSync(partial, content)
   }
+  renameSync(partial, written)
   // The text file is rarely named after the item — none of twelve sampled were — so a citation
   // built from the id alone points at the catalogue page, which holds no word of the book. That
   // is the defect Gutenberg had, and verification would report every book absent. The name is
