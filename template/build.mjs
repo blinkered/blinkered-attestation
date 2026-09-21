@@ -4,7 +4,7 @@
  * Identical in every dictionary repository. Everything language-specific is in `sources.mjs`,
  * so fifty-one repositories cannot drift into fifty-one definitions of "kept".
  */
-import { readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { alphabetFor } from '@blinkered/engine'
 import { build, domainOf, scan, scanByDomain, writeEvidence } from '@blinkered/attestation'
 import { LANGUAGE, SOURCES, HARVEST, COMMON_CUT } from './sources.mjs'
@@ -12,6 +12,17 @@ import { LANGUAGE, SOURCES, HARVEST, COMMON_CUT } from './sources.mjs'
 const CANDIDATES =
   process.env.CANDIDATES ??
   `/Users/nick/work/tightline/blinkered/packages/words/data/${LANGUAGE}/words.txt`
+
+// A harvest of this language appends to `searched.tsv` for hours. Reading it mid-append gives a
+// page some of its words and not others, which no check downstream would catch. If a harvest was
+// killed outright the marker can outlive it; delete it by hand once nothing is fetching.
+const HARVESTING = new URL('searched.tsv.harvesting', import.meta.url).pathname
+if (existsSync(HARVESTING)) {
+  throw new Error(
+    `a harvest is writing searched.tsv (${readFileSync(HARVESTING, 'utf8').trim()}). ` +
+      'Wait for it, or remove searched.tsv.harvesting if nothing is running.',
+  )
+}
 
 const candidates = new Set(
   readFileSync(CANDIDATES, 'utf8')

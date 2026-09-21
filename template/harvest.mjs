@@ -27,7 +27,7 @@
  *   node harvest.mjs           # every domain in sources.mjs
  *   node harvest.mjs 200       # at most 200 pages per domain
  */
-import { appendFileSync, existsSync, readFileSync } from 'node:fs'
+import { appendFileSync, existsSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { alphabetFor } from '@blinkered/engine'
 import { domainOf, harvestSites } from '@blinkered/attestation'
 // A namespace import, because `READ` is optional and a named import of a missing export is a
@@ -38,6 +38,10 @@ import * as language from './sources.mjs'
 const { DOMAINS, LANGUAGE, READ } = language
 
 const OUT = new URL('searched.tsv', import.meta.url).pathname
+// A harvest appends for hours while a build may stream the same file. A torn read costs a page
+// some of its words silently, which is the worst kind of wrong, so the build refuses to start
+// while this marker exists. Removed on the way out, including when interrupted.
+const RUNNING = `${OUT}.harvesting`
 const perDomain = Number(process.argv[2] ?? 300)
 
 const CANDIDATES =
@@ -66,6 +70,16 @@ const already = new Set(
         .map((line) => line.slice(0, line.indexOf('\t')))
     : [],
 )
+writeFileSync(RUNNING, `${String(process.pid)}\n`)
+const done = () => rmSync(RUNNING, { force: true })
+process.on('exit', done)
+for (const signal of ['SIGINT', 'SIGTERM', 'SIGHUP']) {
+  process.on(signal, () => {
+    done()
+    process.exit(130)
+  })
+}
+
 process.stderr.write(
   `${LANGUAGE}: ${String(DOMAINS.length)} domains, up to ${String(perDomain)} pages each\n`,
 )

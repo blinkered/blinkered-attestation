@@ -185,6 +185,13 @@ chain). Deutsches Textarchiv and Zeno.org for German. Gallica for French. Biblio
 Miguel de Cervantes for Spanish. Lib.ru for Russian. These are Gutenberg's equivalents and nobody
 thinks of them because Gutenberg is the one with the English name.
 
+**A harvest and a build of the same language must not run at once.** A harvest appends to
+`searched.tsv` for hours; a build streams it. Reading it mid-append gives a page some of its words
+and not others, and nothing downstream would catch that — the evidence would simply be a little
+wrong, consistently, with no symptom. So a harvest writes `searched.tsv.harvesting` while it runs
+and the build refuses to start while that exists. If a harvest is killed outright the marker
+outlives it and is deleted by hand.
+
 **A harvest must fetch pages, not files.** A sitemap lists everything a site serves, and a
 publisher's own stylesheet is on the same domain as its journalism. Tagalog's harvest fetched
 `inquirer.net/.../swiper-v6.css` and read BASE, STYLE, NORMAL, RIGHT, TOP, WHITE and BLACK out of
