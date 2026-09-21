@@ -19,6 +19,21 @@ describe('a collection that says when it looked', () => {
   })
 })
 
+describe('registrable domains with a two-label suffix', () => {
+  it('keeps a Philippine publisher whole', () => {
+    // `tribune.net.ph` collapsed to `net.ph`, which would have merged every publisher under that
+    // suffix into one family. Under-counting rather than over-counting, and still wrong.
+    expect(domainOf('https://tribune.net.ph/2026/09/a')).toBe('tribune.net.ph')
+    expect(domainOf('https://www.pia.gov.ph/news/1')).toBe('pia.gov.ph')
+  })
+
+  it('does the same across the suffixes the harvests reach', () => {
+    expect(domainOf('https://www.punchng.com/a')).toBe('punchng.com')
+    expect(domainOf('https://elcomercio.com.pe/a')).toBe('elcomercio.com.pe')
+    expect(domainOf('https://www.gob.mx/a')).toBe('gob.mx')
+  })
+})
+
 describe('the source registry', () => {
   it('expands a short id into a link somebody can open', () => {
     expect(expandLocator(sourceFor('gut'), '21034')).toBe(

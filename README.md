@@ -215,7 +215,7 @@ is the practical answer — weight `DOMAINS` towards sites that write the langua
 running for any language whose list overlaps a bigger neighbour's:
 
 ```sh
-# per publisher: how much of what it contributed is shared with another language's list
+node scripts/overlap.mjs tl en   # per publisher, its share shared with English
 ```
 
 **A publisher can own more than one domain, and nothing in a URL says so.** France Télévisions
