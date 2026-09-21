@@ -22,7 +22,7 @@ publisher.
 | `es`     | 201,655    | 96,350 | **47.8%** | 5        | 5               | one file | yes      | no        |
 | `fr`     | 144,105    | 69,104 | **48.0%** | 5        | 5               | one file | yes      | no        |
 | `ja`     | 191,188    | 11,448 | **6.0%**  | 3        | still paying    | one file | yes      | no        |
-| `ko`     | 38,467     | 17,465 | **45.4%** | 23       | 5               | one file | yes      | no        |
+| `ko`     | 38,467     | 17,465 | **45.4%** | 23       | 5               | one file | yes      | yes       |
 | `ru`     | not built  | —      | —         | —        | —               | —        | —        | no        |
 | `tl`     | 23,306     | 9,247  | **39.7%** | 6        | 6               | one file | **NO**   | no        |
 
