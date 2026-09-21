@@ -27,6 +27,24 @@ describe('discovering what a publisher has', () => {
     expect((await discover('hani.co.kr', get, undefined, 0)).urls).toEqual(['https://hani.co.kr/a'])
   })
 
+  it('keeps the publisher’s own pages and drops everybody else’s', async () => {
+    // A feed names the fonts and scripts a page loads as readily as the article. French's harvest
+    // came back with three pages from a font CDN, which then appeared in its saturation curve as
+    // an independent family called `typekit.net`. A family is a publisher.
+    const get = web({
+      'https://lemonde.fr/robots.txt': 'User-agent: *\nSitemap: https://lemonde.fr/s.xml',
+      'https://lemonde.fr/s.xml':
+        '<urlset>' +
+        '<url><loc>https://www.lemonde.fr/a</loc></url>' +
+        '<url><loc>https://use.typekit.net/xyz</loc></url>' +
+        '<url><loc>https://video.lemonde.fr/b</loc></url>' +
+        '</urlset>',
+    })
+    const found = await discover('lemonde.fr', get, undefined, 0)
+    // A subdomain of the publisher is still the publisher; a font CDN is not.
+    expect(found.urls).toEqual(['https://www.lemonde.fr/a', 'https://video.lemonde.fr/b'])
+  })
+
   it('falls back to the conventional locations when robots.txt names none', async () => {
     const get = web({
       'https://khan.co.kr/robots.txt': 'User-agent: *',

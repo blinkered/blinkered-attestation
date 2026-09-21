@@ -7,6 +7,7 @@
  * harvest is a few hundred pages from a site, once, to cite them.
  */
 
+import { domainOf } from './registry.js'
 import type { Document } from './scan.js'
 import {
   MAX_PAGES_PER_HOST,
@@ -79,6 +80,7 @@ export async function discover(
   limit = MAX_PAGES_PER_HOST,
   delayMs = POLITE_DELAY_MS,
 ): Promise<SiteHarvest> {
+  const registrable = domainOf(`https://${domain}/`)
   const robots = await get(`https://${domain}/robots.txt`)
   const disallowed = robots === null ? [] : disallowedPaths(robots)
 
@@ -114,6 +116,11 @@ export async function discover(
     .filter((url) => url.startsWith('https://') || url.startsWith('http://'))
     // A sitemap lists every page a site has, including its own sitemaps and images.
     .filter((url) => !/\.(?:xml|jpe?g|png|gif|svg|webp|mp4|mp3|pdf|zip)(?:\?|$)/iu.test(url))
+    // This publisher's own pages, and nobody else's. A feed names the stylesheets and fonts a
+    // page loads as readily as the article, and French's harvest came back with three pages from
+    // a font CDN — which then appeared in its saturation curve as an independent family called
+    // `typekit.net`. A family is a publisher, so a page has to be the publisher's.
+    .filter((url) => domainOf(url) === registrable)
     .filter((url) => allowed(url, disallowed))
     .slice(0, limit)
 

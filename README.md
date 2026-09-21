@@ -185,6 +185,15 @@ chain). Deutsches Textarchiv and Zeno.org for German. Gallica for French. Biblio
 Miguel de Cervantes for Spanish. Lib.ru for Russian. These are Gutenberg's equivalents and nobody
 thinks of them because Gutenberg is the one with the English name.
 
+**A harvest must stay on the publisher it is citing.** A sitemap or a feed names the fonts,
+scripts and trackers a page loads as readily as the article, and following those quietly turns a
+CDN into a family. French's harvest came back with three pages from Adobe Typekit, which duly
+appeared in its saturation curve as an independent publisher called `typekit.net`. It contributed
+nothing, so nothing was corrupted, and it would have been perfectly possible for a CDN that
+happened to serve a word list to contribute something. `discover` now keeps only pages whose
+registrable domain is the one being harvested — subdomains included, since `video.lefigaro.fr` is
+still Le Figaro.
+
 **A harvest needs the same analyser the collections need.** Fetching a page and matching it with
 a regular expression quietly assumes two things: that the language puts something between its
 words, and that the page is written in the script the list is written in. Japanese fails both. Its
