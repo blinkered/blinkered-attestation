@@ -11,22 +11,22 @@ stale.
 
 ![Every language's saturation curve](docs/curves.svg)
 
-Read the chart as _how much of its own candidate list a language could prove, against the number
-of independent families it took_. The first two families of every language keep nothing, because
+Read the chart as *how much of its own candidate list a language could prove, against the number
+of independent families it took*. The first two families of every language keep nothing, because
 the rule needs three; a curve that climbs steeply at three and then flattens has found everything
 its families can see, and a curve still climbing at twenty has more to gain from another
 publisher.
 
-| language | candidates | proved  | coverage  | families | checkable | returns stop at | conforms | published |
-| -------- | ---------- | ------- | --------- | -------- | --------- | --------------- | -------- | --------- |
-| `de`     | 36,493     | 35,895  | **98.4%** | 20       | 19        | 5               | yes      | yes       |
-| `en`     | 174,456    | 70,673  | **40.5%** | 14       | 13        | 5               | yes      | yes       |
-| `es`     | 201,655    | 128,809 | **63.9%** | 25       | 24        | 5               | yes      | yes       |
-| `fr`     | 144,105    | 96,387  | **66.9%** | 17       | 16        | 5               | yes      | yes       |
-| `ja`     | 191,188    | 34,636  | **18.1%** | 13       | 12        | 5               | yes      | yes       |
-| `ko`     | 38,467     | 23,707  | **61.6%** | 24       | 23        | 5               | yes      | yes       |
-| `ru`     | 424,352    | 344,401 | **81.2%** | 10       | 8         | 4               | yes      | yes       |
-| `tl`     | 23,306     | 9,716   | **41.7%** | 11       | 10        | 6               | yes      | yes       |
+| language | candidates | proved | coverage | families | checkable | returns stop at | conforms | published |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `de` | 36,493 | 35,895 | **98.4%** | 20 | 19 | 5 | yes | yes |
+| `en` | 174,456 | 70,673 | **40.5%** | 14 | 13 | 5 | yes | yes |
+| `es` | 201,655 | 128,809 | **63.9%** | 25 | 24 | 5 | yes | yes |
+| `fr` | 144,105 | 96,387 | **66.9%** | 17 | 16 | 5 | yes | yes |
+| `ja` | 191,188 | 34,636 | **18.1%** | 13 | 12 | 5 | yes | yes |
+| `ko` | 38,467 | 23,707 | **61.6%** | 24 | 23 | 5 | yes | yes |
+| `ru` | 424,352 | 344,401 | **81.2%** | 10 | 8 | 4 | yes | yes |
+| `tl` | 23,306 | 9,716 | **41.7%** | 11 | 10 | 6 | yes | yes |
 
 **Checkable** is how many of a language's families somebody who disbelieved us could confirm by
 fetching: a stable identifier, or a page we fetched ourselves. The rest are crawls somebody else
