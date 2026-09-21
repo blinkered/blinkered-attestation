@@ -90,7 +90,9 @@ writeFileSync(
   )}\n`,
 )
 
-process.stderr.write(`${LANGUAGE}: ${String(steps.length)} families, wrote SATURATION.md and curve.json\n`)
+process.stderr.write(
+  `${LANGUAGE}: ${String(steps.length)} families, wrote SATURATION.md and curve.json\n`,
+)
 for (const step of steps) {
   process.stderr.write(
     `  ${String(step.families).padStart(2)}  ${step.added.padEnd(26)} ` +
