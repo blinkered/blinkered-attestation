@@ -9,10 +9,10 @@
       "built": true,
       "conforms": true,
       "candidates": 36493,
-      "shipped": 35895,
-      "families": 20,
-      "checkable": 19,
-      "knee": 5,
+      "shipped": 36329,
+      "families": 21,
+      "checkable": 20,
+      "knee": 4,
       "steps": [
         {
           "families": 1,
@@ -23,135 +23,142 @@
         },
         {
           "families": 2,
-          "added": "leipzig",
+          "added": "internetarchive",
           "kept": 0,
           "share": 0,
           "gained": 0
         },
         {
           "families": 3,
-          "added": "gutenberg",
-          "kept": 33783,
-          "share": 0.925739,
-          "gained": 33783
+          "added": "leipzig",
+          "kept": 35634,
+          "share": 0.976461,
+          "gained": 35634
         },
         {
           "families": 4,
-          "added": "tatoeba",
-          "kept": 35709,
-          "share": 0.978516,
-          "gained": 1926
+          "added": "gutenberg",
+          "kept": 36167,
+          "share": 0.991067,
+          "gained": 533
         },
         {
           "families": 5,
-          "added": "heise.de",
-          "kept": 35753,
-          "share": 0.979722,
-          "gained": 44
+          "added": "tatoeba",
+          "kept": 36323,
+          "share": 0.995342,
+          "gained": 156
         },
         {
           "families": 6,
-          "added": "taz.de",
-          "kept": 35787,
-          "share": 0.980654,
-          "gained": 34
+          "added": "perlentaucher.de",
+          "kept": 36325,
+          "share": 0.995396,
+          "gained": 2
         },
         {
           "families": 7,
-          "added": "perlentaucher.de",
-          "kept": 35812,
-          "share": 0.981339,
-          "gained": 25
+          "added": "welt.de",
+          "kept": 36327,
+          "share": 0.995451,
+          "gained": 2
         },
         {
           "families": 8,
-          "added": "spiegel.de",
-          "kept": 35829,
-          "share": 0.981805,
-          "gained": 17
+          "added": "taz.de",
+          "kept": 36328,
+          "share": 0.995479,
+          "gained": 1
         },
         {
           "families": 9,
-          "added": "ebible",
-          "kept": 35845,
-          "share": 0.982243,
-          "gained": 16
+          "added": "spiegel.de",
+          "kept": 36329,
+          "share": 0.995506,
+          "gained": 1
         },
         {
           "families": 10,
-          "added": "welt.de",
-          "kept": 35859,
-          "share": 0.982627,
-          "gained": 14
+          "added": "literaturkritik.de",
+          "kept": 36329,
+          "share": 0.995506,
+          "gained": 0
         },
         {
           "families": 11,
-          "added": "literaturkritik.de",
-          "kept": 35871,
-          "share": 0.982956,
-          "gained": 12
+          "added": "faz.net",
+          "kept": 36329,
+          "share": 0.995506,
+          "gained": 0
         },
         {
           "families": 12,
-          "added": "faz.net",
-          "kept": 35881,
-          "share": 0.98323,
-          "gained": 10
+          "added": "heise.de",
+          "kept": 36329,
+          "share": 0.995506,
+          "gained": 0
         },
         {
           "families": 13,
-          "added": "br.de",
-          "kept": 35888,
-          "share": 0.983421,
-          "gained": 7
+          "added": "ebible",
+          "kept": 36329,
+          "share": 0.995506,
+          "gained": 0
         },
         {
           "families": 14,
-          "added": "ndr.de",
-          "kept": 35893,
-          "share": 0.983558,
-          "gained": 5
+          "added": "br.de",
+          "kept": 36329,
+          "share": 0.995506,
+          "gained": 0
         },
         {
           "families": 15,
-          "added": "n-tv.de",
-          "kept": 35894,
-          "share": 0.983586,
-          "gained": 1
+          "added": "ndr.de",
+          "kept": 36329,
+          "share": 0.995506,
+          "gained": 0
         },
         {
           "families": 16,
-          "added": "projekt-gutenberg.org",
-          "kept": 35895,
-          "share": 0.983613,
-          "gained": 1
+          "added": "n-tv.de",
+          "kept": 36329,
+          "share": 0.995506,
+          "gained": 0
         },
         {
           "families": 17,
-          "added": "sueddeutsche.de",
-          "kept": 35895,
-          "share": 0.983613,
+          "added": "projekt-gutenberg.org",
+          "kept": 36329,
+          "share": 0.995506,
           "gained": 0
         },
         {
           "families": 18,
-          "added": "deutschestextarchiv.de",
-          "kept": 35895,
-          "share": 0.983613,
+          "added": "sueddeutsche.de",
+          "kept": 36329,
+          "share": 0.995506,
           "gained": 0
         },
         {
           "families": 19,
-          "added": "golem.de",
-          "kept": 35895,
-          "share": 0.983613,
+          "added": "deutschestextarchiv.de",
+          "kept": 36329,
+          "share": 0.995506,
           "gained": 0
         },
         {
           "families": 20,
+          "added": "golem.de",
+          "kept": 36329,
+          "share": 0.995506,
+          "gained": 0
+        },
+        {
+          "families": 21,
           "added": "literaturport.de",
-          "kept": 35895,
-          "share": 0.983613,
+          "kept": 36329,
+          "share": 0.995506,
           "gained": 0
         }
       ]
