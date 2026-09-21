@@ -1,0 +1,47 @@
+Blinkered attestation
+Copyright 2026 Tight Line LLC
+
+Licensed under the Apache License, Version 2.0. See LICENSE.
+
+APACHE-2.0 — the workflow
+
+  src/, scripts/, template/, test/, resources/, docs/, and the Markdown that explains
+  them. This is the tooling that decides what counts as evidence and checks that a
+  language repository says only what its evidence supports.
+
+CC0-1.0 — what the roll-up generates
+
+  LANGUAGES.md, docs/languages.json, docs/curves.svg
+
+  Measurements of the published language repositories, computed from evidence those
+  repositories publish. Facts about our own work, reserved to nobody.
+  These are Blinkered's own compilation and its working. A word ships because three
+  independent collections of text were found to contain it, and the record of which
+  collections and where in them is a statement of fact about those texts rather than a
+  copy of them. Nothing a licence governs was taken from the dictionaries that proposed
+  the candidates, which is the whole point of the method. To the extent any right
+  subsists in the compilation, it is waived: CC0 1.0 Universal.
+  https://creativecommons.org/publicdomain/zero/1.0/
+
+NOT OURS TO LICENSE — the candidate lists
+
+  candidates/
+
+  Fifty-one word lists that came from elsewhere. They are the questions this project
+  asks, not its answers: a candidate is a word to go looking for, and what earns it a
+  place in a shipped list is evidence recorded in a blinkered-dictionary-* repository.
+  Each keeps its own terms, stated in candidates/<tag>/LICENSE with its sources in
+  candidates/<tag>/PROVENANCE.md. They are not Apache-2.0 and they are not CC0, and
+  several are share-alike, which cannot be relicensed by us at all:
+
+      candidates/de   CC-BY-SA-4.0
+      candidates/en   MIT
+      candidates/es   MPL-1.1
+      candidates/fr   MPL-2.0
+      candidates/ja   CC-BY-SA-4.0
+      candidates/ko   CC-BY-SA-4.0
+      candidates/ru   BSD-3-Clause
+      candidates/tl   CC-BY-SA-4.0
+
+  The forty-three languages without a repository yet carry their own terms in the same
+  place. Read candidates/<tag>/LICENSE before redistributing any of them.
