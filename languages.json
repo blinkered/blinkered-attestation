@@ -369,7 +369,7 @@
     {
       "tag": "ru",
       "repo": "blinkered-dictionary-ru",
-      "published": false,
+      "published": true,
       "built": true,
       "conforms": true,
       "candidates": 424352,

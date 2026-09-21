@@ -9,8 +9,9 @@ and what to do next.
 - `blinkered-attestation` — this repository.
 - `blinkered-dictionary-de` — 35,725 words, 97.9% of its candidates, five families.
 - `blinkered-dictionary-ko` — 17,465 words, 45.4%, twenty-three families.
+- `blinkered-dictionary-ru` — 210,392 words, 49.6%, four families and still climbing.
 
-All three are **private**. Going public is the stronger form of the claim and is the intent, but
+All four are **private**. Going public is the stronger form of the claim and is the intent, but
 it publishes the candidate lists too — the evidence records every candidate, including the ones
 nothing attested, and those rows are somebody else's dictionary rather than our observation.
 Worth a decision before the flip.
@@ -31,7 +32,8 @@ first.
   waiting to be folded in. Both need their wiki dumps back.
 - **ja** — 6.0% from three families. Needs the FineWeb-2 `jpn_Jpan` shard (downloaded) and its
   eighteen-publisher harvest.
-- **ru** — building; five collections scanned, FineWeb-2 to go.
+- **ru** — published at 49.6%, but its fourth family was still worth 36,739 words when it ran
+  out. Twenty publishers listed in `DOMAINS`, none harvested. The clearest remaining win.
 - **en** — not started. `enwiki` (25.7GB) and `enwikisource` (3.4GB) are cached and verified.
 
 ## Per-repo commands
