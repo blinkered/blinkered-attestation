@@ -12,7 +12,7 @@
  *   node weed.mjs            # report
  *   node weed.mjs --remove
  */
-import { readFileSync, readdirSync, rmSync, statSync } from 'node:fs'
+import { appendFileSync, readFileSync, readdirSync, rmSync, statSync } from 'node:fs'
 import { alphabetFor } from '@blinkered/engine'
 import * as language from './sources.mjs'
 
@@ -69,7 +69,12 @@ for (const name of readdirSync(dir).filter((one) => one.endsWith('.txt'))) {
   dropped += 1
   freed += statSync(path).size
   process.stdout.write(`  ${(share * 100).toFixed(0).padStart(3)}%  ${name}\n`)
-  if (remove) rmSync(path, { force: true })
+  if (remove) {
+    rmSync(path, { force: true })
+    // Written down, or the downloader fetches it again the moment it notices the file is gone
+    // and the next weeding removes it again, forever.
+    appendFileSync(`${dir}/rejected.tsv`, `${name.replace(/\.txt$/u, '')}\n`)
+  }
 }
 
 process.stdout.write(

@@ -20,6 +20,7 @@
 import {
   appendFileSync,
   existsSync,
+  readFileSync,
   mkdirSync,
   readdirSync,
   renameSync,
@@ -40,6 +41,12 @@ const query = where.includes(':') ? where : `collection:${where}`
 const OUT = join(new URL('..', import.meta.url).pathname, '.cache', 'raw', `archive-${tag}`)
 mkdirSync(OUT, { recursive: true })
 const already = new Set(readdirSync(OUT).map((name) => name.replace(/\.txt$/u, '')))
+// Books already judged not to be in this language. Without this the downloader refetches
+// everything weeding removed, and the two chase each other indefinitely.
+const rejected = existsSync(join(OUT, 'rejected.tsv'))
+  ? new Set(readFileSync(join(OUT, 'rejected.tsv'), 'utf8').split('\n').filter(Boolean))
+  : new Set()
+for (const id of rejected) already.add(id)
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
