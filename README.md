@@ -294,6 +294,28 @@ Cervantes Virtual and Biblioteca Virtual Universal for Spanish, Atramenta and Op
 French, Lib.ru and the Russian Virtual Library for Russian, Zeno and the Deutsches Textarchiv for
 German, Standard Ebooks and the Public Domain Review for English.
 
+**And it is every language, not Spanish.** Run it across the set and the same shape appears with
+different names on it:
+
+```
+  ru   194,490  99.6%  commoncrawl + wikimedia   АБАЖУРАМИ, АБАЖУРЕ, АБАЖУРОВ
+  ko    16,800  99.8%  commoncrawl + wikimedia   ㄱㅏㄱㄱㅐ, ㄱㅏㄱㄱㅘ, ㄱㅏㄱㄷㅏㄱㅟ
+  fr    32,941  82.8%  gutenberg + wikimedia     ABAISSANTE, ABAISSENT, ABAISSERAIT
+  es    40,172  80.0%  gutenberg + wikimedia     ABACERO, ABACIAL, ABACIALES
+  de       453  67.7%  leipzig + wikimedia       ABARTIGEN, ABCHECKEN, ABGEFACKELT
+```
+
+Russian's number is the one to look at: **194,490 words, forty-six percent of its entire candidate
+list**, seen by a web crawl and a Wikipedia and by nothing else. Korean's sixteen thousand is
+forty-four percent of its list, and Korean already has twenty newspapers — they could not reach
+those words because those words are not news.
+
+German's six hundred and sixty-nine is the shape of a language that is actually finished.
+
+The reading is the same everywhere. A language's ceiling is not how much text it has; it is how
+many _registers_ it has two independent gatherers for. Every list above is one register short,
+and in four of the five cases the missing one is books.
+
 This is the same lesson German taught at the start, arriving from the other side. German's first
 build used three collections of pre-1930s literature and curated sentences, and dropped OKAY and
 PIZZA. Spanish's build used twenty-two newspapers and dropped ABALANZAR. A language needs both
