@@ -30,7 +30,12 @@
 import { appendFileSync, existsSync, readFileSync } from 'node:fs'
 import { alphabetFor } from '@blinkered/engine'
 import { domainOf, harvestSites } from '@blinkered/attestation'
-import { DOMAINS, LANGUAGE, READ } from './sources.mjs'
+// A namespace import, because `READ` is optional and a named import of a missing export is a
+// hard error in ESM rather than `undefined`. Most languages need no analyser and must not have
+// to declare that they do not.
+import * as language from './sources.mjs'
+
+const { DOMAINS, LANGUAGE, READ } = language
 
 const OUT = new URL('searched.tsv', import.meta.url).pathname
 const perDomain = Number(process.argv[2] ?? 300)
