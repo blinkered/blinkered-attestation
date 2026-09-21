@@ -347,6 +347,25 @@ because a word missing from a page captured a year after the crawl says nothing 
 Which is an argument for weighting a language towards stable identifiers and pages we fetch
 ourselves, and for reading a Leipzig-heavy verification run as _unconfirmed_ rather than _failed_.
 
+### What it says now
+
+German, four words, after both fixes:
+
+```
+4/4 words proved.  pages: 35 found, 0 in the archive, 0 absent, 56 unreachable
+
+  wiki:de, wikisource:de, tat, gut, ebible:deuelo   35 of 35 held their word
+  lz:* (seven Leipzig packages)                     56 crawl URLs, none confirmable
+```
+
+Nothing contradicted. Every word cleared three families on stable identifiers alone, which is what
+makes the fifty-six unconfirmable ones tolerable: Leipzig is why German has the _breadth_ it has,
+and it is never the reason a word survives the rule on its own.
+
+Korean, whose families are mostly publishers we fetched ourselves, reads differently — 4 of 4
+proved, 78 pages found and 10 absent, every absence a news site's index page rather than an
+article. An index page changes daily, and it is the one kind of harvested URL worth not citing.
+
 ## Pushing a language
 
 A language repository becomes public when its **record is honest and checkable**, not when its
