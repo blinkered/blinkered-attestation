@@ -534,6 +534,11 @@
 
       const manifest = await fetch('languages.json').then((answer) => answer.json())
       state = manifest
+      // The roll-up already writes the manifest in tag order, and the legend and the table both
+      // walk this array, so this sort changes nothing today. It is here so that the page cannot
+      // start listing languages by coverage — an order that would rearrange itself every time
+      // one of them improved — if the roll-up ever stops caring.
+      state.languages.sort((left, right) => left.tag.localeCompare(right.tag))
       state.languages.forEach((one, index) => {
         one.ink = INK[index % INK.length]
         one.live = false
