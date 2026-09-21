@@ -163,9 +163,9 @@
       "built": true,
       "conforms": true,
       "candidates": 174456,
-      "shipped": 70673,
-      "families": 14,
-      "checkable": 13,
+      "shipped": 107142,
+      "families": 15,
+      "checkable": 14,
       "knee": 5,
       "steps": [
         {
@@ -184,87 +184,94 @@
         },
         {
           "families": 3,
-          "added": "leipzig",
-          "kept": 60383,
-          "share": 0.346122,
-          "gained": 60383
+          "added": "internetarchive",
+          "kept": 99325,
+          "share": 0.569341,
+          "gained": 99325
         },
         {
           "families": 4,
-          "added": "tatoeba",
-          "kept": 67675,
-          "share": 0.38792,
-          "gained": 7292
+          "added": "leipzig",
+          "kept": 104797,
+          "share": 0.600707,
+          "gained": 5472
         },
         {
           "families": 5,
-          "added": "poets.org",
-          "kept": 68969,
-          "share": 0.395338,
-          "gained": 1294
+          "added": "tatoeba",
+          "kept": 106518,
+          "share": 0.610572,
+          "gained": 1721
         },
         {
           "families": 6,
           "added": "lrb.co.uk",
-          "kept": 69942,
-          "share": 0.400915,
-          "gained": 973
+          "kept": 106790,
+          "share": 0.612131,
+          "gained": 272
         },
         {
           "families": 7,
-          "added": "theguardian.com",
-          "kept": 70126,
-          "share": 0.40197,
-          "gained": 184
+          "added": "poets.org",
+          "kept": 106969,
+          "share": 0.613157,
+          "gained": 179
         },
         {
           "families": 8,
-          "added": "ebible",
-          "kept": 70309,
-          "share": 0.403019,
-          "gained": 183
+          "added": "theguardian.com",
+          "kept": 107051,
+          "share": 0.613628,
+          "gained": 82
         },
         {
           "families": 9,
-          "added": "nybooks.com",
-          "kept": 70421,
-          "share": 0.403661,
-          "gained": 112
+          "added": "irishtimes.com",
+          "kept": 107078,
+          "share": 0.613782,
+          "gained": 27
         },
         {
           "families": 10,
-          "added": "publicdomainreview.org",
-          "kept": 70525,
-          "share": 0.404257,
-          "gained": 104
+          "added": "nybooks.com",
+          "kept": 107099,
+          "share": 0.613903,
+          "gained": 21
         },
         {
           "families": 11,
-          "added": "irishtimes.com",
-          "kept": 70604,
-          "share": 0.404709,
-          "gained": 79
+          "added": "pbs.org",
+          "kept": 107116,
+          "share": 0.614,
+          "gained": 17
         },
         {
           "families": 12,
-          "added": "pbs.org",
-          "kept": 70648,
-          "share": 0.404962,
-          "gained": 44
+          "added": "publicdomainreview.org",
+          "kept": 107128,
+          "share": 0.614069,
+          "gained": 12
         },
         {
           "families": 13,
           "added": "bbc.co.uk",
-          "kept": 70669,
-          "share": 0.405082,
-          "gained": 21
+          "kept": 107137,
+          "share": 0.61412,
+          "gained": 9
         },
         {
           "families": 14,
+          "added": "ebible",
+          "kept": 107140,
+          "share": 0.614138,
+          "gained": 3
+        },
+        {
+          "families": 15,
           "added": "theglobeandmail.com",
-          "kept": 70673,
-          "share": 0.405105,
-          "gained": 4
+          "kept": 107142,
+          "share": 0.614149,
+          "gained": 2
         }
       ]
     },
@@ -464,7 +471,7 @@
       "built": true,
       "conforms": true,
       "candidates": 144105,
-      "shipped": 96387,
+      "shipped": 98540,
       "families": 17,
       "checkable": 16,
       "knee": 5,
@@ -486,106 +493,106 @@
         {
           "families": 3,
           "added": "internetarchive",
-          "kept": 85961,
-          "share": 0.596516,
-          "gained": 85961
+          "kept": 88802,
+          "share": 0.616231,
+          "gained": 88802
         },
         {
           "families": 4,
           "added": "leipzig",
-          "kept": 92134,
-          "share": 0.639353,
-          "gained": 6173
+          "kept": 94792,
+          "share": 0.657798,
+          "gained": 5990
         },
         {
           "families": 5,
           "added": "tatoeba",
-          "kept": 95205,
-          "share": 0.660664,
-          "gained": 3071
+          "kept": 97541,
+          "share": 0.676875,
+          "gained": 2749
         },
         {
           "families": 6,
           "added": "ebible",
-          "kept": 95603,
-          "share": 0.663426,
-          "gained": 398
+          "kept": 97844,
+          "share": 0.678977,
+          "gained": 303
         },
         {
           "families": 7,
           "added": "rts.ch",
-          "kept": 95785,
-          "share": 0.664689,
-          "gained": 182
+          "kept": 98012,
+          "share": 0.680143,
+          "gained": 168
         },
         {
           "families": 8,
           "added": "lefigaro.fr",
-          "kept": 95940,
-          "share": 0.665765,
-          "gained": 155
+          "kept": 98152,
+          "share": 0.681114,
+          "gained": 140
         },
         {
           "families": 9,
           "added": "actualitte.com",
-          "kept": 96068,
-          "share": 0.666653,
-          "gained": 128
+          "kept": 98261,
+          "share": 0.681871,
+          "gained": 109
         },
         {
           "families": 10,
           "added": "letemps.ch",
-          "kept": 96153,
-          "share": 0.667243,
-          "gained": 85
+          "kept": 98335,
+          "share": 0.682384,
+          "gained": 74
         },
         {
           "families": 11,
           "added": "nouvelobs.com",
-          "kept": 96217,
-          "share": 0.667687,
-          "gained": 64
+          "kept": 98389,
+          "share": 0.682759,
+          "gained": 54
         },
         {
           "families": 12,
-          "added": "lemonde.fr",
-          "kept": 96269,
-          "share": 0.668048,
-          "gained": 52
+          "added": "lapresse.ca",
+          "kept": 98437,
+          "share": 0.683092,
+          "gained": 48
         },
         {
           "families": 13,
-          "added": "lapresse.ca",
-          "kept": 96319,
-          "share": 0.668395,
-          "gained": 50
+          "added": "lemonde.fr",
+          "kept": 98481,
+          "share": 0.683398,
+          "gained": 44
         },
         {
           "families": 14,
           "added": "sudouest.fr",
-          "kept": 96364,
-          "share": 0.668707,
-          "gained": 45
+          "kept": 98518,
+          "share": 0.683654,
+          "gained": 37
         },
         {
           "families": 15,
           "added": "la-croix.com",
-          "kept": 96385,
-          "share": 0.668853,
+          "kept": 98539,
+          "share": 0.6838,
           "gained": 21
         },
         {
           "families": 16,
           "added": "franceinfo.fr",
-          "kept": 96387,
-          "share": 0.668866,
-          "gained": 2
+          "kept": 98540,
+          "share": 0.683807,
+          "gained": 1
         },
         {
           "families": 17,
           "added": "rtbf.be",
-          "kept": 96387,
-          "share": 0.668866,
+          "kept": 98540,
+          "share": 0.683807,
           "gained": 0
         }
       ]
