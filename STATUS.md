@@ -3,20 +3,20 @@
 Operational state. The **findings** live in [README.md](README.md) and the **numbers** in
 [LANGUAGES.md](LANGUAGES.md); this is the bit that goes stale.
 
-## All eight are published and conforming
+## All eight are published and conforming; seven ship
 
-|      |   words | coverage | was   | families | checkable |
-| ---- | ------: | -------: | ----- | -------: | --------: |
-| `de` |  36,329 |    99.6% | 98.4% |       21 |        20 |
-| `ru` | 362,488 |    85.4% | 81.2% |       10 |         8 |
-| `es` | 143,024 |    70.9% | 63.9% |       25 |        24 |
-| `fr` |  98,540 |    68.4% | 66.9% |       17 |        16 |
-| `ko` |  24,285 |    63.1% | 61.6% |       24 |        23 |
-| `en` | 107,670 |    61.7% | 40.5% |       15 |        14 |
-| `tl` |  12,573 |    53.9% | 41.7% |       12 |        11 |
-| `ja` |  39,058 |    20.4% | 18.1% |       13 |        12 |
+|      |   words | coverage | was   | families | checkable | ships  |
+| ---- | ------: | -------: | ----- | -------: | --------: | ------ |
+| `de` |  36,346 |    99.6% | 98.4% |       21 |        20 | yes    |
+| `ru` | 371,579 |    87.6% | 81.2% |       10 |         8 | yes    |
+| `es` | 145,334 |    72.1% | 63.9% |       25 |        24 | yes    |
+| `fr` | 103,417 |    71.8% | 66.9% |       17 |        16 | yes    |
+| `en` | 112,115 |    64.3% | 40.5% |       15 |        14 | yes    |
+| `ko` |  24,395 |    63.4% | 61.6% |       24 |        23 | yes    |
+| `tl` |  12,575 |    54.0% | 41.7% |       12 |        11 | yes    |
+| `ja` |  40,571 |    21.2% | 18.1% |       13 |        12 | **no** |
 
-**`was` is this morning, before books.** Every language reads the Internet Archive now. Two were
+**`was` is the morning of 2026-09-21, before any books.** Every language reads the Internet Archive now. Two were
 not reading it at all and said nothing: German declared its books inside the `LEIPZIG` array of
 package-name strings, so the build asked for a collection called `lz:[object Object]`, skipped it
 with a warning and reported 98.4% anyway; Tagalog declared no books source at all while its
@@ -56,22 +56,30 @@ here. Nick has since tested all eight against the word floor in `blinkered` and 
 comfortably, so the recalibration this file used to warn about is not blocking. The warning is
 kept only as the reason to re-test after a list moves a long way, which several did today.
 
-## Running in the background — all of this is in /tmp and will not survive a reboot
+## Nothing is running
+
+The session that gathered all this ended on 2026-09-21. The downloaders, the watchdog and the
+refold chain were all in its scratchpad and are gone with it. **Nothing is lost**: every language
+is published, conforming and licensed, and the 9355 books already on the shelves are in the
+shared cache, which is outside every repository.
+
+To carry on gathering books for a language:
 
 ```
-watchdog2.sh              every 60s: restarts a dead downloader with the right collection,
-                          marks an exhausted one done, warns under 5GB disk, and reports a
-                          refold that failed or stopped conforming
-/tmp/refold.sh            first refold pass: ru, ko, en
-refold2.sh                second pass: all eight, and regenerates the roll-up after each push
-retire-en.sh              waits for English's push, then retires its 27GB of dumps
-/tmp/ia-<lang>.log        eight book downloaders
+node scripts/archive.mjs <tag> <collection or query> <count>
 ```
 
-The first three are in this session's scratchpad rather than `/tmp`; the point either way is that
-none of it survives a reboot. Rebuild them from this file if they are gone. Nothing is lost if they
-die — every language is already published and conforming; the downloads only make the next refold
-better.
+`COLLECTIONS.md` in each language repository names the query its shelf came from; the `ia` source
+in its `sources.mjs` has it under `from`. Books are exempt from retirement, so a shelf survives
+`retire.mjs`. A refold after more books arrive is `node build.mjs && node conform.mjs && node
+saturation.mjs && node collections.mjs` in the language repository, then push, then regenerate the
+roll-up here — see [the rule for changing a language](README.md#the-rule-for-changing-a-language).
+
+**Watch two things if you restart a downloader.** Check free disk against the download size first;
+this cache reached 92GB once. And if you write a watchdog that restarts them, give it a read-back
+check: one built with an associative array resolved every key to the last entry's value and
+restarted three languages with Japanese's collection, putting 697 wrong-language books across
+seven shelves. No published list was affected, because the legibility floor refused all of them.
 
 ## The last mile per language
 
