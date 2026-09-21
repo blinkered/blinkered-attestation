@@ -20,29 +20,22 @@ Operational state. The **findings** live in [README.md](README.md) and the **num
 not reading it at all and said nothing: German declared its books inside the `LEIPZIG` array of
 package-name strings, so the build asked for a collection called `lz:[object Object]`, skipped it
 with a warning and reported 98.4% anyway; Tagalog declared no books source at all while its
-downloader filled a directory nothing pointed at. `scripts/declared.mjs` is the check that catches
-both — every source a language declares against every source its evidence contains.
+downloader filled a directory nothing pointed at. `node scripts/cache.mjs --strict` is the check that catches
+both, and it fails rather than prints. Comparing what a language declares against what its
+evidence holds finds neither: a broken source **un-declares itself**, because `SOURCES` drops
+anything whose path is missing, so there is nothing left to compare. The disk is the one record
+the fault cannot erase.
 
 **`conforms` means the paperwork matches the goods** — the evidence parses, every source is
 registered, every shipped word has evidence from three independent families, and every attestation
 says where to look. It says nothing about whether a list _plays_. Nothing has tested that yet.
 
-## What this does not mean, and must happen before the game
+## What this does not mean
 
-**The common-tier cut in every `sources.mjs` is Blinkered's old calibration**, against lists that
-were a different size. `blinkered/data/README.md` is explicit that skipping recalibration is a
-silent fault rather than a loud one: the word floor ends up above what any board can reach, every
-draw is rejected, and the generator plays its best failed attempt while reporting failure. Some of
-these lists moved thirty points today, so this is not optional.
-
-```
-pnpm dictionary weights   # paste into packages/engine/src/languages.ts
-pnpm dictionary floor     # paste MEDIAN_WORDS, SHARE_BY_MINIMUM, DENSITY_SCALE
-                          # into packages/engine/src/difficulty.ts
-```
-
-Then `packages/words/test/everyLanguagePlays.test.ts` is the guard that matters — three seeds per
-language, each needing an accepted board with a six-tile word.
+**`conforms` is not `plays`.** The two are separate questions and only one of them is answered
+here. Nick has since tested all eight against the word floor in `blinkered` and they pass
+comfortably, so the recalibration this file used to warn about is not blocking. The warning is
+kept only as the reason to re-test after a list moves a long way, which several did today.
 
 ## Running in the background — all of this is in /tmp and will not survive a reboot
 

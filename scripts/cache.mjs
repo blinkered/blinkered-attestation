@@ -79,3 +79,18 @@ process.stdout.write(
     '  Unclaimed is safe to delete. Claimed is not, even for a language already committed: ' +
     'a rebuild needs every collection back.\n',
 )
+
+// Unclaimed usually means leftovers. It can also mean a language is not reading a collection it
+// paid to download, and that fault is silent everywhere else: German sat at 98.4% with 778 books
+// it never opened, because its source object had been pasted inside the LEIPZIG array of package
+// names and the build skipped `lz:[object Object]` with a warning nobody reads. Tagalog was the
+// same fault with no source declared at all.
+//
+// Comparing what a language declares against what its evidence holds does not find either one. A
+// broken source un-declares itself — `SOURCES` drops anything whose path is missing — so there is
+// nothing left to compare. The disk is the one record the fault cannot erase, which is why this
+// is the check, and why it can be made to fail rather than merely print.
+if (process.argv.includes('--strict') && loose > 0) {
+  process.stdout.write('\n  --strict: something on disk is read by nobody.\n')
+  process.exitCode = 1
+}
