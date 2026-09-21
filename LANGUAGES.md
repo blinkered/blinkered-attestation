@@ -19,7 +19,7 @@ publisher.
 
 | language | candidates | proved  | coverage  | families | checkable | returns stop at | conforms | ships  | published |
 | -------- | ---------- | ------- | --------- | -------- | --------- | --------------- | -------- | ------ | --------- |
-| `de`     | 36,493     | 36,329  | **99.6%** | 21       | 20        | 4               | yes      | yes    | yes       |
+| `de`     | 36,493     | 36,346  | **99.6%** | 21       | 20        | 4               | yes      | yes    | yes       |
 | `en`     | 174,456    | 107,670 | **61.7%** | 15       | 14        | 5               | yes      | yes    | yes       |
 | `es`     | 201,655    | 143,024 | **70.9%** | 25       | 24        | 5               | yes      | yes    | yes       |
 | `fr`     | 144,105    | 103,417 | **71.8%** | 17       | 16        | 5               | yes      | yes    | yes       |
