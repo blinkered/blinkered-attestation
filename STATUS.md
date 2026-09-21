@@ -5,16 +5,23 @@ Operational state. The **findings** live in [README.md](README.md) and the **num
 
 ## All eight are published and conforming
 
-|      |   words | coverage | families | checkable |
-| ---- | ------: | -------: | -------: | --------: |
-| `de` |  35,895 |    98.4% |       20 |        19 |
-| `ru` | 344,401 |    81.2% |       10 |         8 |
-| `fr` |  96,387 |    66.9% |       17 |        16 |
-| `es` | 128,809 |    63.9% |       25 |        24 |
-| `ko` |  23,707 |    61.6% |       24 |        23 |
-| `tl` |   9,716 |    41.7% |       11 |        10 |
-| `en` |  70,673 |    40.5% |       14 |        13 |
-| `ja` |  34,636 |    18.1% |       13 |        12 |
+|      |   words | coverage | was   | families | checkable |
+| ---- | ------: | -------: | ----- | -------: | --------: |
+| `de` |  36,329 |    99.6% | 98.4% |       21 |        20 |
+| `ru` | 362,488 |    85.4% | 81.2% |       10 |         8 |
+| `es` | 143,024 |    70.9% | 63.9% |       25 |        24 |
+| `fr` |  98,540 |    68.4% | 66.9% |       17 |        16 |
+| `ko` |  24,285 |    63.1% | 61.6% |       24 |        23 |
+| `en` | 107,670 |    61.7% | 40.5% |       15 |        14 |
+| `tl` |  12,573 |    53.9% | 41.7% |       12 |        11 |
+| `ja` |  39,058 |    20.4% | 18.1% |       13 |        12 |
+
+**`was` is this morning, before books.** Every language reads the Internet Archive now. Two were
+not reading it at all and said nothing: German declared its books inside the `LEIPZIG` array of
+package-name strings, so the build asked for a collection called `lz:[object Object]`, skipped it
+with a warning and reported 98.4% anyway; Tagalog declared no books source at all while its
+downloader filled a directory nothing pointed at. `scripts/declared.mjs` is the check that catches
+both — every source a language declares against every source its evidence contains.
 
 **`conforms` means the paperwork matches the goods** — the evidence parses, every source is
 registered, every shipped word has evidence from three independent families, and every attestation
@@ -57,14 +64,18 @@ better.
 ## The last mile per language
 
 1. **More books.** Every language gains from them and none has finished downloading. A refold is
-   seconds, because the evidence records what every other collection held — for every language
-   whose downloads have been retired. English has not been, so its refold costs an hour, almost
-   all of it re-deriving `wiki:en` numbers the record already holds. That is the argument for
-   retiring a language the moment it is pushed, not eventually.
-2. **French** lost its shelf to a bug, and has recovered: 279 books and still fetching.
-3. **Japanese** is the thinnest at 18.1% and the most expensive to rebuild — every collection goes
-   through Sudachi. Its books are worth the most per unit of work.
-4. **Recalibrate**, then take the lists to `blinkered`.
+   now seconds for all eight: English was the last holding its downloads, and retiring them freed
+   32GB and turned an hour-long rebuild into a short one. Retire a language the moment it is
+   pushed, not eventually.
+2. **Japanese is the thinnest at 20.4%, and books are not what is holding it back.**
+   `SudachiDict-small` has no compound entries, so mode C has nothing to join: 太平洋 reads as
+   タイヘイ ヨウ, 日本語 as ニッポン ゴ, 大西洋 as オオニシ ヒロシ — a person's name. Compound
+   nouns are a large share of Japanese and none of them can be matched. Rejoining adjacent tokens
+   finds 535 more of our words across three pages against 1,375 matched as written, a 39% gain.
+   That is the lever. It also changes what attested means for Japanese, because a join can
+   manufacture a compound nobody wrote, so it is measured and not shipped. **The dictionary stays
+   small**: `core_lex.csv` carries NEologd, which draws on Hatena's keyword list.
+3. **Recalibrate**, then take the lists to `blinkered`.
 
 ## Book citations name the text, not the catalogue page
 
