@@ -78,6 +78,21 @@ the Japanese readings pass (`resources/readings.py`).
 Disk is the binding constraint, not time: the cache runs to 79GB and the volume has under 20GB
 free, which is why the German rebuild waits behind the Spanish and French ones.
 
+## The build queue
+
+Running unattended, in order of what each is worth. Each build waits for its own harvest to drop
+`searched.tsv.harvesting`, which the build refuses to start without.
+
+```
+fr  rebuilding with its converted harvest        /tmp/fr-rebuild.log
+de  waits for fr, then for dewiki to finish      /tmp/de-rebuild.log
+es  waits for de; drops a CDN from its record    /tmp/es-rebuild.log
+tl  ru  ja  en  in that order                    /tmp/queue.log
+```
+
+Harvests run alongside: `/tmp/{ru,tl,ja,en}-harvest-v2.log`. French's is stopped until its build
+finishes, because the two must not touch `searched.tsv` at once.
+
 ## What to do next, in order
 
 1. **Spanish**: building. Then French's rebuild, already queued behind it.
