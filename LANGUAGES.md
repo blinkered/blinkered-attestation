@@ -19,13 +19,13 @@ publisher.
 
 | language | candidates | proved  | coverage  | families | checkable | returns stop at | conforms | published |
 | -------- | ---------- | ------- | --------- | -------- | --------- | --------------- | -------- | --------- |
-| `de`     | 36,493     | 35,725  | **97.9%** | 5        | 4         | 5               | yes      | yes       |
+| `de`     | 36,493     | 35,895  | **98.4%** | 20       | 19        | 5               | yes      | yes       |
 | `en`     | not built  | —       | —         | —        | —         | —               | —        | no        |
 | `es`     | 201,655    | 99,587  | **49.4%** | 23       | 22        | 5               | yes      | no        |
 | `fr`     | 144,105    | 71,064  | **49.3%** | 14       | 13        | 5               | yes      | yes       |
 | `ja`     | 191,188    | 11,448  | **6.0%**  | 3        | 3         | still paying    | yes      | no        |
-| `ko`     | 38,467     | 17,465  | **45.4%** | 23       | 22        | 5               | yes      | yes       |
-| `ru`     | 424,352    | 210,392 | **49.6%** | 4        | 2         | still paying    | yes      | yes       |
+| `ko`     | 38,467     | 23,433  | **60.9%** | 24       | 23        | 5               | yes      | yes       |
+| `ru`     | 424,352    | 297,071 | **70.0%** | 10       | 8         | 5               | yes      | yes       |
 | `tl`     | 23,306     | 9,554   | **41.0%** | 6        | 2         | 6               | **NO**   | no        |
 
 **Checkable** is how many of a language's families somebody who disbelieved us could confirm by

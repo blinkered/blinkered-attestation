@@ -325,6 +325,30 @@ The reading is the same everywhere. A language's ceiling is not how much text it
 many _registers_ it has two independent gatherers for. Every list above is one register short,
 and in four of the five cases the missing one is books.
 
+### What happened when they got books
+
+The literary _harvest_ was the wrong answer and failed honestly: the archives that hold literature
+predate sitemaps and returned nothing, and half the domains that did answer were book reviews —
+modern journalism in the register the newspapers already cover. It rescued 6,247 of Russian's
+194,490 stranded words. Three percent.
+
+Books as a **collection** rather than a crawl is the right answer, and the difference is not
+subtle:
+
+```
+         before    after     books     what the books alone attested
+  ru      51.3%  →  70.0%    149       260,833 of 424,352 candidates
+  ko      47.5%  →  60.9%    172        19,644 of  38,467
+```
+
+Russian gained seventy-nine thousand words from one family. Its near-miss pile fell from 188,243
+to 109,686, and the downloader was a tenth done. Korean, which had twenty newspapers and no books
+at all, gained thirteen points.
+
+Both builds took under thirty seconds, because the evidence records what every other collection
+held and only the new one needed reading. The disposable-collections work and the literature work
+turned out to be the same work.
+
 This is the same lesson German taught at the start, arriving from the other side. German's first
 build used three collections of pre-1930s literature and curated sentences, and dropped OKAY and
 PIZZA. Spanish's build used twenty-two newspapers and dropped ABALANZAR. A language needs both
