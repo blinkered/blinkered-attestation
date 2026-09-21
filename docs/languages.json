@@ -898,7 +898,7 @@
       "built": true,
       "conforms": true,
       "candidates": 424352,
-      "shipped": 344401,
+      "shipped": 362488,
       "families": 10,
       "checkable": 8,
       "knee": 4,
@@ -920,58 +920,58 @@
         {
           "families": 3,
           "added": "internetarchive",
-          "kept": 331052,
-          "share": 0.780135,
-          "gained": 331052
+          "kept": 354500,
+          "share": 0.835391,
+          "gained": 354500
         },
         {
           "families": 4,
           "added": "leipzig",
-          "kept": 339482,
-          "share": 0.800001,
-          "gained": 8430
+          "kept": 359458,
+          "share": 0.847075,
+          "gained": 4958
         },
         {
           "families": 5,
           "added": "tatoeba",
-          "kept": 343669,
-          "share": 0.809868,
-          "gained": 4187
+          "kept": 362046,
+          "share": 0.853174,
+          "gained": 2588
         },
         {
           "families": 6,
           "added": "prochtenie.org",
-          "kept": 344155,
-          "share": 0.811013,
-          "gained": 486
+          "kept": 362338,
+          "share": 0.853862,
+          "gained": 292
         },
         {
           "families": 7,
           "added": "vedomosti.ru",
-          "kept": 344274,
-          "share": 0.811293,
-          "gained": 119
+          "kept": 362407,
+          "share": 0.854024,
+          "gained": 69
         },
         {
           "families": 8,
           "added": "kommersant.ru",
-          "kept": 344348,
-          "share": 0.811468,
-          "gained": 74
+          "kept": 362452,
+          "share": 0.854131,
+          "gained": 45
         },
         {
           "families": 9,
           "added": "ria.ru",
-          "kept": 344381,
-          "share": 0.811546,
-          "gained": 33
+          "kept": 362470,
+          "share": 0.854173,
+          "gained": 18
         },
         {
           "families": 10,
           "added": "lenta.ru",
-          "kept": 344401,
-          "share": 0.811593,
-          "gained": 20
+          "kept": 362488,
+          "share": 0.854215,
+          "gained": 18
         }
       ]
     },

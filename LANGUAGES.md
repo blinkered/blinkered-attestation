@@ -25,7 +25,7 @@ publisher.
 | `fr`     | 144,105    | 98,540  | **68.4%** | 17       | 16        | 5               | yes      | yes       |
 | `ja`     | 191,188    | 39,058  | **20.4%** | 13       | 12        | 4               | yes      | yes       |
 | `ko`     | 38,467     | 23,707  | **61.6%** | 24       | 23        | 5               | yes      | yes       |
-| `ru`     | 424,352    | 344,401 | **81.2%** | 10       | 8         | 4               | yes      | yes       |
+| `ru`     | 424,352    | 362,488 | **85.4%** | 10       | 8         | 4               | yes      | yes       |
 | `tl`     | 23,306     | 12,573  | **53.9%** | 12       | 11        | 5               | yes      | yes       |
 
 **Checkable** is how many of a language's families somebody who disbelieved us could confirm by
