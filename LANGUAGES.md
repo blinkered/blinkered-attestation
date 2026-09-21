@@ -25,7 +25,7 @@ publisher.
 | `fr`     | 144,105    | 103,417 | **71.8%** | 17       | 16        | 5               | yes      | yes    | yes       |
 | `ja`     | 191,188    | 40,571  | **21.2%** | 13       | 12        | 4               | yes      | **no** | yes       |
 | `ko`     | 38,467     | 24,285  | **63.1%** | 24       | 23        | 5               | yes      | yes    | yes       |
-| `ru`     | 424,352    | 362,488 | **85.4%** | 10       | 8         | 4               | yes      | yes    | yes       |
+| `ru`     | 424,352    | 371,579 | **87.6%** | 10       | 8         | 4               | yes      | yes    | yes       |
 | `tl`     | 23,306     | 12,575  | **54.0%** | 12       | 11        | 5               | yes      | yes    | yes       |
 
 **Ships** is the only column here that is not measured. Conforming says the evidence is sound and
