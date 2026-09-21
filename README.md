@@ -289,6 +289,15 @@ added a hundred words. What those forty thousand need is another shelf of books,
 somebody other than Gutenberg — a national literary archive, a literary magazine, an academic
 humanities press. Every major language has several and they are free to fetch.
 
+**Measured before committing to it.** One Cortázar story on a Spanish literary site, 11,584
+characters, holds nine of the stranded words — SUCUMBEN, HABITUAMOS, ESTORBARSE, ENCRESPADA,
+FRANQUEABA. The best newspaper in the same harvest rescued 108 across 547 pages. That is roughly
+forty-five times the yield per page, from text that costs exactly as much to fetch.
+
+Which is also why the literary tier goes at the **front** of `DOMAINS` rather than appended to the
+end. A harvest is hours long and is routinely interrupted; whatever it reaches first is what a
+build gets, so it should reach the useful thing first.
+
 So `DOMAINS` in each language now carries a literary tier alongside the news one:
 Cervantes Virtual and Biblioteca Virtual Universal for Spanish, Atramenta and OpenEdition for
 French, Lib.ru and the Russian Virtual Library for Russian, Zeno and the Deutsches Textarchiv for
