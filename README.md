@@ -316,9 +316,14 @@ who finds them stale learns not to trust them — at which point the comparison 
 happening. They are generated, so keeping them current costs one command:
 
 ```sh
-node scripts/languages.mjs        # every sibling repository
-node scripts/languages.mjs de ko  # only these
+pnpm roll                         # regenerate LANGUAGES.md, curves.svg, languages.json
+node scripts/languages.mjs de ko  # only these languages
+pnpm chart                        # regenerate, then serve the live page on :8765
 ```
+
+`pnpm chart` exists because GitHub Pages will not serve a private repository on this plan. Once
+these repositories are public the page is live at
+`https://blinkered.github.io/blinkered-attestation/` and needs nothing run at all.
 
 It reads each `blinkered-dictionary-*` beside this one, measures its committed evidence with the
 same code that language used, and writes three things: `LANGUAGES.md` and `curves.svg` for
