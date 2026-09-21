@@ -159,15 +159,114 @@
     {
       "tag": "en",
       "repo": "blinkered-dictionary-en",
-      "published": false,
-      "built": false,
-      "conforms": null,
-      "candidates": null,
-      "shipped": null,
-      "families": null,
-      "checkable": null,
-      "knee": null,
-      "steps": []
+      "published": true,
+      "built": true,
+      "conforms": true,
+      "candidates": 174456,
+      "shipped": 70673,
+      "families": 14,
+      "checkable": 13,
+      "knee": 5,
+      "steps": [
+        {
+          "families": 1,
+          "added": "wikimedia",
+          "kept": 0,
+          "share": 0,
+          "gained": 0
+        },
+        {
+          "families": 2,
+          "added": "gutenberg",
+          "kept": 0,
+          "share": 0,
+          "gained": 0
+        },
+        {
+          "families": 3,
+          "added": "leipzig",
+          "kept": 60383,
+          "share": 0.346122,
+          "gained": 60383
+        },
+        {
+          "families": 4,
+          "added": "tatoeba",
+          "kept": 67675,
+          "share": 0.38792,
+          "gained": 7292
+        },
+        {
+          "families": 5,
+          "added": "poets.org",
+          "kept": 68969,
+          "share": 0.395338,
+          "gained": 1294
+        },
+        {
+          "families": 6,
+          "added": "lrb.co.uk",
+          "kept": 69942,
+          "share": 0.400915,
+          "gained": 973
+        },
+        {
+          "families": 7,
+          "added": "theguardian.com",
+          "kept": 70126,
+          "share": 0.40197,
+          "gained": 184
+        },
+        {
+          "families": 8,
+          "added": "ebible",
+          "kept": 70309,
+          "share": 0.403019,
+          "gained": 183
+        },
+        {
+          "families": 9,
+          "added": "nybooks.com",
+          "kept": 70421,
+          "share": 0.403661,
+          "gained": 112
+        },
+        {
+          "families": 10,
+          "added": "publicdomainreview.org",
+          "kept": 70525,
+          "share": 0.404257,
+          "gained": 104
+        },
+        {
+          "families": 11,
+          "added": "irishtimes.com",
+          "kept": 70604,
+          "share": 0.404709,
+          "gained": 79
+        },
+        {
+          "families": 12,
+          "added": "pbs.org",
+          "kept": 70648,
+          "share": 0.404962,
+          "gained": 44
+        },
+        {
+          "families": 13,
+          "added": "bbc.co.uk",
+          "kept": 70669,
+          "share": 0.405082,
+          "gained": 21
+        },
+        {
+          "families": 14,
+          "added": "theglobeandmail.com",
+          "kept": 70673,
+          "share": 0.405105,
+          "gained": 4
+        }
+      ]
     },
     {
       "tag": "es",
@@ -351,9 +450,9 @@
       "built": true,
       "conforms": true,
       "candidates": 144105,
-      "shipped": 71064,
-      "families": 14,
-      "checkable": 13,
+      "shipped": 96387,
+      "families": 17,
+      "checkable": 16,
       "knee": 5,
       "steps": [
         {
@@ -372,86 +471,107 @@
         },
         {
           "families": 3,
-          "added": "leipzig",
-          "kept": 53325,
-          "share": 0.370043,
-          "gained": 53325
+          "added": "internetarchive",
+          "kept": 85961,
+          "share": 0.596516,
+          "gained": 85961
         },
         {
           "families": 4,
-          "added": "tatoeba",
-          "kept": 67595,
-          "share": 0.469068,
-          "gained": 14270
+          "added": "leipzig",
+          "kept": 92134,
+          "share": 0.639353,
+          "gained": 6173
         },
         {
           "families": 5,
-          "added": "ebible",
-          "kept": 69123,
-          "share": 0.479671,
-          "gained": 1528
+          "added": "tatoeba",
+          "kept": 95205,
+          "share": 0.660664,
+          "gained": 3071
         },
         {
           "families": 6,
-          "added": "rts.ch",
-          "kept": 69630,
-          "share": 0.483189,
-          "gained": 507
+          "added": "ebible",
+          "kept": 95603,
+          "share": 0.663426,
+          "gained": 398
         },
         {
           "families": 7,
-          "added": "letemps.ch",
-          "kept": 69991,
-          "share": 0.485694,
-          "gained": 361
+          "added": "rts.ch",
+          "kept": 95785,
+          "share": 0.664689,
+          "gained": 182
         },
         {
           "families": 8,
           "added": "lefigaro.fr",
-          "kept": 70241,
-          "share": 0.487429,
-          "gained": 250
+          "kept": 95940,
+          "share": 0.665765,
+          "gained": 155
         },
         {
           "families": 9,
-          "added": "sudouest.fr",
-          "kept": 70455,
-          "share": 0.488914,
-          "gained": 214
+          "added": "actualitte.com",
+          "kept": 96068,
+          "share": 0.666653,
+          "gained": 128
         },
         {
           "families": 10,
-          "added": "nouvelobs.com",
-          "kept": 70653,
-          "share": 0.490288,
-          "gained": 198
+          "added": "letemps.ch",
+          "kept": 96153,
+          "share": 0.667243,
+          "gained": 85
         },
         {
           "families": 11,
-          "added": "lemonde.fr",
-          "kept": 70837,
-          "share": 0.491565,
-          "gained": 184
+          "added": "nouvelobs.com",
+          "kept": 96217,
+          "share": 0.667687,
+          "gained": 64
         },
         {
           "families": 12,
-          "added": "lapresse.ca",
-          "kept": 70957,
-          "share": 0.492398,
-          "gained": 120
+          "added": "lemonde.fr",
+          "kept": 96269,
+          "share": 0.668048,
+          "gained": 52
         },
         {
           "families": 13,
-          "added": "la-croix.com",
-          "kept": 71064,
-          "share": 0.49314,
-          "gained": 107
+          "added": "lapresse.ca",
+          "kept": 96319,
+          "share": 0.668395,
+          "gained": 50
         },
         {
           "families": 14,
+          "added": "sudouest.fr",
+          "kept": 96364,
+          "share": 0.668707,
+          "gained": 45
+        },
+        {
+          "families": 15,
+          "added": "la-croix.com",
+          "kept": 96385,
+          "share": 0.668853,
+          "gained": 21
+        },
+        {
+          "families": 16,
+          "added": "franceinfo.fr",
+          "kept": 96387,
+          "share": 0.668866,
+          "gained": 2
+        },
+        {
+          "families": 17,
           "added": "rtbf.be",
-          "kept": 71064,
-          "share": 0.49314,
+          "kept": 96387,
+          "share": 0.668866,
           "gained": 0
         }
       ]
@@ -760,13 +880,13 @@
     {
       "tag": "tl",
       "repo": "blinkered-dictionary-tl",
-      "published": false,
+      "published": true,
       "built": true,
-      "conforms": false,
+      "conforms": true,
       "candidates": 23306,
-      "shipped": 9247,
-      "families": 6,
-      "checkable": 2,
+      "shipped": 9716,
+      "families": 11,
+      "checkable": 10,
       "knee": 6,
       "steps": [
         {
@@ -778,7 +898,7 @@
         },
         {
           "families": 2,
-          "added": "tlwiki",
+          "added": "wikimedia",
           "kept": 0,
           "share": 0,
           "gained": 0
@@ -786,30 +906,65 @@
         {
           "families": 3,
           "added": "gutenberg",
-          "kept": 6354,
-          "share": 0.272634,
-          "gained": 6354
+          "kept": 6513,
+          "share": 0.279456,
+          "gained": 6513
         },
         {
           "families": 4,
           "added": "tatoeba",
-          "kept": 8712,
-          "share": 0.373809,
-          "gained": 2358
+          "kept": 8860,
+          "share": 0.38016,
+          "gained": 2347
         },
         {
           "families": 5,
-          "added": "tlwikisource",
-          "kept": 9288,
-          "share": 0.398524,
-          "gained": 576
+          "added": "ebible",
+          "kept": 9247,
+          "share": 0.396765,
+          "gained": 387
         },
         {
           "families": 6,
-          "added": "ebibletl",
-          "kept": 9554,
-          "share": 0.409937,
-          "gained": 266
+          "added": "saksingayon.com",
+          "kept": 9536,
+          "share": 0.409165,
+          "gained": 289
+        },
+        {
+          "families": 7,
+          "added": "tribune.net.ph",
+          "kept": 9648,
+          "share": 0.413971,
+          "gained": 112
+        },
+        {
+          "families": 8,
+          "added": "rappler.com",
+          "kept": 9693,
+          "share": 0.415901,
+          "gained": 45
+        },
+        {
+          "families": 9,
+          "added": "gmanetwork.com",
+          "kept": 9705,
+          "share": 0.416416,
+          "gained": 12
+        },
+        {
+          "families": 10,
+          "added": "abante.com.ph",
+          "kept": 9715,
+          "share": 0.416845,
+          "gained": 10
+        },
+        {
+          "families": 11,
+          "added": "inquirer.net",
+          "kept": 9716,
+          "share": 0.416888,
+          "gained": 1
         }
       ]
     }
