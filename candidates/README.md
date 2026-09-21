@@ -61,9 +61,11 @@ saying SCHADE is a German word is what made anybody look. A citation is not a li
 it does not need to be one. That is the whole argument of this repository, and these files are
 the thing it is an argument about.
 
-## The eight with a repository
+## The seven Blinkered plays
 
 Their candidates are still read on every rebuild, so these are live inputs rather than history.
+Each one's `status.json` says `ships: true`, which is the thing `blinkered` reads before it
+borrows anything.
 
 | | language | candidates | terms it came under |
 | --- | --- | ---: | --- |
@@ -71,18 +73,24 @@ Their candidates are still read on every rebuild, so these are live inputs rathe
 | `en` | English | 174,456 | `MIT` |
 | `es` | Español | 201,655 | `MPL-1.1` |
 | `fr` | Français | 144,105 | `MPL-2.0` |
-| `ja` | 日本語 | 191,188 | `CC-BY-SA-4.0` |
 | `ko` | 한국어 | 38,467 | `CC-BY-SA-4.0` |
 | `ru` | Русский | 424,352 | `BSD-3-Clause` |
 | `tl` | Tagalog | 23,306 | `CC-BY-SA-4.0` |
 
-## The forty-three with none
+## The forty-four it does not
 
-This is the TODO. Each of these is a language Blinkered is fully translated into, still offers
-nothing to play, and has a candidate list ready for the day somebody registers sources for it.
-Starting one is `template/` plus a `sources.mjs`; the expensive part is finding three families
-that between them cover the register these candidates came from, which for most of them is film
-subtitles.
+This is the TODO. Each of these is a language Blinkered is fully translated into and offers
+nothing to play. Forty-three of them have never been started: they have a candidate list and
+nothing else, and beginning one is `template/` plus a `sources.mjs`. The expensive part is finding
+three families that between them cover the register these candidates came from, which for most of
+them is film subtitles.
+
+**Japanese is the forty-fourth, and it is not like the others.** It has a repository, evidence,
+a built list and a saturation curve, and it clears Blinkered's usability floor. It is held back
+by its own `status.json` because SudachiDict-small has no compound entries, so its reader cannot
+produce compound words at all, and Japanese vocabulary is largely compounds. More books will not
+fix it; every Japanese collection has to be read again. So its candidates stay here, and its work
+is a reader problem rather than a sources problem.
 
 | | language | candidates | terms it came under |
 | --- | --- | ---: | --- |
@@ -108,6 +116,7 @@ subtitles.
 | `id` | Bahasa Indonesia | 41,132 | `LGPL-3.0` |
 | `is` | Íslenska | 68,689 | `CC-BY-SA-3.0` |
 | `it` | Italiano | 40,944 | `CC-BY-SA-4.0` |
+| `ja` | 日本語 | 191,188 | `CC-BY-SA-4.0` |
 | `ka` | ქართული | 163,684 | `MIT` |
 | `la` | Latina | 32,765 | `CC-BY-SA-4.0` |
 | `lt` | Lietuvių | 202,690 | `BSD-3-Clause` |
@@ -129,6 +138,11 @@ subtitles.
 | `tr` | Türkçe | 638,282 | `MIT` |
 | `uk` | Українська | 20,903 | `CC-BY-SA-4.0` |
 | `vi` | Tiếng Việt | 25,622 | `CC-BY-SA-4.0` |
+
+**A repository is not the finish line.** Japanese has one and does not ship, which is the
+distinction `status.json` exists to record: whether a list is *honest* is settled in its own
+repository, and whether it is *good enough to deal from* is a second question with a second
+answer. Counting repositories would have called Japanese done.
 
 **Candidate count is not a ranking.** It is the size of the dictionary that validated the corpus,
 so Hungarian's 1,295,061 is a fact about agglutination and Basque's 7,417 is a fact about how
