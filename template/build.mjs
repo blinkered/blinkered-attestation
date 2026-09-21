@@ -4,9 +4,18 @@
  * Identical in every dictionary repository. Everything language-specific is in `sources.mjs`,
  * so fifty-one repositories cannot drift into fifty-one definitions of "kept".
  */
-import { existsSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, readFileSync, statSync, writeFileSync } from 'node:fs'
+import { basename } from 'node:path'
 import { alphabetFor } from '@blinkered/engine'
-import { build, domainOf, scan, scanByDomain, writeEvidence } from '@blinkered/attestation'
+import {
+  build,
+  checkDump,
+  domainOf,
+  headSize,
+  scan,
+  scanByDomain,
+  writeEvidence,
+} from '@blinkered/attestation'
 import { LANGUAGE, SOURCES, HARVEST, COMMON_CUT } from './sources.mjs'
 
 const CANDIDATES =
@@ -33,6 +42,21 @@ const candidates = new Set(
 )
 const fold = alphabetFor(LANGUAGE).fold
 process.stderr.write(`${LANGUAGE}: ${candidates.size} candidates\n`)
+
+// Every dump this language is about to read, against the size its server reports. A partial
+// .bz2 decompresses until it reaches the end of what arrived and then fails as a CRC error deep
+// inside a decompressor, with nothing naming the file — three builds have died that way. Only
+// this language's sources, because German has no reason to stop over a Japanese download.
+for (const source of SOURCES) {
+  if (source.needs === undefined || !statSync(source.needs).isFile()) continue
+  const checked = await checkDump(basename(source.needs), statSync(source.needs).size, headSize)
+  if (checked.verdict === 'truncated') {
+    throw new Error(
+      `${source.id} would read a partial ${checked.name}: ` +
+        `${String(checked.have)} bytes of ${String(checked.expect ?? 0)}. Wait for the download.`,
+    )
+  }
+}
 
 const results = []
 for (const source of SOURCES) {

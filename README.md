@@ -587,6 +587,11 @@ Only the final evidence file is ever tracked. Downloaded dumps and per-source in
 untracked `.cache/`, because git history full of large regenerable files is the failure mode this
 layout exists to avoid.
 
+**A build checks its own dumps before it starts.** Not the script's job, and not a shared cache's:
+German has no reason to stop because a Japanese dump is half-downloaded. `build.mjs` asks each of
+_its_ sources' files how big the server says they are and refuses by name if one is short, which
+turns a two-hour failure into a one-second one.
+
 **A dump is not ready until its download has finished.** Obvious, and worth writing down because
 it cost a twenty-minute build: a partial `.bz2` decompresses happily until it hits the end of what
 has arrived, then fails as a CRC error that reads exactly like a corrupt file. Check the size

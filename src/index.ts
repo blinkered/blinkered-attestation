@@ -72,3 +72,6 @@ export {
   readEvidence,
   writeEvidence,
 } from './store.js'
+
+export { checkDump, dumpUrl, headSize } from './dumps.js'
+export type { Checked as CheckedDump, SizeOf, Verdict } from './dumps.js'
