@@ -20,14 +20,19 @@ publisher.
 | language | candidates | proved  | coverage  | families | returns stop at | conforms | published |
 | -------- | ---------- | ------- | --------- | -------- | --------------- | -------- | --------- |
 | `de`     | 36,493     | 35,725  | **97.9%** | 5        | 5               | yes      | yes       |
+| `en`     | not built  | —       | —         | —        | —               | —        | —         | no  |
+| `es`     | 201,655    | 99,587  | **49.4%** | 23       | 5               | yes      | no        |
+| `fr`     | 144,105    | 69,123  | **48.0%** | 6        | 5               | yes      | no        |
+| `ja`     | 191,188    | 11,448  | **6.0%**  | 3        | still paying    | yes      | no        |
 | `ko`     | 38,467     | 17,465  | **45.4%** | 23       | 5               | yes      | yes       |
 | `ru`     | 424,352    | 210,392 | **49.6%** | 4        | still paying    | yes      | yes       |
+| `tl`     | 23,306     | 9,554   | **41.0%** | 6        | 6               | **NO**   | no        |
 
 **Coverage is not a grade.** It is the share of somebody else's dictionary we could independently
 prove, and a big dictionary full of inflected forms will score lower than a small one of ordinary
 words however well the attestation went. German and French consulted the same five families and
 differ by fifty points because German's candidate list is 36,000 words and French's is 144,000.
 
-Every built language conforms: each ships only what its evidence supports.
+**1 language fails conformance and must not be published:** `tl`.
 
 Generated 2026-09-21 from the published repositories.

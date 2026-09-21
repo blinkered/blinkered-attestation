@@ -100,7 +100,15 @@ function fromDisk() {
   })
 }
 
-/** Every published repository, as the world sees it: the curve each one publishes. */
+/**
+ * Every published repository, as the world sees it, merged over what the last local roll-up knew.
+ *
+ * Merged rather than replaced, because a language that is built and not yet published is still
+ * one of our languages and belongs on a chart that answers "how are we going". Dropping it would
+ * make the picture look tidier by hiding the part that is not finished. A published language is
+ * refreshed from its own main branch; an unpublished one keeps whatever the last local run
+ * measured, and the chart says which is which.
+ */
 async function fromGitHub() {
   const headers = { accept: 'application/vnd.github+json' }
   if (process.env.GITHUB_TOKEN) headers.authorization = `Bearer ${process.env.GITHUB_TOKEN}`
@@ -114,7 +122,15 @@ async function fromGitHub() {
     .filter((tag) => asked.length === 0 || asked.includes(tag))
     .sort()
 
-  return Promise.all(
+  // What the last roll-up knew, so a language that is not published yet does not vanish.
+  let known = []
+  try {
+    known = JSON.parse(readFileSync(join(HERE, 'languages.json'), 'utf8')).languages
+  } catch {
+    // No previous roll-up. Then the published repositories are all there is to draw.
+  }
+
+  const fresh = await Promise.all(
     tags.map(async (tag) => {
       // Through the API rather than raw.githubusercontent, which serves from a CDN that holds
       // a copy for several minutes and ignores a cache-busting query string. That staleness is
@@ -142,6 +158,12 @@ async function fromGitHub() {
       }
     }),
   )
+
+  const live = new Map(fresh.map((row) => [row.tag, row]))
+  const kept = known
+    .filter((row) => !live.has(row.tag))
+    .map((row) => ({ ...row, published: false, shards: null, steps: row.steps ?? [] }))
+  return [...fresh, ...kept].sort((left, right) => left.tag.localeCompare(right.tag))
 }
 
 const rows = remote ? await fromGitHub() : fromDisk()

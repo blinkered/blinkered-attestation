@@ -445,7 +445,7 @@
             `<span class="swatch" style="background:${one.ink}"></span>` +
             `<span>${one.tag}</span>` +
             `<span class="pct">${(one.steps.at(-1).share * 100).toFixed(1)}%</span>` +
-            (one.live ? '<span class="live">live</span>' : '')
+            (one.live ? '<span class="live">live</span>' : '<span class="live">draft</span>')
           button.onclick = () => {
             if (hidden.has(one.tag)) hidden.delete(one.tag)
             else hidden.add(one.tag)
@@ -514,12 +514,17 @@
         )
         const count = live.filter(Boolean).length
         const total = state.languages.filter((one) => one.steps.length > 0).length
+        const rest = total - count
+        const word = (n) => `${n} language${n === 1 ? '' : 's'}`
         status.innerHTML =
           count === 0
-            ? `<b>${total}</b> languages, all from the roll-up of ${state.generated}. ` +
-              `No repository answered — they are private, so the chart cannot read them yet.`
-            : `<b>${total}</b> languages: <b>${count}</b> read live from ${state.org}, ` +
-              `the rest from the roll-up of ${state.generated}.`
+            ? `<b>${word(total)}</b>, none of them published yet — every curve here is from the ` +
+              `roll-up of ${state.generated}.`
+            : rest === 0
+              ? `<b>${word(total)}</b>, every one read live from its own repository.`
+              : `<b>${word(total)}</b>: <b>${count}</b> read live from ${state.org}, ` +
+                `<b>${rest}</b> built but not published yet, from the roll-up of ` +
+                `${state.generated}.`
         paint()
       }
 
