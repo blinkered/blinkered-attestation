@@ -242,13 +242,13 @@
     {
       "tag": "fr",
       "repo": "blinkered-dictionary-fr",
-      "published": false,
+      "published": true,
       "built": true,
       "conforms": true,
       "candidates": 144105,
-      "shipped": 69123,
-      "families": 6,
-      "checkable": 5,
+      "shipped": 71064,
+      "families": 14,
+      "checkable": 13,
       "knee": 5,
       "steps": [
         {
@@ -288,9 +288,65 @@
         },
         {
           "families": 6,
-          "added": "typekit.net",
-          "kept": 69123,
-          "share": 0.479671,
+          "added": "rts.ch",
+          "kept": 69630,
+          "share": 0.483189,
+          "gained": 507
+        },
+        {
+          "families": 7,
+          "added": "letemps.ch",
+          "kept": 69991,
+          "share": 0.485694,
+          "gained": 361
+        },
+        {
+          "families": 8,
+          "added": "lefigaro.fr",
+          "kept": 70241,
+          "share": 0.487429,
+          "gained": 250
+        },
+        {
+          "families": 9,
+          "added": "sudouest.fr",
+          "kept": 70455,
+          "share": 0.488914,
+          "gained": 214
+        },
+        {
+          "families": 10,
+          "added": "nouvelobs.com",
+          "kept": 70653,
+          "share": 0.490288,
+          "gained": 198
+        },
+        {
+          "families": 11,
+          "added": "lemonde.fr",
+          "kept": 70837,
+          "share": 0.491565,
+          "gained": 184
+        },
+        {
+          "families": 12,
+          "added": "lapresse.ca",
+          "kept": 70957,
+          "share": 0.492398,
+          "gained": 120
+        },
+        {
+          "families": 13,
+          "added": "la-croix.com",
+          "kept": 71064,
+          "share": 0.49314,
+          "gained": 107
+        },
+        {
+          "families": 14,
+          "added": "rtbf.be",
+          "kept": 71064,
+          "share": 0.49314,
           "gained": 0
         }
       ]
