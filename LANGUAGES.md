@@ -23,10 +23,10 @@ publisher.
 | `en`     | 174,456    | 107,670 | **61.7%** | 15       | 14        | 5               | yes      | yes    | yes       |
 | `es`     | 201,655    | 143,024 | **70.9%** | 25       | 24        | 5               | yes      | yes    | yes       |
 | `fr`     | 144,105    | 103,417 | **71.8%** | 17       | 16        | 5               | yes      | yes    | yes       |
-| `ja`     | 191,188    | 39,058  | **20.4%** | 13       | 12        | 4               | yes      | **no** | yes       |
+| `ja`     | 191,188    | 40,571  | **21.2%** | 13       | 12        | 4               | yes      | **no** | yes       |
 | `ko`     | 38,467     | 24,285  | **63.1%** | 24       | 23        | 5               | yes      | yes    | yes       |
 | `ru`     | 424,352    | 362,488 | **85.4%** | 10       | 8         | 4               | yes      | yes    | yes       |
-| `tl`     | 23,306     | 12,573  | **53.9%** | 12       | 11        | 5               | yes      | yes    | yes       |
+| `tl`     | 23,306     | 12,575  | **54.0%** | 12       | 11        | 5               | yes      | yes    | yes       |
 
 **Ships** is the only column here that is not measured. Conforming says the evidence is sound and
 Blinkered's own floor says the list deals a playable board; neither says anybody wants to ship it.
