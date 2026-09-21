@@ -41,7 +41,7 @@ if (first === '--sample') {
   throw new Error('give a word, or --sample N')
 }
 
-const tally = { found: 0, absent: 0, unreachable: 0, unresolvable: 0 }
+const tally = { found: 0, archived: 0, absent: 0, unreachable: 0, unresolvable: 0 }
 let held = 0
 
 for (const word of chosen) {
@@ -52,6 +52,9 @@ for (const word of chosen) {
     tally[check.outcome] += 1
     const mark = {
       found: '  ok  ',
+      // The archive held it. For a dated locator — a news crawl — this is the expected pass, not
+      // a rescue: the page as it was is the document being cited.
+      archived: ' arch ',
       absent: ' MISS ',
       unreachable: ' ???  ',
       unresolvable: ' ??ID ',
@@ -62,8 +65,9 @@ for (const word of chosen) {
 
 process.stdout.write(
   `\n${String(held)}/${String(chosen.length)} words proved. ` +
-    `pages: ${String(tally.found)} found, ${String(tally.absent)} absent, ` +
-    `${String(tally.unreachable)} unreachable, ${String(tally.unresolvable)} unresolvable\n`,
+    `pages: ${String(tally.found)} found, ${String(tally.archived)} in the archive, ` +
+    `${String(tally.absent)} absent, ${String(tally.unreachable)} unreachable, ` +
+    `${String(tally.unresolvable)} unresolvable\n`,
 )
 if (tally.absent > 0) {
   process.stdout.write(

@@ -119,6 +119,23 @@ describe('proving a word', () => {
     expect(gone.checked[0]?.outcome).toBe('unreachable')
   })
 
+  it('does not call a dated locator absent when the archive returned the wrong year', async () => {
+    // /web/2021/ redirects to the nearest capture, which for German was routinely a 2022 version
+    // of the same news URL. A word missing from a later article is not a contradiction.
+    const crawled: WordEvidence = {
+      word: 'SCHADE',
+      attestations: [{ source: 'lz:deu_news_2021_1M', count: 5, locators: ['https://news/z'] }],
+    }
+    const proof = await prove(
+      crawled,
+      fold,
+      pages({ 'https://web.archive.org/web/2021/https://news/z': 'ein späterer Artikel' }),
+      1,
+    )
+    expect(proof.checked[0]?.outcome).toBe('unreachable')
+    expect(proof.holds).toBe(false)
+  })
+
   it('counts families rather than pages, like the rule it is checking', async () => {
     const twice: WordEvidence = {
       word: 'SCHADE',

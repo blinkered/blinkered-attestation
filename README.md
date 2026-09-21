@@ -322,6 +322,31 @@ is what a person would want to open and contains not one word of the book. Every
 attestation therefore failed verification against a page that was never the evidence. They point
 at the plain text now.
 
+### Three kinds of citation, not two
+
+The archive only half rescues a crawl, and finding out how it half fails is worth the paragraph.
+`/web/2021/<url>` redirects to the _nearest_ capture, and for German news URLs that was routinely
+a 2022 version of the same address — a later article, at the same place, by the same publisher.
+It looks like the cited page and is a different document.
+
+So there are three kinds of locator here, and they are checkable in three different ways:
+
+|                                     | example                                | what confirms it                         |
+| ----------------------------------- | -------------------------------------- | ---------------------------------------- |
+| **A stable identifier**             | `wiki:de:2129`, `tat:230`, `gut:21034` | fetch it; the document is still there    |
+| **A live URL we fetched ourselves** | `web:lemonde.fr`                       | fetch it, and the archive if it has gone |
+| **A URL somebody else crawled**     | `lz:deu_news_2021_1M`                  | the corpus file — not the web            |
+
+The third is the awkward one, and pretending otherwise would be the mistake. A Leipzig locator is
+**provenance**, not a citation: it records where Leipzig found the sentence, and the document that
+actually holds it is Leipzig's own published package, which anybody can download. So `prove`
+treats a hit on a crawl URL as confirmation and a miss as _inconclusive_ rather than as a
+contradiction. That asymmetry is not generosity; it is the only reading the evidence supports,
+because a word missing from a page captured a year after the crawl says nothing about the crawl.
+
+Which is an argument for weighting a language towards stable identifiers and pages we fetch
+ourselves, and for reading a Leipzig-heavy verification run as _unconfirmed_ rather than _failed_.
+
 ## Pushing a language
 
 A language repository becomes public when its **record is honest and checkable**, not when its

@@ -118,9 +118,16 @@ export async function prove(
       const live = await read(first)
 
       let outcome: Outcome
-      if (live !== null) {
-        const holds = pageHolds(live, evidence.word, fold)
-        outcome = holds ? (spec.asOf === undefined ? 'found' : 'archived') : 'absent'
+      if (live !== null && spec.asOf !== undefined) {
+        // Asymmetric, deliberately. `/web/<year>/<url>` redirects to the *nearest* capture, which
+        // for a 2021 crawl is routinely a 2022 version of the same URL — a later article at the
+        // same address. Finding the word in it confirms the sighting; not finding it says only
+        // that we could not read the document that was cited, and calling that `absent` would
+        // report a contradiction we have no evidence for. So a hit passes and a miss is
+        // inconclusive.
+        outcome = pageHolds(live, evidence.word, fold) ? 'archived' : 'unreachable'
+      } else if (live !== null) {
+        outcome = pageHolds(live, evidence.word, fold) ? 'found' : 'absent'
       } else if (spec.asOf === undefined) {
         // Only when the live page is gone. A page that loaded and did not hold the word is a
         // finding, and going to the archive for a second opinion would bury it.
@@ -132,8 +139,8 @@ export async function prove(
               ? 'archived'
               : 'absent'
       } else {
-        // The archive has no snapshot from that year. The live page is then the only thing left
-        // to ask, and it is a weaker witness, so a miss on it is unreachable rather than absent.
+        // The archive has no capture at all. The live page is the only thing left to ask, and it
+        // is a weaker witness than the archive, so the same asymmetry applies.
         const now = await read(url)
         outcome = now !== null && pageHolds(now, evidence.word, fold) ? 'found' : 'unreachable'
       }
