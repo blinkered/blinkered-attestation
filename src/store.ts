@@ -69,8 +69,12 @@ export function readEvidence(root: string): EvidenceFile {
   const first = parsed[0] as EvidenceFile
   if (parsed.length === 1) return first
 
+  // Appended one at a time rather than spread. `push(...shard.words)` passes every word as an
+  // argument, and a shard holds as many as fit in forty megabytes — Spanish's blew the call
+  // stack at a hundred thousand. A language's size should never decide whether its evidence can
+  // be read back.
   const words: WordEvidence[] = []
-  for (const shard of parsed) words.push(...shard.words)
+  for (const shard of parsed) for (const word of shard.words) words.push(word)
   // The digest of a sharded file is the digests of its parts: no single body exists to hash,
   // and inventing one by concatenation would be a number that matches nothing on disk.
   return {

@@ -1,7 +1,8 @@
-import { existsSync, mkdirSync, mkdtempSync, readdirSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
+import { formatEvidence } from '../src/evidence.js'
 import {
   EVIDENCE_DIR,
   EVIDENCE_FILE,
@@ -116,5 +117,35 @@ describe('reading evidence back', () => {
     const root = repo()
     writeEvidence(root, 'de', '2026-09-20', words(40), 400)
     expect(readEvidence(root).digest).toContain('+')
+  })
+})
+
+describe('a language too big to spread', () => {
+  it('reads back shards holding more words than a call can take arguments', () => {
+    // `push(...shard.words)` passes every word as an argument. Spanish's evidence sharded at a
+    // hundred thousand words apiece and readEvidence died with "Maximum call stack size
+    // exceeded" — after a two-hour build. How big a language is must not decide whether its
+    // evidence can be read.
+    const root = mkdtempSync(join(tmpdir(), 'blinkered-attestation-'))
+    const many = (from: number, count: number): WordEvidence[] =>
+      Array.from({ length: count }, (_, at) => ({
+        word: `W${String(from + at)}`,
+        attestations: [{ source: 'tat', count: 1, locators: ['1'] }],
+      }))
+
+    mkdirSync(join(root, EVIDENCE_DIR))
+    writeFileSync(
+      join(root, EVIDENCE_DIR, '000.tsv'),
+      formatEvidence('es', '2026-09-21', many(0, 150_000)),
+    )
+    writeFileSync(
+      join(root, EVIDENCE_DIR, '001.tsv'),
+      formatEvidence('es', '2026-09-21', many(150_000, 150_000)),
+    )
+
+    const read = readEvidence(root)
+    expect(read.words).toHaveLength(300_000)
+    expect(read.words[299_999]?.word).toBe('W299999')
+    rmSync(root, { recursive: true, force: true })
   })
 })
