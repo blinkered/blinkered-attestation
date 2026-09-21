@@ -382,6 +382,18 @@ word is.
 This is not circular. It does not decide whether a word is real. It decides whether a document is
 legible enough to be evidence about anything, which is a question about the document.
 
+**The same floor catches a book in the wrong language.** A watchdog restarted three downloaders
+with a fourth language's collection, and French's shelf ended up holding fourteen French books and
+a hundred and forty-six Japanese ones. Every one of those scores between nought and twenty-seven
+percent against French, far below the floor — because a book in another language holds almost none
+of this language's words, which is the same signal as unreadable OCR. The evidence was never at
+risk; the floor was doing a job it was not designed for.
+
+`weed.mjs` removes them, using exactly the test the build applies, so nothing goes that would have
+been believed. It **refuses any language that reads through an analyser**: a Japanese book is kanji
+and the Japanese list is kana, so without Sudachi every good book looks foreign, and running it
+there would have deleted a whole correct shelf.
+
 **And the Archive is not Gutenberg.** Worth checking rather than assuming, since one library
 hosting another's texts would be one family wearing two names: of 409 books fetched across four
 languages, none mention Project Gutenberg. They are library scans, gathered by people with no
