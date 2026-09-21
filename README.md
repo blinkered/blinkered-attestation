@@ -627,6 +627,39 @@ rebuilding means every one of its collections back, so the deletion bought a few
 hour and cost a re-download. A language is finished when its drop list has stopped suggesting
 anything, not when its first build passes.
 
+## The collections are disposable, and the evidence is why
+
+The evidence file records what each collection saw. Version 1 did not record **how much text each
+collection held** — and ranking is occurrences per million, so that total is the denominator of
+every rate. It was computed, used, and thrown away, which meant every rebuild had to re-read
+twenty-four gigabytes of Wikipedia to recover a number it had already had.
+
+That one omission was the only thing keeping ninety-two gigabytes of downloads alive. French's
+rebuild took twenty-five minutes and nineteen of them were re-reading a seven-gigabyte dump to
+rediscover exactly what the last build had written down.
+
+Version 2 records it:
+
+```
+#blinkered/attestations/2 language=de words=36493 sources=12 built=2026-09-21 digest=…
+#tokens ebible:deuelo=466377 gut=4183929 tat=65409 wiki:de=221483630 …
+SCHADE	ebible:deuelo,gut,tat,wiki:de	3,7,2,88	gut:21034 tat:230 wiki:de:9912847
+```
+
+So a build now reads the evidence already present, scans only the collections whose files are
+actually on disk, and **reuses the recorded testimony and totals for the rest**. Deleting a dump
+is how you say _use what is recorded_; putting it back is how you say _read it again_. A reused
+family counts towards the rule exactly as a scanned one does, because a sighting does not expire.
+
+Two things follow, and the second is the one that matters:
+
+- Adding a literary family to Spanish costs a scan of the new family, not a re-scan of seven
+  collections. Minutes rather than hours.
+- **A language keeps a `COLLECTIONS.md`** — every collection, how many tokens it held, and the URL
+  it came from. Deleting a download with no note of its origin would be a claim nobody can
+  re-derive, which is the opposite of the point. Written by `pnpm collections`, committed, and
+  then the dumps go.
+
 **And the cache is deleted per language once its evidence is written.** The collections for one
 language run to tens of gigabytes — a Wikipedia dump is 1GB for Korean and 24GB for English, and
 a FineWeb-2 shard is 4.5GB apiece — so queueing six languages at once fills a disk, which is how

@@ -18,12 +18,16 @@
 
 import { byRate, independence, partition } from './attest.js'
 import { sourceFor } from './registry.js'
-import type { WordEvidence } from './evidence.js'
+import type { Attestation, EvidenceFile, WordEvidence } from './evidence.js'
 import { merge } from './scan.js'
 import type { ScanResult } from './scan.js'
 
 export interface Built {
   readonly language: string
+  /** Playable tokens per collection, carried into the evidence so it need not be re-counted. */
+  readonly totals: ReadonlyMap<string, number>
+  /** Collections whose testimony came from the evidence already here, not from a fresh scan. */
+  readonly reused: readonly string[]
   /**
    * The evidence, as records rather than as text.
    *
@@ -83,18 +87,67 @@ function dropList(dropped: readonly WordEvidence[]): string {
   return `#blinkered/dropped/1 words=${String(ordered.length)}\n${lines.join('\n')}\n`
 }
 
+/**
+ * Everything the evidence already here recorded, for collections this build did not scan.
+ *
+ * This is what makes a collection disposable. A build that adds a literary family to a language
+ * has no reason to re-read twenty-four gigabytes of Wikipedia to rediscover what the last build
+ * wrote down about it; it reads the lines. A collection is reused when the evidence has a token
+ * total for it and this build produced no result of its own — which in practice means its dump
+ * has been deleted, and deleting a dump is exactly how you say "use what is recorded".
+ */
+function recorded(
+  prior: EvidenceFile | undefined,
+  fresh: ReadonlySet<string>,
+): { totals: Map<string, number>; words: Map<string, Attestation[]>; reused: string[] } {
+  const totals = new Map<string, number>()
+  const words = new Map<string, Attestation[]>()
+  if (prior === undefined) return { totals, words, reused: [] }
+
+  const reused = [...prior.totals.keys()].filter((source) => !fresh.has(source))
+  const keep = new Set(reused)
+  for (const [source, tokens] of prior.totals) if (keep.has(source)) totals.set(source, tokens)
+  for (const word of prior.words) {
+    const kept = word.attestations.filter((attestation) => keep.has(attestation.source))
+    if (kept.length > 0) words.set(word.word, kept)
+  }
+  return { totals, words, reused: reused.sort() }
+}
+
 export function build(
   language: string,
   candidates: Iterable<string>,
   results: readonly ScanResult[],
   commonCut: number,
+  prior?: EvidenceFile,
 ): Built {
-  const { totals: scanned, words: seen } = merge(results)
+  const { totals: scanned, words: freshWords } = merge(results)
+  const carried = recorded(prior, new Set(scanned.keys()))
+
+  // Fresh testimony and recorded testimony, one map. A source appears in exactly one of them:
+  // `recorded` keeps only what this build did not scan.
+  const seen = new Map<string, { source: string; count: number; locators: readonly string[] }[]>()
+  for (const [word, attestations] of freshWords) seen.set(word, [...attestations])
+  for (const [word, attestations] of carried.words) {
+    seen.set(word, [...(seen.get(word) ?? []), ...attestations])
+  }
+  for (const [word, attestations] of seen) {
+    seen.set(
+      word,
+      [...attestations].sort((left, right) => left.source.localeCompare(right.source)),
+    )
+  }
+  // Everything this build knows about, scanned or recorded. This is what goes into the evidence,
+  // so a later build can reuse any of it; a source with no recorded total can never be reused,
+  // which is how a deleted harvest file would quietly cost a language its publishers.
+  const all = new Map(scanned)
+  for (const [source, tokens] of carried.totals) all.set(source, tokens)
+
   // A collection built by searching for the words themselves attests but does not rank; see
   // `ranks` in the registry. Dropping it from the denominator keeps it out of the ordering
   // without keeping it out of the evidence.
   const totals = new Map(
-    [...scanned].filter(([source]) => {
+    [...all].filter(([source]) => {
       try {
         return sourceFor(source).ranks !== false
       } catch {
@@ -107,6 +160,8 @@ export function build(
 
   return {
     language,
+    totals: all,
+    reused: carried.reused,
     // The evidence records every candidate, kept or not, so a drop can be checked as easily
     // as a keep. It is the larger file and the more useful one.
     evidence: byRate(allCandidates(candidates, seen), totals),

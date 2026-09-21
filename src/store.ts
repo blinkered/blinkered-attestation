@@ -77,11 +77,15 @@ export function readEvidence(root: string): EvidenceFile {
   for (const shard of parsed) for (const word of shard.words) words.push(word)
   // The digest of a sharded file is the digests of its parts: no single body exists to hash,
   // and inventing one by concatenation would be a number that matches nothing on disk.
+  // Totals are per collection and identical in every shard, since the split is between words.
+  const totals = new Map<string, number>()
+  for (const shard of parsed) for (const [source, count] of shard.totals) totals.set(source, count)
   return {
     language: first.language,
     built: first.built,
     words,
     digest: parsed.map((shard) => shard.digest).join('+'),
+    totals,
   }
 }
 
@@ -96,9 +100,10 @@ export function writeEvidence(
   language: string,
   built: string,
   words: readonly WordEvidence[],
+  totals: ReadonlyMap<string, number> = new Map(),
   maxBytes: number = SHARD_BYTES,
 ): string[] {
-  const whole = formatEvidence(language, built, words)
+  const whole = formatEvidence(language, built, words, totals)
   const single = join(root, EVIDENCE_FILE)
   const directory = join(root, EVIDENCE_DIR)
 
@@ -112,7 +117,7 @@ export function writeEvidence(
   const shards: WordEvidence[][] = [[]]
   let bytes = 0
   for (const word of words) {
-    const size = Buffer.byteLength(formatEvidence(language, built, [word]), 'utf8')
+    const size = Buffer.byteLength(formatEvidence(language, built, [word], totals), 'utf8')
     const current = shards.at(-1) as WordEvidence[]
     if (current.length > 0 && bytes + size > maxBytes) {
       shards.push([word])
@@ -128,7 +133,8 @@ export function writeEvidence(
   mkdirSync(directory, { recursive: true })
   return shards.map((shard, at) => {
     const path = join(directory, `${String(at).padStart(3, '0')}.tsv`)
-    writeFileSync(path, formatEvidence(language, built, shard))
+    // Every shard carries the totals, because every shard is a complete evidence file.
+    writeFileSync(path, formatEvidence(language, built, shard, totals))
     return path
   })
 }

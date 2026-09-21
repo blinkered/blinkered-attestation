@@ -10,6 +10,7 @@ import { alphabetFor } from '@blinkered/engine'
 import {
   build,
   checkDump,
+  readEvidence,
   domainOf,
   headSize,
   scan,
@@ -36,29 +37,6 @@ if (existsSync(HARVESTING)) {
     `a harvest is writing searched.tsv (${readFileSync(HARVESTING, 'utf8').trim()}). ` +
       'Wait for it, or remove searched.tsv.harvesting if nothing is running.',
   )
-}
-
-// A rebuild must not quietly ship fewer collections than the evidence it replaces. A source
-// whose file has gone missing is skipped with a warning, which is right for a first build and
-// dangerous for a rebuild: Korean's FineWeb-2 shard was deleted between builds, and rebuilding
-// without it would have dropped the Common Crawl family that half its evidence rests on — with
-// nothing in the output saying so except a line in a log nobody reads.
-if (existsSync(EVIDENCE)) {
-  const had = new Set()
-  for (const line of readFileSync(EVIDENCE, 'utf8').split('\n').slice(1, 20000)) {
-    const [, sources] = line.split('\t')
-    if (sources === undefined || sources === '') continue
-    for (const source of sources.split(',')) had.add(source)
-  }
-  const having = new Set(SOURCES.map((source) => source.id))
-  const lost = [...had].filter((id) => !id.startsWith('web:') && !having.has(id))
-  if (lost.length > 0) {
-    throw new Error(
-      `the evidence here was built with ${lost.join(', ')} and this build cannot see ${
-        lost.length === 1 ? 'it' : 'them'
-      }. Restore the collection, or delete the evidence to rebuild deliberately smaller.`,
-    )
-  }
 }
 
 const candidates = new Set(
@@ -89,6 +67,17 @@ for (const source of SOURCES) {
         `${String(checked.have)} bytes of ${String(checked.expect ?? 0)}. Wait for the download.`,
     )
   }
+}
+
+// What the last build wrote down. A collection whose dump has been deleted is not gone: its
+// testimony and its token total are in here, and reusing them is the whole reason the dumps are
+// disposable. Deleting a dump is how you say "use what is recorded"; putting it back is how you
+// say "read it again".
+let prior
+try {
+  prior = readEvidence('.')
+} catch {
+  // No evidence yet. Every collection is scanned, which is what a first build is.
 }
 
 const results = []
@@ -123,10 +112,13 @@ if (HARVEST !== undefined) {
 }
 
 const today = new Date().toISOString().slice(0, 10)
-const built = build(LANGUAGE, candidates, results, COMMON_CUT)
+const built = build(LANGUAGE, candidates, results, COMMON_CUT, prior)
+if (built.reused.length > 0) {
+  process.stderr.write(`  ${'reused from the record'.padEnd(22)} ${built.reused.join(' ')}\n`)
+}
 // Sharded only when one file would be too large for GitHub to take comfortably; a language whose
 // evidence still fits stays a single `ATTESTATIONS.tsv`, and never both at once.
-const written = writeEvidence('.', LANGUAGE, today, built.evidence)
+const written = writeEvidence('.', LANGUAGE, today, built.evidence, built.totals)
 writeFileSync('words.txt', built.words)
 writeFileSync('dropped.tsv', built.dropped)
 process.stderr.write(`evidence: ${written.join(' ')}\n`)

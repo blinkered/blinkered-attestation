@@ -92,8 +92,8 @@ describe('building a language', () => {
     ]
     const tied = build('de', ['ZEBRA', 'APFEL'], two, 1)
     expect(tied.dropped.split('\n').slice(1, 3)).toEqual([
-      'APFEL\t2\ttat,gut\t1,1',
-      'ZEBRA\t2\ttat,gut\t1,1',
+      'APFEL\t2\tgut,tat\t1,1',
+      'ZEBRA\t2\tgut,tat\t1,1',
     ])
   })
 
@@ -140,5 +140,87 @@ describe('a source that attests but does not rank', () => {
     ]
     // mystery counts as its own family, so NEU has three and is kept.
     expect(build('de', ['NEU'], unknown, 1).kept).toBe(1)
+  })
+})
+
+describe('building on evidence already here', () => {
+  // What a rebuild looks like after a collection has been deleted: the dump is gone, its
+  // testimony is in the file, and the build must use the file rather than pretend the
+  // collection never existed.
+  const prior = {
+    language: 'de',
+    built: '2026-09-18',
+    digest: 'x',
+    totals: new Map([
+      ['gut', 1000],
+      ['wiki:de', 5000],
+    ]),
+    words: [
+      {
+        word: 'OKAY',
+        attestations: [
+          { source: 'gut', count: 20, locators: ['21034'] },
+          { source: 'wiki:de', count: 9, locators: ['2129'] },
+        ],
+      },
+      { word: 'PIZZA', attestations: [{ source: 'wiki:de', count: 3, locators: ['7740'] }] },
+    ],
+  }
+
+  const fresh = [
+    result('tat', 1000, [
+      ['OKAY', 40, ['1']],
+      ['PIZZA', 10, ['2']],
+    ]),
+  ]
+
+  it('keeps the testimony of a collection it no longer has', () => {
+    const built = build('de', CANDIDATES, fresh, 10, prior)
+    const okay = built.evidence.find((word) => word.word === 'OKAY')
+    expect(okay?.attestations.map((one) => one.source)).toEqual(['gut', 'tat', 'wiki:de'])
+    expect(built.reused).toEqual(['gut', 'wiki:de'])
+  })
+
+  it('keeps their token totals, which is what lets the next build rank without them', () => {
+    const built = build('de', CANDIDATES, fresh, 10, prior)
+    expect(built.totals.get('gut')).toBe(1000)
+    expect(built.totals.get('tat')).toBe(1000)
+  })
+
+  it('counts a reused family towards the rule, because a sighting does not expire', () => {
+    // Three families, one of them scanned today and two read off the file. OKAY ships.
+    const built = build('de', CANDIDATES, fresh, 10, prior)
+    expect(built.words).toContain('OKAY')
+    expect(built.kept).toBe(1)
+  })
+
+  it('prefers a fresh scan over the record, so putting a dump back means rescan', () => {
+    const rescanned = [...fresh, result('gut', 99, [['PIZZA', 7, ['555']]])]
+    const built = build('de', CANDIDATES, rescanned, 10, prior)
+    expect(built.reused).toEqual(['wiki:de'])
+    expect(built.totals.get('gut')).toBe(99)
+    // OKAY was in Gutenberg per the record and not per today's scan; today's scan wins.
+    const okay = built.evidence.find((word) => word.word === 'OKAY')
+    expect(okay?.attestations.map((one) => one.source)).toEqual(['tat', 'wiki:de'])
+  })
+
+  it('keeps a word only the record saw, which is a whole collection’s tail', () => {
+    // ERFUNDEN is in the record and in nothing scanned today. Dropping it would quietly delete
+    // everything a deleted collection uniquely attested.
+    const only = {
+      ...prior,
+      words: [
+        ...prior.words,
+        { word: 'ERFUNDEN', attestations: [{ source: 'gut', count: 2, locators: ['9'] }] },
+      ],
+    }
+    const built = build('de', CANDIDATES, fresh, 10, only)
+    const found = built.evidence.find((word) => word.word === 'ERFUNDEN')
+    expect(found?.attestations.map((one) => one.source)).toEqual(['gut'])
+  })
+
+  it('builds from nothing when there is no evidence yet', () => {
+    const built = build('de', CANDIDATES, fresh, 10)
+    expect(built.reused).toEqual([])
   })
 })

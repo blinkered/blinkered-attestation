@@ -8,7 +8,8 @@
  * it is compact, because a sceptic will not read 750MB either.
  *
  * ```
- * #blinkered/attestations/1 language=de words=2 sources=3 built=2026-09-18 digest=…
+ * #blinkered/attestations/2 language=de words=2 sources=3 built=2026-09-18 digest=…
+ * #tokens cc=1173847076 dewiki=221483630 gut=4183929
  * SCHADE	cc,dewiki,gut	412,88,7	cc:https://…/artikel dewiki:9912847 gut:21034
  * ABSEITS	cc,dewiki	130,12	cc:https://…/spiel dewiki:7740221
  * ```
@@ -16,6 +17,17 @@
  * Four columns: the word, the sources that attest it, how many hits in each, and a sample
  * locator or two per source. Sources are sorted and counts are written in the same order, so a
  * rebuild over unchanged evidence produces identical bytes and a diff means something changed.
+ *
+ * **The `#tokens` line is what makes the collections disposable.** Ranking is occurrences per
+ * million, so it needs each collection's total token count as a denominator. Version 1 computed
+ * that number, used it, and threw it away — which meant every rebuild had to re-read twenty-four
+ * gigabytes of Wikipedia to recover a number it had already had. Recording it turns this file
+ * into the complete record of a scan: what was seen, where, and out of how much. The dump can
+ * then be deleted, and a later build that adds a family reuses these lines instead of reading
+ * the text again.
+ *
+ * Version 1 files parse, with no totals. They cannot be ranked without rescanning, which is the
+ * state every language was in before this.
  */
 
 /** One collection's testimony about one word. */
@@ -48,11 +60,21 @@ export interface EvidenceFile {
   readonly built: string
   readonly words: readonly WordEvidence[]
   readonly digest: string
+  /**
+   * Playable tokens each collection held, which is the denominator of every rate.
+   *
+   * Empty for a version 1 file, which recorded no totals and therefore cannot be re-ranked
+   * without re-reading the collections themselves.
+   */
+  readonly totals: ReadonlyMap<string, number>
 }
 
 export const SAMPLES_PER_SOURCE = 2
 
-const HEADER = '#blinkered/attestations/1'
+const HEADER = '#blinkered/attestations/'
+const VERSION = 2
+/** The line that records how much text each collection held. */
+const TOKENS = '#tokens '
 
 /**
  * A content digest of the body, so a word list can name the evidence it was built from.
@@ -94,22 +116,32 @@ export function formatEvidence(
   language: string,
   built: string,
   words: readonly WordEvidence[],
+  totals: ReadonlyMap<string, number> = new Map(),
 ): string {
   const sources = new Set(
     words.flatMap((word) => word.attestations.map((attestation) => attestation.source)),
   )
-  const body = `${words.map(line).join('\n')}\n`
+  // Sorted, so a rebuild over unchanged evidence produces identical bytes.
+  const counted = [...totals]
+    .sort((left, right) => left[0].localeCompare(right[0]))
+    .map(([source, tokens]) => `${source}=${String(tokens)}`)
+    .join(' ')
+  const tokens = counted === '' ? '' : `${TOKENS}${counted}\n`
+  const body = `${tokens}${words.map(line).join('\n')}\n`
   const head =
-    `${HEADER} language=${language} words=${String(words.length)} ` +
+    `${HEADER}${String(VERSION)} language=${language} words=${String(words.length)} ` +
     `sources=${String(sources.size)} built=${built}`
-  // Over the body alone: the header carries the digest, so hashing the header would make the
-  // value depend on itself.
+  // Over the body alone, which now includes the totals: the header carries the digest, so
+  // hashing the header would make the value depend on itself.
   return `${head} digest=${digestOf(body)}\n${body}`
 }
 
 function fields(head: string): Map<string, string> {
   const found = new Map<string, string>()
-  for (const field of head.slice(HEADER.length).trim().split(/\s+/u)) {
+  for (const field of head
+    .replace(/^#blinkered\/attestations\/\d+/u, '')
+    .trim()
+    .split(/\s+/u)) {
     const split = field.indexOf('=')
     if (split > 0) found.set(field.slice(0, split), field.slice(split + 1))
   }
@@ -133,13 +165,37 @@ export function parseEvidence(text: string): EvidenceFile {
   const language = found.get('language') ?? ''
   const expected = Number(found.get('words'))
 
-  const entries = lines.slice(1).filter((entry) => entry !== '')
+  const rest = lines.slice(1)
+  // Version 2 records each collection's token total on the line after the header. A version 1
+  // file has none, and parses into an empty map rather than failing: its words are still
+  // evidence, it just cannot be re-ranked without rescanning.
+  const totals = new Map<string, number>()
+  const counted = rest[0]?.startsWith(TOKENS) === true
+  if (counted) {
+    for (const field of (rest[0] as string).slice(TOKENS.length).trim().split(/\s+/u)) {
+      const split = field.lastIndexOf('=')
+      if (split <= 0) throw new Error(`attestations for "${language}" have a malformed total`)
+      const tokens = Number(field.slice(split + 1))
+      if (!Number.isInteger(tokens) || tokens < 0) {
+        throw new Error(`attestations for "${language}" have a non-numeric total`)
+      }
+      totals.set(field.slice(0, split), tokens)
+    }
+  }
+
+  const entries = rest.slice(counted ? 1 : 0).filter((entry) => entry !== '')
   if (!Number.isInteger(expected) || entries.length !== expected) {
     throw new Error(`attestations for "${language}" are truncated or mislabelled`)
   }
 
   const words = entries.map((entry) => parseLine(entry, language))
-  return { language, built: found.get('built') ?? '', words, digest: found.get('digest') ?? '' }
+  return {
+    language,
+    built: found.get('built') ?? '',
+    words,
+    digest: found.get('digest') ?? '',
+    totals,
+  }
 }
 
 function parseLine(entry: string, language: string): WordEvidence {

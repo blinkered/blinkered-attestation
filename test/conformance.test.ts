@@ -37,6 +37,7 @@ describe('a conforming repository', () => {
       built: '2026-09-18',
       digest: 'x',
       words: [supported('SCHADE', THREE)],
+      totals: new Map(),
     }
     expect(conform(list('SCHADE'), evidence)).toEqual([])
   })

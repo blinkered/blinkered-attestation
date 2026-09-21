@@ -176,3 +176,56 @@ describe('the parser tolerates', () => {
     })
   })
 })
+
+describe('how much text each collection held', () => {
+  const words: WordEvidence[] = [
+    { word: 'SCHADE', attestations: [{ source: 'gut', count: 4, locators: ['21034'] }] },
+  ]
+
+  it('writes the totals on their own line, sorted, so a rebuild diffs cleanly', () => {
+    const totals = new Map([
+      ['wiki:de', 221483630],
+      ['gut', 4183929],
+    ])
+    const text = formatEvidence('de', '2026-09-21', words, totals)
+    expect(text.split('\n')[1]).toBe('#tokens gut=4183929 wiki:de=221483630')
+  })
+
+  it('reads them back, which is what lets a later build rank without the collections', () => {
+    const totals = new Map([['gut', 4183929]])
+    const read = parseEvidence(formatEvidence('de', '2026-09-21', words, totals))
+    expect(read.totals.get('gut')).toBe(4183929)
+    expect(read.words).toHaveLength(1)
+  })
+
+  it('writes no line at all when nothing counted, and reads that as no totals', () => {
+    const text = formatEvidence('de', '2026-09-21', words)
+    expect(text.split('\n')[1]).toBe('SCHADE\tgut\t4\tgut:21034')
+    expect(parseEvidence(text).totals.size).toBe(0)
+  })
+
+  it('reads a version 1 file, which recorded none', () => {
+    // Every language's evidence was version 1 before this. Its words are still evidence; it
+    // simply cannot be re-ranked without reading the collections again.
+    const old =
+      '#blinkered/attestations/1 language=de words=1 sources=1 built=2026-09-18 digest=x\n' +
+      'SCHADE\tgut\t4\tgut:21034\n'
+    const read = parseEvidence(old)
+    expect(read.totals.size).toBe(0)
+    expect(read.words[0]?.word).toBe('SCHADE')
+  })
+
+  it('refuses a total that is not a number, rather than ranking against nonsense', () => {
+    const bad =
+      '#blinkered/attestations/2 language=de words=1 sources=1 built=2026-09-18 digest=x\n' +
+      '#tokens gut=lots\nSCHADE\tgut\t4\tgut:21034\n'
+    expect(() => parseEvidence(bad)).toThrow(/non-numeric total/u)
+  })
+
+  it('refuses a totals line with no value', () => {
+    const bad =
+      '#blinkered/attestations/2 language=de words=1 sources=1 built=2026-09-18 digest=x\n' +
+      '#tokens gut\nSCHADE\tgut\t4\tgut:21034\n'
+    expect(() => parseEvidence(bad)).toThrow(/malformed total/u)
+  })
+})

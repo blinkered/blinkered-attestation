@@ -113,36 +113,45 @@ export async function discover(
     found.push(...sitemapLinks(body), ...feedLinks(body))
   }
 
+  // What is left after everything that is not one of this publisher's pages has been removed.
+  // The filtering has to happen before deciding whether discovery found anything, not after:
+  // asking a site with no sitemap for `/sitemap.xml` returns an HTML error page, and an HTML
+  // page's `<link rel="stylesheet">` elements look exactly like an Atom feed's entries. Five
+  // literary archives came back with nothing because three stylesheet URLs counted as a
+  // successful discovery and were then filtered away.
+  const pagesAmong = (links: readonly string[]): string[] =>
+    [...new Set(links)]
+      .filter((url) => url.startsWith('https://') || url.startsWith('http://'))
+      // A sitemap lists every file a site has, not only its articles: its own sitemaps, its
+      // images, and — this cost Tagalog a harvest — its stylesheets. A minified CSS file read as
+      // prose yields BASE, STYLE, NORMAL, RIGHT, TOP, WHITE, BLACK, which are ordinary words in
+      // more than one language and were duly recorded as sightings.
+      .filter(
+        (url) =>
+          !/\.(?:xml|jpe?g|png|gif|svg|webp|avif|ico|mp4|mp3|pdf|zip|css|m?js|json|woff2?|ttf|eot)(?:\?|$)/iu.test(
+            url,
+          ),
+      )
+      // This publisher's own pages, and nobody else's. A feed names the stylesheets and fonts a
+      // page loads as readily as the article, and French's harvest came back with three pages from
+      // a font CDN — which then appeared in its saturation curve as an independent family called
+      // `typekit.net`. A family is a publisher, so a page has to be the publisher's.
+      .filter((url) => domainOf(url) === registrable)
+      .filter((url) => allowed(url, disallowed))
+      .slice(0, limit)
+
+  let urls = pagesAmong(found)
+
   // Nothing declared and nothing at the conventional places. That is not a dead site — it is an
   // older one, and older is exactly the register a news harvest cannot reach. Five of the eight
-  // Spanish literary archives tried here have neither a sitemap nor a feed, including the two
+  // Spanish literary archives tried here have neither a sitemap nor a feed, including the
   // largest. So read the front page and follow what it links to, one level, which is what a
   // person would do and is bounded by the same limit as everything else.
-  if (found.length === 0) {
+  if (urls.length === 0) {
     const front = await get(`https://${domain}/`)
     await wait(delayMs)
-    if (front !== null) found.push(...pageLinks(front, `https://${domain}/`))
+    if (front !== null) urls = pagesAmong(pageLinks(front, `https://${domain}/`))
   }
-
-  const urls = [...new Set(found)]
-    .filter((url) => url.startsWith('https://') || url.startsWith('http://'))
-    // A sitemap lists every file a site has, not only its articles: its own sitemaps, its
-    // images, and — this cost Tagalog a harvest — its stylesheets. A minified CSS file read as
-    // prose yields BASE, STYLE, NORMAL, RIGHT, TOP, WHITE, BLACK, which are ordinary words in
-    // more than one language and were duly recorded as sightings.
-    .filter(
-      (url) =>
-        !/\.(?:xml|jpe?g|png|gif|svg|webp|avif|ico|mp4|mp3|pdf|zip|css|m?js|json|woff2?|ttf|eot)(?:\?|$)/iu.test(
-          url,
-        ),
-    )
-    // This publisher's own pages, and nobody else's. A feed names the stylesheets and fonts a
-    // page loads as readily as the article, and French's harvest came back with three pages from
-    // a font CDN — which then appeared in its saturation curve as an independent family called
-    // `typekit.net`. A family is a publisher, so a page has to be the publisher's.
-    .filter((url) => domainOf(url) === registrable)
-    .filter((url) => allowed(url, disallowed))
-    .slice(0, limit)
 
   return { domain, urls, disallowed }
 }

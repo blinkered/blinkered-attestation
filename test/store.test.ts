@@ -52,7 +52,7 @@ describe('finding a language’s evidence', () => {
 
   it('reads shards in name order, so a rebuild reads what it wrote', () => {
     const root = repo()
-    writeEvidence(root, 'de', '2026-09-20', words(40), 400)
+    writeEvidence(root, 'de', '2026-09-20', words(40), new Map(), 400)
     const found = evidencePaths(root).map((path) => path.split('/').at(-1))
     expect(found).toEqual([...found].sort())
     expect(found[0]).toBe('000.tsv')
@@ -68,14 +68,14 @@ describe('writing evidence', () => {
 
   it('shards when one file would be too large', () => {
     const root = repo()
-    const written = writeEvidence(root, 'de', '2026-09-20', words(40), 400)
+    const written = writeEvidence(root, 'de', '2026-09-20', words(40), new Map(), 400)
     expect(written.length).toBeGreaterThan(1)
     expect(existsSync(join(root, EVIDENCE_FILE))).toBe(false)
   })
 
   it('splits between words, so every shard parses on its own', () => {
     const root = repo()
-    writeEvidence(root, 'de', '2026-09-20', words(40), 400)
+    writeEvidence(root, 'de', '2026-09-20', words(40), new Map(), 400)
     // If a shard held half a line this would throw rather than return a word list.
     for (const name of readdirSync(join(root, EVIDENCE_DIR))) {
       expect(name).toMatch(/^\d{3}\.tsv$/u)
@@ -85,7 +85,7 @@ describe('writing evidence', () => {
 
   it('loses no word and duplicates none when sharding', () => {
     const root = repo()
-    writeEvidence(root, 'de', '2026-09-20', words(40), 400)
+    writeEvidence(root, 'de', '2026-09-20', words(40), new Map(), 400)
     const read = readEvidence(root).words.map((word) => word.word)
     expect(new Set(read).size).toBe(40)
     expect(read).toEqual(words(40).map((word) => word.word))
@@ -95,7 +95,7 @@ describe('writing evidence', () => {
     const root = repo()
     writeEvidence(root, 'de', '2026-09-20', words(3))
     expect(existsSync(join(root, EVIDENCE_FILE))).toBe(true)
-    writeEvidence(root, 'de', '2026-09-20', words(40), 400)
+    writeEvidence(root, 'de', '2026-09-20', words(40), new Map(), 400)
     expect(existsSync(join(root, EVIDENCE_FILE))).toBe(false)
     // And back again.
     writeEvidence(root, 'de', '2026-09-20', words(3))
@@ -115,7 +115,7 @@ describe('reading evidence back', () => {
 
   it('reports a sharded digest as its parts, since no single body exists to hash', () => {
     const root = repo()
-    writeEvidence(root, 'de', '2026-09-20', words(40), 400)
+    writeEvidence(root, 'de', '2026-09-20', words(40), new Map(), 400)
     expect(readEvidence(root).digest).toContain('+')
   })
 })
@@ -146,6 +146,26 @@ describe('a language too big to spread', () => {
     const read = readEvidence(root)
     expect(read.words).toHaveLength(300_000)
     expect(read.words[299_999]?.word).toBe('W299999')
+    rmSync(root, { recursive: true, force: true })
+  })
+})
+
+describe('totals across shards', () => {
+  it('reads them back once, because every shard carries the same ones', () => {
+    const root = mkdtempSync(join(tmpdir(), 'blinkered-attestation-'))
+    const totals = new Map([
+      ['gut', 4183929],
+      ['wiki:de', 221483630],
+    ])
+    const words = Array.from({ length: 40 }, (_, at) => ({
+      word: `W${String(at)}`,
+      attestations: [{ source: 'gut', count: 1, locators: ['1'] }],
+    }))
+    writeEvidence(root, 'de', '2026-09-21', words, totals, 400)
+    const read = readEvidence(root)
+    expect(readdirSync(join(root, EVIDENCE_DIR)).length).toBeGreaterThan(1)
+    expect(read.totals.get('wiki:de')).toBe(221483630)
+    expect(read.totals.size).toBe(2)
     rmSync(root, { recursive: true, force: true })
   })
 })
