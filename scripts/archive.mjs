@@ -90,7 +90,15 @@ for (const id of ids) {
   // A few kilobytes is a title page or a failed scan, not a book.
   if (content.length < 20_000) continue
 
-  writeFileSync(join(OUT, `${id}.txt`), content)
+  // The directory can go while this is running — retirement deleted French's out from under it
+  // mid-fetch, and the write failed with ENOENT and took the whole run down. Recreating it costs
+  // nothing and a download in flight should not be lost to housekeeping elsewhere.
+  try {
+    writeFileSync(join(OUT, `${id}.txt`), content)
+  } catch {
+    mkdirSync(OUT, { recursive: true })
+    writeFileSync(join(OUT, `${id}.txt`), content)
+  }
   // The text file is rarely named after the item — none of twelve sampled were — so a citation
   // built from the id alone points at the catalogue page, which holds no word of the book. That
   // is the defect Gutenberg had, and verification would report every book absent. The name is
