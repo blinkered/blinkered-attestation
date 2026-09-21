@@ -259,6 +259,46 @@ identifiers cannot attest anything, however much text it holds — CC-100 has 70
 not one URL in it. And a dataset that re-processes a crawl somebody else made is the same family
 as the crawl: FineWeb-2, HPLT, mC4, CC-100 and NLLB are five datasets and one opinion.
 
+## What the drop list says is missing
+
+The keep rate is not the check; the drop list is. But a drop list runs to a hundred thousand
+lines and nobody reads it, so ask it the one question that leads somewhere: of the words that
+came within one family of surviving, which families _did_ attest them?
+
+```sh
+node scripts/nearmiss.mjs es
+```
+
+Spanish, which looked like a 49% language with 23 families and nothing obviously wrong:
+
+```
+es: 50,220 words came within one family of surviving
+
+    40172   80.0%  gutenberg + wikimedia     ABABA, ABACA, ABACERO, ABACIAL, ABACIALES
+     7865   15.7%  leipzig + wikimedia       ABALAN, ABANDERADAS, ABANDERAN, ABANDERANDO
+     1442    2.9%  tatoeba + wikimedia       ABASTECERME, ABDUCIDAS, ABDUCIDO, ABDUZCAN
+```
+
+Forty thousand words — a fifth of the whole candidate list — attested by a Wikipedia and a
+Gutenberg and by nothing else. ABALANZAR, ABALORIO, ABACIAL: ordinary literary Spanish that
+modern news has no use for. Twenty-two of Spanish's twenty-three families are newspapers, and
+newspapers all say the same thing.
+
+**The missing family is a register, not a volume.** Adding a twenty-fourth newspaper would have
+added a hundred words. What those forty thousand need is another shelf of books, gathered by
+somebody other than Gutenberg — a national literary archive, a literary magazine, an academic
+humanities press. Every major language has several and they are free to fetch.
+
+So `DOMAINS` in each language now carries a literary tier alongside the news one:
+Cervantes Virtual and Biblioteca Virtual Universal for Spanish, Atramenta and OpenEdition for
+French, Lib.ru and the Russian Virtual Library for Russian, Zeno and the Deutsches Textarchiv for
+German, Standard Ebooks and the Public Domain Review for English.
+
+This is the same lesson German taught at the start, arriving from the other side. German's first
+build used three collections of pre-1930s literature and curated sentences, and dropped OKAY and
+PIZZA. Spanish's build used twenty-two newspapers and dropped ABALANZAR. A language needs both
+ends, and the drop list is what says which end is missing.
+
 ## What decides a language's coverage
 
 Four languages built, and the number that predicts coverage is not the number of families. It is
