@@ -31,10 +31,20 @@ mkdirSync(OUT, { recursive: true })
 const already = new Set(readdirSync(OUT).map((name) => name.replace(/\.txt$/u, '')))
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
-const get = async (url) => {
+
+/**
+ * Fetches and reads a body, or gives up on it.
+ *
+ * Reading the body has to be inside the guard, not outside. A connection dropped halfway through
+ * a four-megabyte book throws `TypeError: terminated` from `.text()`, long after `fetch()`
+ * resolved — which ended a two-thousand-book run at a hundred and fifteen. One unlucky item must
+ * cost one item.
+ */
+const read = async (url, as) => {
   try {
     const answer = await fetch(url, { headers: { 'user-agent': USER_AGENT } })
-    return answer.ok ? answer : null
+    if (!answer.ok) return null
+    return as === 'json' ? await answer.json() : await answer.text()
   } catch {
     return null
   }
@@ -47,9 +57,9 @@ const query =
   `collection%3A${collection}+AND+format%3A%22DjVuTXT%22` +
   `&fl%5B%5D=identifier&sort%5B%5D=downloads+desc&rows=${String(Number(wanted) * 2)}&output=json`
 
-const listed = await get(query)
+const listed = await read(query, 'json')
 if (listed === null) throw new Error('the Archive would not answer the search')
-const ids = (await listed.json()).response.docs.map((one) => one.identifier)
+const ids = listed.response.docs.map((one) => one.identifier)
 process.stderr.write(
   `${tag}: ${String(ids.length)} candidate items, ${String(already.size)} held\n`,
 )
@@ -61,17 +71,18 @@ for (const id of ids) {
   if (already.has(id)) continue
 
   // The text file is not always named after the item, so the metadata says which it is.
-  const meta = await get(`https://archive.org/metadata/${id}`)
+  const meta = await read(`https://archive.org/metadata/${id}`, 'json')
   await wait(200)
   if (meta === null) continue
-  const files = (await meta.json()).files ?? []
-  const text = files.find((one) => one.format === 'DjVuTXT')
+  const text = (meta.files ?? []).find((one) => one.format === 'DjVuTXT')
   if (text === undefined) continue
 
-  const body = await get(`https://archive.org/download/${id}/${encodeURIComponent(text.name)}`)
+  const content = await read(
+    `https://archive.org/download/${id}/${encodeURIComponent(text.name)}`,
+    'text',
+  )
   await wait(200)
-  if (body === null) continue
-  const content = await body.text()
+  if (content === null) continue
   // A few kilobytes is a title page or a failed scan, not a book.
   if (content.length < 20_000) continue
 
