@@ -167,7 +167,10 @@ this repository. **Nothing here is authoritative**: each language's numbers are 
 own repository from its own committed evidence, and this is the roll-up. If the two disagree,
 the language repository is right and this is stale.
 
-Regenerating this is part of [the rule for pushing a language](README.md#pushing-a-language).
+**The live version of this is [the chart](https://blinkered.github.io/blinkered-attestation/)**,
+which reads each language's \`curve.json\` from its own main branch and so cannot go stale between
+roll-ups. This file is the same thing as a table, for reading on GitHub. Regenerating both is part
+of [the rule for pushing a language](README.md#pushing-a-language).
 
 ![Every language's saturation curve](curves.svg)
 
