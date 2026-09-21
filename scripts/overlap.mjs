@@ -22,7 +22,9 @@ if (language === undefined || against === undefined) {
 }
 
 const HERE = new URL('..', import.meta.url).pathname
-const LISTS = '/Users/nick/work/tightline/blinkered/packages/words/data'
+// Relative to this repository, not absolute: the whole family moved from ~/work/tightline to
+// ~/work/blinkered in one go and this was the only line that noticed.
+const LISTS = new URL('../../blinkered/packages/words/data', import.meta.url).pathname
 
 /** The folded keys a Blinkered list ships, without its header. */
 const keys = (path) =>
