@@ -174,7 +174,7 @@
             <th>checkable</th>
             <th>returns stop</th>
             <th>conforms</th>
-            <th>curve</th>
+            <th>ships</th>
           </tr>
         </thead>
         <tbody></tbody>
@@ -182,9 +182,10 @@
 
       <footer>
         Each language measures its own curve from its own committed evidence and publishes it as
-        <code>curve.json</code>. This page reads those files from each repository's main branch, so
-        it is as current as the repositories are. Nothing here is authoritative: if this disagrees
-        with a language repository, the language repository is right.
+        <code>status.json</code>. A solid line ships; a dashed line is a language still being worked
+        on. This page reads those files from each repository's main branch, so it is as current as
+        the repositories are. Nothing here is authoritative: if this disagrees with a language
+        repository, the language repository is right.
       </footer>
     </main>
 
@@ -323,6 +324,9 @@
               stroke: one.ink,
               'stroke-width': 2.25,
               'stroke-linejoin': 'round',
+              // Solid ships, dashed does not. That is a decision somebody made rather than a
+              // measurement, so it is drawn: what is live should be visible without reading.
+              ...(one.ships === true ? {} : { 'stroke-dasharray': '6 4' }),
             }),
           )
           const last = one.steps.at(-1)
@@ -448,7 +452,7 @@
             `<span class="swatch" style="background:${one.ink}"></span>` +
             `<span>${one.tag}</span>` +
             `<span class="pct">${(one.steps.at(-1).share * 100).toFixed(1)}%</span>` +
-            (one.live ? '<span class="live">live</span>' : '<span class="live">draft</span>')
+            `<span class="live">${one.ships === true ? 'live' : 'in progress'}</span>`
           button.onclick = () => {
             if (hidden.has(one.tag)) hidden.delete(one.tag)
             else hidden.add(one.tag)
@@ -474,13 +478,14 @@
                 one.checkable ?? '—',
                 one.knee ?? 'still paying',
                 one.conforms ? 'yes' : 'NO',
-                one.live ? 'live' : 'snapshot',
+                one.ships === true ? 'yes' : 'no',
               ]
             : [one.tag, 'not built', '—', '—', '—', '—', '—', '—', '—']
           for (const [index, value] of cells.entries()) {
             const cell = document.createElement('td')
             cell.textContent = value
             if (index === 7 && value === 'NO') cell.className = 'bad'
+            if (index === 8 && value === 'no') cell.className = 'bad'
             row.append(cell)
           }
           tbody.append(row)
@@ -494,7 +499,7 @@
         const live = await Promise.all(
           state.languages.map(async (one) => {
             if (!one.published) return false
-            const url = `https://raw.githubusercontent.com/${state.org}/${one.repo}/main/curve.json`
+            const url = `https://raw.githubusercontent.com/${state.org}/${one.repo}/main/status.json`
             try {
               const answer = await fetch(url, { cache: 'no-store' })
               if (!answer.ok) return false
@@ -505,6 +510,7 @@
                 shipped: curve.shipped,
                 families: curve.families,
                 knee: curve.knee,
+                ships: curve.ships === true,
                 built: true,
                 live: true,
               })

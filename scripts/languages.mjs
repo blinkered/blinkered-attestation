@@ -13,7 +13,7 @@
  *   node scripts/languages.mjs --remote  # from each published repository's main branch
  *
  * The local reader re-measures from the evidence, so it sees languages that are built and not
- * yet committed. The remote reader fetches the `curve.json` each language publishes, so it sees
+ * yet committed. The remote reader fetches the `status.json` each language publishes, so it sees
  * exactly what the world sees and needs no corpora, no evidence and no checkout — which is what
  * lets the scheduled workflow keep the chart in the README current without this machine.
  *
@@ -117,6 +117,10 @@ function fromDisk() {
       checkable: checkable.size,
       knee: knee(steps)?.families ?? null,
       conforms: failures.length === 0,
+      // Read from disk for a local row, from the API for a remote one. No file means no.
+      ships: existsSync(join(root, 'status.json'))
+        ? JSON.parse(readFileSync(join(root, 'status.json'), 'utf8')).ships === true
+        : false,
       shards: existsSync(join(root, 'attestations'))
         ? readdirSync(join(root, 'attestations')).length
         : 0,
@@ -162,13 +166,24 @@ async function fromGitHub() {
       // harmless for the chart in a browser and not harmless here: a roll-up run straight after
       // a push would redraw the previous curve and commit it as current.
       const answer = await fetch(
-        `https://api.github.com/repos/${ORG}/${PREFIX}${tag}/contents/curve.json`,
+        `https://api.github.com/repos/${ORG}/${PREFIX}${tag}/contents/status.json`,
         { headers: { ...headers, accept: 'application/vnd.github.raw' } },
       )
-      // A repository that exists and publishes no curve has not been measured yet, which is a
-      // state worth showing rather than an error worth stopping for.
-      if (!answer.ok) return { tag, published: true, built: false, steps: [] }
+      // A repository that exists and publishes no status has not been measured yet, which is a
+      // state worth showing rather than an error worth stopping for. Anything else — a rate
+      // limit, a dropped connection — is not that, and must not be reported as if it were. This
+      // table says which languages ship; printing "no" because a fetch failed would be a false
+      // statement rather than a missing one, and I only found that by watching it do exactly
+      // that to Russian seconds after a push.
+      if (answer.status === 404) return { tag, published: true, built: false, steps: [] }
+      if (!answer.ok) {
+        throw new Error(
+          `${tag}: GitHub answered ${String(answer.status)} for status.json. Refusing to roll up ` +
+            'a table that would claim to know what this language does.',
+        )
+      }
       const curve = await answer.json()
+      const ships = curve.ships === true
       return {
         tag,
         published: true,
@@ -179,6 +194,7 @@ async function fromGitHub() {
         checkable: curve.checkable ?? null,
         knee: curve.knee,
         conforms: curve.conforms ?? null,
+        ships,
         shards: null,
         steps: curve.steps,
       }
@@ -204,12 +220,14 @@ for (const row of rows) {
 
 const curves = rows
   .filter((row) => row.steps.length > 0)
-  .map((row) => ({ language: row.tag, steps: row.steps }))
+  // `ships` goes to the chart so a reader can see which languages are live without a key: a
+  // solid line ships, a dashed one is still being worked on.
+  .map((row) => ({ language: row.tag, steps: row.steps, ships: row.ships === true }))
 
 writeFileSync(join(SITE, 'curves.svg'), chart(curves))
 
 // The manifest the live chart reads. It carries a snapshot of every curve, so `index.html` draws
-// something the moment it loads; it then refetches each `curve.json` from its own main branch and
+// something the moment it loads; it then refetches each `status.json` from its own main branch and
 // says which languages came back live. Same data either way — this is the starting point, not the
 // source of truth.
 writeFileSync(
@@ -224,6 +242,7 @@ writeFileSync(
         published: row.published,
         built: row.built,
         conforms: row.built ? row.conforms : null,
+        ships: row.ships ?? false,
         candidates: row.built ? row.candidates : null,
         shipped: row.built ? row.shipped : null,
         families: row.built ? row.families : null,
@@ -255,7 +274,7 @@ const table = rows.map((row) => {
   return (
     `| \`${row.tag}\` | ${row.candidates.toLocaleString()} | ${proved.toLocaleString()} | ` +
     `**${coverage}** | ${String(row.families)} | ${row.checkable ?? '—'} | ${stops} | ${conforms} | ` +
-    `${row.published ? 'yes' : 'no'} |`
+    `${row.ships === true ? 'yes' : '**no**'} | ${row.published ? 'yes' : 'no'} |`
   )
 })
 
@@ -266,7 +285,7 @@ writeFileSync(
   `# The languages, and where each one stands
 
 **The live version of this is [the chart](https://${ORG}.github.io/blinkered-attestation/)**, which
-reads each language's \`curve.json\` from its own main branch. This file is the same thing as a
+reads each language's \`status.json\` from its own main branch. This file is the same thing as a
 table, for reading on GitHub, and is regenerated by \`pnpm roll\`. Regenerating both is part of
 [the rule for pushing a language](README.md#the-rule-for-changing-a-language).
 
@@ -282,9 +301,18 @@ the rule needs three; a curve that climbs steeply at three and then flattens has
 its families can see, and a curve still climbing at twenty has more to gain from another
 publisher.
 
-| language | candidates | proved | coverage | families | checkable | returns stop at | conforms | published |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| language | candidates | proved | coverage | families | checkable | returns stop at | conforms | ships | published |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 ${table.join('\n')}
+
+**Ships** is the only column here that is not measured. Conforming says the evidence is sound and
+Blinkered's own floor says the list deals a playable board; neither says anybody wants to ship it.
+That decision travels in \`status.json\` beside the numbers, so nobody has to fetch two files that
+could disagree. The build carries it forward rather than computing it, because no build should be
+able to bless a language or withdraw one. **Absence means no**: a fresh clone, a deleted file or a
+brand new language starts unblessed and has to be blessed on purpose.
+
+On the chart a language that ships is drawn solid and one still being worked on is drawn dashed.
 
 **Checkable** is how many of a language's families somebody who disbelieved us could confirm by
 fetching: a stable identifier, or a page we fetched ourselves. The rest are crawls somebody else

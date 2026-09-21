@@ -87,8 +87,31 @@ describe('the chart', () => {
     )
     expect(placed).toHaveLength(2)
     expect(Math.abs((placed[1] as number) - (placed[0] as number))).toBeGreaterThanOrEqual(15)
-    // Each label is joined to where its curve actually ended.
-    expect(drawn.match(/stroke-dasharray/g)).toHaveLength(2)
+    // Each label is joined to where its curve actually ended. Counted by the leader's own dash
+    // pattern rather than by any dash at all, because a curve that does not ship is dashed too
+    // and so is the legend's sample of one.
+    expect(drawn.match(/stroke-dasharray="2 3"/g)).toHaveLength(2)
+  })
+
+  it('draws a language that ships solid and one that does not dashed, and says which is which', () => {
+    const drawn = chart([
+      { ...GERMAN, ships: true },
+      { ...KOREAN, language: 'ja', ships: false },
+    ])
+    const curves = drawn.match(/<polyline [^>]*>/g) as RegExpMatchArray
+    expect(curves).toHaveLength(2)
+    expect(curves[0]).not.toContain('stroke-dasharray')
+    expect(curves[1]).toContain('stroke-dasharray="6 4"')
+    // The one that does not ship is named in italics, and the legend explains the difference
+    // rather than leaving a reader to infer it.
+    expect(drawn).toMatch(/font-style="italic"[^>]*>ja /u)
+    expect(drawn).toContain('>ships</text>')
+    expect(drawn).toContain('>in progress</text>')
+  })
+
+  it('treats a curve that says nothing about shipping as not shipping', () => {
+    // Absence means no, here as everywhere: a language nobody blessed is drawn as in progress.
+    expect(chart([GERMAN]).match(/<polyline [^>]*>/g)?.[0]).toContain('stroke-dasharray="6 4"')
   })
 
   it('survives being asked to draw nothing', () => {

@@ -22,6 +22,8 @@ import type { Step } from './saturation.js'
 export interface Curve {
   readonly language: string
   readonly steps: readonly Step[]
+  /** Whether the language is blessed to ship. A language that is not is drawn dashed. */
+  readonly ships?: boolean
 }
 
 /**
@@ -130,12 +132,17 @@ export function chart(curves: readonly Curve[]): string {
       `<line x1="${x(last.families).toFixed(1)}" y1="${end.toFixed(1)}" ` +
       `x2="${String(PAD.left + plotWidth + 5)}" y2="${label.toFixed(1)}" ` +
       `stroke="${ink}" stroke-opacity="0.35" stroke-dasharray="2 3" />`
+    // Solid means the language ships; dashed means it is still being worked on. The difference
+    // is a decision somebody made, not a measurement, so it is drawn rather than described: a
+    // reader should be able to see what is live without reading a legend.
+    const live = curve.ships === true
+    const dash = live ? '' : ' stroke-dasharray="6 4"'
     return (
       `<polyline points="${points}" fill="none" stroke="${ink}" stroke-width="2" ` +
-      `stroke-linejoin="round" />` +
+      `stroke-linejoin="round"${dash} />` +
       leader +
       `<text x="${String(PAD.left + plotWidth + 8)}" y="${label.toFixed(1)}" ` +
-      `fill="${ink}" font-size="12" dominant-baseline="middle">` +
+      `fill="${ink}" font-size="12" dominant-baseline="middle"${live ? '' : ' font-style="italic"'}>` +
       `${escape(curve.language)} ${(last.share * 100).toFixed(0)}%</text>`
     )
   })
@@ -147,6 +154,10 @@ ${grid.join('\n')}
 ${ticks.join('\n')}
 <text x="${String(PAD.left + plotWidth / 2)}" y="${String(HEIGHT - 8)}" fill="#888" font-size="12" text-anchor="middle">independent families consulted</text>
 <text x="14" y="${String(PAD.top + plotHeight / 2)}" fill="#888" font-size="12" text-anchor="middle" transform="rotate(-90 14 ${String(PAD.top + plotHeight / 2)})">candidate list proved</text>
+<line x1="${String(PAD.left + 6)}" y1="${String(PAD.top + 10)}" x2="${String(PAD.left + 34)}" y2="${String(PAD.top + 10)}" stroke="#888" stroke-width="2" />
+<text x="${String(PAD.left + 40)}" y="${String(PAD.top + 10)}" fill="#888" font-size="11" dominant-baseline="middle">ships</text>
+<line x1="${String(PAD.left + 84)}" y1="${String(PAD.top + 10)}" x2="${String(PAD.left + 112)}" y2="${String(PAD.top + 10)}" stroke="#888" stroke-width="2" stroke-dasharray="6 4" />
+<text x="${String(PAD.left + 118)}" y="${String(PAD.top + 10)}" fill="#888" font-size="11" dominant-baseline="middle">in progress</text>
 ${lines.join('\n')}
 </svg>
 `
