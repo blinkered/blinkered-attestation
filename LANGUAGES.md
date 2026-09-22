@@ -23,10 +23,15 @@ publisher.
 | `en`     | 174,456    | 112,115 | **64.3%** | 15       | 14        | 4               | yes      | yes    | yes       |
 | `es`     | 201,655    | 145,334 | **72.1%** | 25       | 24        | 5               | yes      | yes    | yes       |
 | `fr`     | 144,105    | 103,417 | **71.8%** | 17       | 16        | 5               | yes      | yes    | yes       |
+| `id`     | 41,132     | 33,725  | **82.0%** | 6        | 4         | 4               | yes      | **no** | yes       |
+| `it`     | 40,944     | 40,702  | **99.4%** | 7        | 5         | 4               | yes      | **no** | yes       |
 | `ja`     | 191,188    | 40,571  | **21.2%** | 13       | 12        | 4               | yes      | **no** | yes       |
 | `ko`     | 38,467     | 24,395  | **63.4%** | 24       | 23        | 5               | yes      | yes    | yes       |
+| `nl`     | 322,146    | 159,228 | **49.4%** | 7        | 5         | 5               | yes      | **no** | yes       |
+| `pt-BR`  | 200,241    | 153,146 | **76.5%** | 7        | 5         | 4               | yes      | **no** | yes       |
 | `ru`     | 424,352    | 371,579 | **87.6%** | 10       | 8         | 4               | yes      | yes    | yes       |
-| `tl`     | 23,306     | 12,575  | **54.0%** | 12       | 11        | 5               | yes      | yes    | yes       |
+| `tl`     | 23,306     | 12,579  | **54.0%** | 12       | 11        | 5               | yes      | yes    | yes       |
+| `uk`     | 20,903     | 20,541  | **98.3%** | 6        | 4         | 4               | yes      | **no** | yes       |
 
 **Ships** is the only column here that is not measured. Conforming says the evidence is sound and
 Blinkered's own floor says the list deals a playable board; neither says anybody wants to ship it.
@@ -50,4 +55,4 @@ differ by fifty points because German's candidate list is 36,000 words and Frenc
 
 Every built language conforms: each ships only what its evidence supports.
 
-Generated 2026-09-21 from the published repositories.
+Generated 2026-09-22 from the published repositories.

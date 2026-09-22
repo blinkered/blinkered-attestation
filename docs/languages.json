@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-21",
+  "generated": "2026-09-22",
   "org": "blinkered",
   "languages": [
     {
@@ -609,6 +609,127 @@
       ]
     },
     {
+      "tag": "id",
+      "repo": "blinkered-dictionary-id",
+      "published": true,
+      "built": true,
+      "conforms": true,
+      "ships": false,
+      "candidates": 41132,
+      "shipped": 33725,
+      "families": 6,
+      "checkable": 4,
+      "knee": 4,
+      "steps": [
+        {
+          "families": 1,
+          "added": "commoncrawl",
+          "kept": 0,
+          "share": 0,
+          "gained": 0
+        },
+        {
+          "families": 2,
+          "added": "wikimedia",
+          "kept": 0,
+          "share": 0,
+          "gained": 0
+        },
+        {
+          "families": 3,
+          "added": "internetarchive",
+          "kept": 32587,
+          "share": 0.792254,
+          "gained": 32587
+        },
+        {
+          "families": 4,
+          "added": "leipzig",
+          "kept": 33540,
+          "share": 0.815424,
+          "gained": 953
+        },
+        {
+          "families": 5,
+          "added": "ebible",
+          "kept": 33645,
+          "share": 0.817976,
+          "gained": 105
+        },
+        {
+          "families": 6,
+          "added": "tatoeba",
+          "kept": 33725,
+          "share": 0.819921,
+          "gained": 80
+        }
+      ]
+    },
+    {
+      "tag": "it",
+      "repo": "blinkered-dictionary-it",
+      "published": true,
+      "built": true,
+      "conforms": true,
+      "ships": false,
+      "candidates": 40944,
+      "shipped": 40702,
+      "families": 7,
+      "checkable": 5,
+      "knee": 4,
+      "steps": [
+        {
+          "families": 1,
+          "added": "commoncrawl",
+          "kept": 0,
+          "share": 0,
+          "gained": 0
+        },
+        {
+          "families": 2,
+          "added": "wikimedia",
+          "kept": 0,
+          "share": 0,
+          "gained": 0
+        },
+        {
+          "families": 3,
+          "added": "internetarchive",
+          "kept": 39533,
+          "share": 0.965538,
+          "gained": 39533
+        },
+        {
+          "families": 4,
+          "added": "gutenberg",
+          "kept": 40381,
+          "share": 0.98625,
+          "gained": 848
+        },
+        {
+          "families": 5,
+          "added": "tatoeba",
+          "kept": 40609,
+          "share": 0.991818,
+          "gained": 228
+        },
+        {
+          "families": 6,
+          "added": "leipzig",
+          "kept": 40701,
+          "share": 0.994065,
+          "gained": 92
+        },
+        {
+          "families": 7,
+          "added": "ebible",
+          "kept": 40702,
+          "share": 0.994089,
+          "gained": 1
+        }
+      ]
+    },
+    {
       "tag": "ja",
       "repo": "blinkered-dictionary-ja",
       "published": true,
@@ -898,6 +1019,134 @@
       ]
     },
     {
+      "tag": "nl",
+      "repo": "blinkered-dictionary-nl",
+      "published": true,
+      "built": true,
+      "conforms": true,
+      "ships": false,
+      "candidates": 322146,
+      "shipped": 159228,
+      "families": 7,
+      "checkable": 5,
+      "knee": 5,
+      "steps": [
+        {
+          "families": 1,
+          "added": "commoncrawl",
+          "kept": 0,
+          "share": 0,
+          "gained": 0
+        },
+        {
+          "families": 2,
+          "added": "wikimedia",
+          "kept": 0,
+          "share": 0,
+          "gained": 0
+        },
+        {
+          "families": 3,
+          "added": "internetarchive",
+          "kept": 141441,
+          "share": 0.439059,
+          "gained": 141441
+        },
+        {
+          "families": 4,
+          "added": "gutenberg",
+          "kept": 154042,
+          "share": 0.478174,
+          "gained": 12601
+        },
+        {
+          "families": 5,
+          "added": "leipzig",
+          "kept": 158445,
+          "share": 0.491842,
+          "gained": 4403
+        },
+        {
+          "families": 6,
+          "added": "tatoeba",
+          "kept": 159178,
+          "share": 0.494118,
+          "gained": 733
+        },
+        {
+          "families": 7,
+          "added": "ebible",
+          "kept": 159228,
+          "share": 0.494273,
+          "gained": 50
+        }
+      ]
+    },
+    {
+      "tag": "pt-BR",
+      "repo": "blinkered-dictionary-pt-BR",
+      "published": true,
+      "built": true,
+      "conforms": true,
+      "ships": false,
+      "candidates": 200241,
+      "shipped": 153146,
+      "families": 7,
+      "checkable": 5,
+      "knee": 4,
+      "steps": [
+        {
+          "families": 1,
+          "added": "commoncrawl",
+          "kept": 0,
+          "share": 0,
+          "gained": 0
+        },
+        {
+          "families": 2,
+          "added": "wikimedia",
+          "kept": 0,
+          "share": 0,
+          "gained": 0
+        },
+        {
+          "families": 3,
+          "added": "internetarchive",
+          "kept": 142643,
+          "share": 0.712357,
+          "gained": 142643
+        },
+        {
+          "families": 4,
+          "added": "gutenberg",
+          "kept": 149521,
+          "share": 0.746705,
+          "gained": 6878
+        },
+        {
+          "families": 5,
+          "added": "leipzig",
+          "kept": 152031,
+          "share": 0.75924,
+          "gained": 2510
+        },
+        {
+          "families": 6,
+          "added": "tatoeba",
+          "kept": 152957,
+          "share": 0.763865,
+          "gained": 926
+        },
+        {
+          "families": 7,
+          "added": "ebible",
+          "kept": 153146,
+          "share": 0.764808,
+          "gained": 189
+        }
+      ]
+    },
+    {
       "tag": "ru",
       "repo": "blinkered-dictionary-ru",
       "published": true,
@@ -990,7 +1239,7 @@
       "conforms": true,
       "ships": true,
       "candidates": 23306,
-      "shipped": 12575,
+      "shipped": 12579,
       "families": 12,
       "checkable": 11,
       "knee": 5,
@@ -1012,72 +1261,129 @@
         {
           "families": 3,
           "added": "internetarchive",
-          "kept": 11343,
-          "share": 0.486699,
-          "gained": 11343
+          "kept": 11352,
+          "share": 0.487085,
+          "gained": 11352
         },
         {
           "families": 4,
           "added": "gutenberg",
-          "kept": 11961,
-          "share": 0.513215,
-          "gained": 618
+          "kept": 11969,
+          "share": 0.513559,
+          "gained": 617
         },
         {
           "families": 5,
           "added": "tatoeba",
-          "kept": 12425,
-          "share": 0.533125,
-          "gained": 464
+          "kept": 12430,
+          "share": 0.533339,
+          "gained": 461
         },
         {
           "families": 6,
           "added": "ebible",
-          "kept": 12506,
-          "share": 0.5366,
-          "gained": 81
+          "kept": 12510,
+          "share": 0.536772,
+          "gained": 80
         },
         {
           "families": 7,
           "added": "saksingayon.com",
-          "kept": 12544,
-          "share": 0.53823,
+          "kept": 12548,
+          "share": 0.538402,
           "gained": 38
         },
         {
           "families": 8,
           "added": "tribune.net.ph",
-          "kept": 12561,
-          "share": 0.53896,
+          "kept": 12565,
+          "share": 0.539132,
           "gained": 17
         },
         {
           "families": 9,
           "added": "rappler.com",
-          "kept": 12567,
-          "share": 0.539217,
+          "kept": 12571,
+          "share": 0.539389,
           "gained": 6
         },
         {
           "families": 10,
           "added": "gmanetwork.com",
-          "kept": 12572,
-          "share": 0.539432,
+          "kept": 12576,
+          "share": 0.539604,
           "gained": 5
         },
         {
           "families": 11,
           "added": "abante.com.ph",
-          "kept": 12575,
-          "share": 0.539561,
+          "kept": 12579,
+          "share": 0.539732,
           "gained": 3
         },
         {
           "families": 12,
           "added": "inquirer.net",
-          "kept": 12575,
-          "share": 0.539561,
+          "kept": 12579,
+          "share": 0.539732,
           "gained": 0
+        }
+      ]
+    },
+    {
+      "tag": "uk",
+      "repo": "blinkered-dictionary-uk",
+      "published": true,
+      "built": true,
+      "conforms": true,
+      "ships": false,
+      "candidates": 20903,
+      "shipped": 20541,
+      "families": 6,
+      "checkable": 4,
+      "knee": 4,
+      "steps": [
+        {
+          "families": 1,
+          "added": "commoncrawl",
+          "kept": 0,
+          "share": 0,
+          "gained": 0
+        },
+        {
+          "families": 2,
+          "added": "wikimedia",
+          "kept": 0,
+          "share": 0,
+          "gained": 0
+        },
+        {
+          "families": 3,
+          "added": "internetarchive",
+          "kept": 20079,
+          "share": 0.96058,
+          "gained": 20079
+        },
+        {
+          "families": 4,
+          "added": "leipzig",
+          "kept": 20420,
+          "share": 0.976893,
+          "gained": 341
+        },
+        {
+          "families": 5,
+          "added": "tatoeba",
+          "kept": 20535,
+          "share": 0.982395,
+          "gained": 115
+        },
+        {
+          "families": 6,
+          "added": "ebible",
+          "kept": 20541,
+          "share": 0.982682,
+          "gained": 6
         }
       ]
     }
