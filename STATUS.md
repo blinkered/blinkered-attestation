@@ -7,21 +7,21 @@ Operational state. The **findings** live in [README.md](README.md) and the **num
 
 |             |   words | coverage | families | checkable | ships    |
 | ----------- | ------: | -------: | -------: | --------: | -------- |
-| `de`        |  36,346 |    99.6% |       21 |        20 | yes      |
-| **`it`**    |  40,702 |    99.4% |        7 |         5 | yes      |
-| **`uk`**    |  20,541 |    98.3% |        6 |         4 | yes      |
-| **`fi`**    |  42,609 |    96.6% |        7 |         5 | yes      |
-| `ru`        | 371,579 |    87.6% |       10 |         8 | yes      |
-| **`id`**    |  33,725 |    82.0% |        6 |         4 | yes      |
-| **`pt-BR`** | 153,146 |    76.5% |        7 |         5 | yes      |
-| `es`        | 145,334 |    72.1% |       25 |        24 | yes      |
-| `fr`        | 103,417 |    71.8% |       17 |        16 | yes      |
-| `en`        | 112,115 |    64.3% |       15 |        14 | yes      |
-| `ko`        |  24,395 |    63.4% |       24 |        23 | yes      |
+| `de`        |  36,349 |    99.6% |       21 |        20 | yes      |
+| **`it`**    |  40,782 |    99.6% |        7 |         5 | yes      |
+| **`uk`**    |  20,640 |    98.7% |        6 |         4 | yes      |
+| **`fi`**    |  42,730 |    96.9% |        7 |         5 | yes      |
+| `ru`        | 373,007 |    87.9% |       10 |         8 | yes      |
+| **`id`**    |  34,539 |    84.0% |        6 |         4 | yes      |
+| **`pt-BR`** | 157,040 |    78.4% |        7 |         5 | yes      |
+| `es`        | 145,686 |    72.2% |       25 |        24 | yes      |
+| `fr`        | 104,090 |    72.2% |       17 |        16 | yes      |
+| `en`        | 112,351 |    64.4% |       15 |        14 | yes      |
+| `ko`        |  24,400 |    63.4% |       24 |        23 | yes      |
 | `tl`        |  12,579 |    54.0% |       12 |        11 | yes      |
-| **`nl`**    | 159,228 |    49.4% |        7 |         5 | yes      |
-| **`ar`**    | 313,501 |    47.7% |        6 |         4 | yes      |
-| `ja`        |  40,571 |    21.2% |       13 |        12 | **held** |
+| **`ar`**    | 346,516 |    52.7% |        6 |         4 | yes      |
+| **`nl`**    | 164,989 |    51.2% |        7 |         5 | yes      |
+| `ja`        |  40,810 |    21.3% |       13 |        12 | **held** |
 
 **Languages in bold are the second batch**, built on 2026-09-21 evening and blessed the same
 night after the operator verified the usability floor, the minimum-W tests and the boards each
@@ -29,13 +29,14 @@ one deals. Japanese is the only held language; its own `status.json` says why.
 
 **`conforms` means the paperwork matches the goods** — the evidence parses, every source is
 registered, every shipped word has evidence from three independent families, and every attestation
-says where to look. It says nothing about whether a list _plays_. Nothing has tested that yet.
+says where to look. It says nothing about whether a list _plays_; the usability floor answers
+that, and all fourteen shipping lists have passed it.
 
-## Seven ship; Japanese does not, for now
+## Fourteen ship; Japanese does not, for now
 
-Nick's call, 2026-09-21. The seven are `de` 99.6%, `ru` 85.4%, `es` 70.9%, `fr` 68.4%, `ko` 63.1%,
-`en` 61.7%, `tl` 53.9%. Japanese is 20.4% and the only one below fifty, and the reason is not that
-it needs more books.
+Nick's call: seven on 2026-09-21, the second batch of seven the same night after he verified the
+usability floor, the minimum-W tests and the boards each one deals. Japanese is 21.3% and the only
+language below fifty, and the reason is not that it needs more books.
 
 **`blinkered-dictionary-ja` stays published, conforming and building.** It is held back from the
 app, not abandoned. Its numbers stay in `LANGUAGES.md` and on the chart, which is the honest
@@ -57,38 +58,34 @@ here. Nick has since tested all eight against the word floor in `blinkered` and 
 comfortably, so the recalibration this file used to warn about is not blocking. The warning is
 kept only as the reason to re-test after a list moves a long way, which several did today.
 
-## Running overnight, 2026-09-21
+## The book harvest is over, and it is finished business
+
+Every downloader stopped on 2026-09-21. The second batch reached its 2,000-book ceiling and was
+folded in at 00:22; the first batch had between 54 and 126 books that arrived after its last build,
+and those were folded in on 2026-09-22. All fifteen repositories are clean, pushed and rolled up.
+
+**What the last fold bought, and why it matters more as a finding than as words:**
 
 ```
-seven book downloaders        it uk fi id pt-BR nl ar, toward 2,000 books each
-final-refold.sh               fires when they stop, folds the books into all
-                              seven, pushes each, regenerates the roll-up
-watch.sh                      five-minute ticks: disk, live work, and anything
-                              in a batch log that reads like a failure
+ru  +1,428   es +352   en +236   ja +239   fr +673   de +3   ko +5
 ```
 
-All of it lives in a session scratchpad and none of it survives a reboot. **Nothing is lost if it
-dies**: every language is published, conforming, licensed and blessed, and the books already
-gathered are in the shared cache outside every repository. A downloader that dies mid-run can be
-restarted with the query in that language's `COLLECTIONS.md`, and a refold by hand is
+Korean gained five words from eighty books; German three from a hundred and twenty-one. **The book
+families are saturated for the mature languages.** A language whose curve has already flattened
+does not improve by downloading more of the same family, which is exactly what the chart's
+"returns stop at" column has been saying. More Archive books is no longer where coverage lives; a
+new family, or a language nobody has built yet, is.
 
-```
-node build.mjs && node conform.mjs && node saturation.mjs && node collections.mjs
-```
-
-then push, then regenerate the roll-up — see [the rule](README.md#the-rule-for-changing-a-language).
-
-**Run the roll-up with a token.** `GITHUB_TOKEN="$(gh auth token)" node scripts/languages.mjs
---remote`. Unauthenticated it gets a 403 listing the organisation and refuses rather than
-guessing, which is right but stops the run. The scheduled workflow already passes one.
+Nothing here survives a reboot except what is committed, and everything is committed. The books
+themselves stay in `../blinkered-cache/raw`, outside every repository.
 
 ## The last mile per language
 
-1. **More books.** Every language gains from them and none has finished downloading. A refold is
-   now seconds for all eight: English was the last holding its downloads, and retiring them freed
-   32GB and turned an hour-long rebuild into a short one. Retire a language the moment it is
-   pushed, not eventually.
-2. **Japanese is the thinnest at 20.4%, and books are not what is holding it back.**
+1. **Not more books.** Every downloader has stopped and every book is folded in. The last harvest
+   bought Korean five words and German three, so a language whose curve has flattened gains
+   nothing from another thousand of the same family. What is left is a **new family** for the
+   languages that stalled low, or a language nobody has built yet.
+2. **Japanese is the thinnest at 21.3%, and books are not what is holding it back.**
    `SudachiDict-small` has no compound entries, so mode C has nothing to join: 太平洋 reads as
    タイヘイ ヨウ, 日本語 as ニッポン ゴ, 大西洋 as オオニシ ヒロシ — a person's name. Compound
    nouns are a large share of Japanese and none of them can be matched. Rejoining adjacent tokens
