@@ -532,6 +532,70 @@
       ]
     },
     {
+      "tag": "fi",
+      "repo": "blinkered-dictionary-fi",
+      "published": true,
+      "built": true,
+      "conforms": true,
+      "ships": "pending",
+      "candidates": 44104,
+      "shipped": 42609,
+      "families": 7,
+      "checkable": 5,
+      "knee": 5,
+      "steps": [
+        {
+          "families": 1,
+          "added": "commoncrawl",
+          "kept": 0,
+          "share": 0,
+          "gained": 0
+        },
+        {
+          "families": 2,
+          "added": "wikimedia",
+          "kept": 0,
+          "share": 0,
+          "gained": 0
+        },
+        {
+          "families": 3,
+          "added": "internetarchive",
+          "kept": 39408,
+          "share": 0.893524,
+          "gained": 39408
+        },
+        {
+          "families": 4,
+          "added": "gutenberg",
+          "kept": 41666,
+          "share": 0.944722,
+          "gained": 2258
+        },
+        {
+          "families": 5,
+          "added": "leipzig",
+          "kept": 42342,
+          "share": 0.960049,
+          "gained": 676
+        },
+        {
+          "families": 6,
+          "added": "tatoeba",
+          "kept": 42608,
+          "share": 0.96608,
+          "gained": 266
+        },
+        {
+          "families": 7,
+          "added": "ebible",
+          "kept": 42609,
+          "share": 0.966103,
+          "gained": 1
+        }
+      ]
+    },
+    {
       "tag": "fr",
       "repo": "blinkered-dictionary-fr",
       "published": true,
