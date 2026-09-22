@@ -2,18 +2,26 @@
 
 How a Blinkered word list earns its words.
 
-A word game needs a dictionary, and the obvious way to get one is to take somebody's. That is
-what Blinkered does today: each of its fifty-one lists is a frequency-ordered corpus intersected
-with a dictionary that validated it, and twenty-one of those lists therefore come out CC BY-SA,
-inheriting terms from the only clean validator that existed for the language.
+A word game needs a dictionary, and the obvious way to get one is to take somebody's. That is how
+Blinkered used to work: each of its fifty-one lists was a frequency-ordered corpus intersected with
+a dictionary that validated it, and twenty-one of those lists came out CC BY-SA, inheriting terms
+from the only clean validator the language had.
 
-This repository is the other way round. A word ships because we can show it is real:
+**That is over.** Every list the game ships now is built here and every one of them is CC0, because
+a word ships when we can show it is real:
 
 > SCHADE is in the German list because it occurs in three independent collections, at these
 > documents. That is not the same as taking it from a dictionary.
 
 Dictionaries still have a job — they supply **candidates**, the words worth looking up. What
-earns a word its place is evidence, recorded per word, in a file anybody can argue with.
+earns a word its place is evidence, recorded per word, in a file anybody can argue with. The
+candidate lists sit in [`candidates/`](candidates) under their own terms, and none of those terms
+follows a word into a shipped list.
+
+**A language with no evidence is not in the game.** It waits in `candidates/` rather than shipping
+on somebody else's licence, which is why the game now offers fewer languages than it did and why
+that is the right direction. Which ones stand where is
+[`LANGUAGES.md`](LANGUAGES.md), generated from what each repository publishes.
 
 ## How every language is going
 
@@ -628,7 +636,7 @@ and a repository can be published long before its language is playable.
 Both halves matter, and for different reasons.
 
 **The statistics**, because a roll-up that lags is worse than no roll-up. [`LANGUAGES.md`](LANGUAGES.md)
-and `curves.svg` are the only place anybody can see all fifty-one languages at once, and a reader
+and `curves.svg` are the only place anybody can see every language at once, and a reader
 who finds them stale learns not to trust them — at which point the comparison they exist for stops
 happening. They are generated, so keeping them current costs one command:
 
@@ -677,7 +685,9 @@ The test is simple: **if you learned it, it goes here; if you measured it, it go
   format, build tooling, and the conformance check. Nothing language-specific.
 - **`blinkered-dictionary-<tag>`**: one repository per language, holding that language's
   evidence, its candidates, and its built list.
-- **`blinkered`**: the game. Untouched until this model is proven.
+- **`blinkered`**: the game. It ships what these repositories publish — `pnpm languages update`
+  there fetches each list, checks it deals a board somebody could play, and records the commit it
+  came from.
 
 The roll-up files here — [`LANGUAGES.md`](LANGUAGES.md) and `curves.svg` — are the exception that
 proves the split: they are generated from the language repositories and are the only thing here
