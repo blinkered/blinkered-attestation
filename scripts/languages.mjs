@@ -119,8 +119,11 @@ function fromDisk() {
       conforms: failures.length === 0,
       // Read from disk for a local row, from the API for a remote one. No file means no.
       ships: existsSync(join(root, 'status.json'))
-        ? JSON.parse(readFileSync(join(root, 'status.json'), 'utf8')).ships === true
-        : false,
+        ? (() => {
+            const v = JSON.parse(readFileSync(join(root, 'status.json'), 'utf8')).ships
+            return v === true ? true : v === false ? false : 'pending'
+          })()
+        : 'pending',
       shards: existsSync(join(root, 'attestations'))
         ? readdirSync(join(root, 'attestations')).length
         : 0,
@@ -183,7 +186,7 @@ async function fromGitHub() {
         )
       }
       const curve = await answer.json()
-      const ships = curve.ships === true
+      const ships = curve.ships === true ? true : curve.ships === false ? false : 'pending'
       return {
         tag,
         published: true,
@@ -242,7 +245,7 @@ writeFileSync(
         published: row.published,
         built: row.built,
         conforms: row.built ? row.conforms : null,
-        ships: row.ships ?? false,
+        ships: row.ships ?? 'pending',
         candidates: row.built ? row.candidates : null,
         shipped: row.built ? row.shipped : null,
         families: row.built ? row.families : null,
@@ -274,7 +277,8 @@ const table = rows.map((row) => {
   return (
     `| \`${row.tag}\` | ${row.candidates.toLocaleString()} | ${proved.toLocaleString()} | ` +
     `**${coverage}** | ${String(row.families)} | ${row.checkable ?? '—'} | ${stops} | ${conforms} | ` +
-    `${row.ships === true ? 'yes' : '**no**'} | ${row.published ? 'yes' : 'no'} |`
+    `${row.ships === true ? 'yes' : row.ships === false ? '**held**' : 'pending'} | ` +
+    `${row.published ? 'yes' : 'no'} |`
   )
 })
 
@@ -312,7 +316,11 @@ could disagree. The build carries it forward rather than computing it, because n
 able to bless a language or withdraw one. **Absence means no**: a fresh clone, a deleted file or a
 brand new language starts unblessed and has to be blessed on purpose.
 
-On the chart a language that ships is drawn solid and one still being worked on is drawn dashed.
+**Ships** has three states, because two could not tell a decision apart from work not done.
+\`yes\` is blessed. \`held\` means somebody looked and said no, and that language's \`why\`
+says why — Japanese is held because its reader cannot build compound words, not because it failed
+anything. \`pending\` means nobody has decided yet, which is where every language starts. Only
+\`yes\` ships, and the chart draws the other two dashed.
 
 **Checkable** is how many of a language's families somebody who disbelieved us could confirm by
 fetching: a stable identifier, or a page we fetched ourselves. The rest are crawls somebody else

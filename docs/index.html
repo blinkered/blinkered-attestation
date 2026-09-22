@@ -452,7 +452,7 @@
             `<span class="swatch" style="background:${one.ink}"></span>` +
             `<span>${one.tag}</span>` +
             `<span class="pct">${(one.steps.at(-1).share * 100).toFixed(1)}%</span>` +
-            `<span class="live">${one.ships === true ? 'live' : 'in progress'}</span>`
+            `<span class="live">${one.ships === true ? 'live' : one.ships === false ? 'held' : 'pending'}</span>`
           button.onclick = () => {
             if (hidden.has(one.tag)) hidden.delete(one.tag)
             else hidden.add(one.tag)
@@ -478,14 +478,14 @@
                 one.checkable ?? '—',
                 one.knee ?? 'still paying',
                 one.conforms ? 'yes' : 'NO',
-                one.ships === true ? 'yes' : 'no',
+                one.ships === true ? 'yes' : one.ships === false ? 'held' : 'pending',
               ]
             : [one.tag, 'not built', '—', '—', '—', '—', '—', '—', '—']
           for (const [index, value] of cells.entries()) {
             const cell = document.createElement('td')
             cell.textContent = value
             if (index === 7 && value === 'NO') cell.className = 'bad'
-            if (index === 8 && value === 'no') cell.className = 'bad'
+            if (index === 8 && value !== 'yes') cell.className = 'bad'
             row.append(cell)
           }
           tbody.append(row)

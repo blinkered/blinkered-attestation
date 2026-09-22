@@ -114,6 +114,15 @@ describe('the chart', () => {
     expect(chart([GERMAN]).match(/<polyline [^>]*>/g)?.[0]).toContain('stroke-dasharray="6 4"')
   })
 
+  it('draws a pending language dashed, the same as a held one', () => {
+    // Three states of blessing, two line styles. The picture answers "is this live", and pending
+    // and held are both not; which of the two it is belongs in the table, not the stroke.
+    const held = chart([{ ...GERMAN, ships: false }]).match(/<polyline [^>]*>/g)?.[0]
+    const pending = chart([{ ...GERMAN, ships: 'pending' }]).match(/<polyline [^>]*>/g)?.[0]
+    expect(held).toContain('stroke-dasharray="6 4"')
+    expect(pending).toContain('stroke-dasharray="6 4"')
+  })
+
   it('survives being asked to draw nothing', () => {
     const empty = chart([])
     expect(empty).toContain('</svg>')

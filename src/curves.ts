@@ -22,8 +22,12 @@ import type { Step } from './saturation.js'
 export interface Curve {
   readonly language: string
   readonly steps: readonly Step[]
-  /** Whether the language is blessed to ship. A language that is not is drawn dashed. */
-  readonly ships?: boolean
+  /**
+   * Whether the language is blessed to ship: `true`, `false` for held, `'pending'` for undecided.
+   * Only `true` is drawn solid — the picture answers "is this live", and both of the other two
+   * are not.
+   */
+  readonly ships?: boolean | 'pending'
 }
 
 /**

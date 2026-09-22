@@ -1,0 +1,8 @@
+
+# The candidate lists are borrowed, and their LICENSE and PROVENANCE files are their authors'
+# words. Reformatting them would quietly restate somebody else's licence notice.
+candidates/
+
+# Harness state, not this project. Untracked, and ignored globally by git.
+.omc/
+.claude/
