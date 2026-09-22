@@ -223,9 +223,12 @@ for (const row of rows) {
 
 const curves = rows
   .filter((row) => row.steps.length > 0)
-  // `ships` goes to the chart so a reader can see which languages are live without a key: a
-  // solid line ships, a dashed one is still being worked on.
-  .map((row) => ({ language: row.tag, steps: row.steps, ships: row.ships === true }))
+  // `ships` goes to the chart so a reader can see which languages are live without a key: solid
+  // ships, dashed is pending, dotted is held back. It is passed through rather than coerced to a
+  // boolean — `=== true` here turned every pending language into a held one the moment the chart
+  // learned to tell them apart, which is the same flattening that once made the live page
+  // report every unblessed language as held.
+  .map((row) => ({ language: row.tag, steps: row.steps, ships: row.ships }))
 
 writeFileSync(join(SITE, 'curves.svg'), chart(curves))
 
@@ -320,7 +323,7 @@ brand new language starts unblessed and has to be blessed on purpose.
 \`yes\` is blessed. \`held\` means somebody looked and said no, and that language's \`why\`
 says why — Japanese is held because its reader cannot build compound words, not because it failed
 anything. \`pending\` means nobody has decided yet, which is where every language starts. Only
-\`yes\` ships, and the chart draws the other two dashed.
+\`yes\` ships; the chart draws pending dashed and held dotted.
 
 **Checkable** is how many of a language's families somebody who disbelieved us could confirm by
 fetching: a stable identifier, or a page we fetched ourselves. The rest are crawls somebody else

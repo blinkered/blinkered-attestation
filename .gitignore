@@ -5,3 +5,6 @@ coverage/
 # Downloaded dumps and per-source indexes. Regenerable, enormous, and the reason this
 # repository stays small: only the evidence file is ever tracked.
 .cache/
+
+# A browser snapshot taken while checking the live page. Debris, not a source file.
+.playwright-mcp/

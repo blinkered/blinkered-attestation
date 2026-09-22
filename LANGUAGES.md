@@ -53,7 +53,7 @@ brand new language starts unblessed and has to be blessed on purpose.
 `yes` is blessed. `held` means somebody looked and said no, and that language's `why`
 says why — Japanese is held because its reader cannot build compound words, not because it failed
 anything. `pending` means nobody has decided yet, which is where every language starts. Only
-`yes` ships, and the chart draws the other two dashed.
+`yes` ships; the chart draws pending dashed and held dotted.
 
 **Checkable** is how many of a language's families somebody who disbelieved us could confirm by
 fetching: a stable identifier, or a page we fetched ourselves. The rest are crawls somebody else
