@@ -17,21 +17,21 @@ the rule needs three; a curve that climbs steeply at three and then flattens has
 its families can see, and a curve still climbing at twenty has more to gain from another
 publisher.
 
-| language | candidates | proved  | coverage  | families | checkable | returns stop at | conforms | ships  | published |
-| -------- | ---------- | ------- | --------- | -------- | --------- | --------------- | -------- | ------ | --------- |
-| `de`     | 36,493     | 36,346  | **99.6%** | 21       | 20        | 4               | yes      | yes    | yes       |
-| `en`     | 174,456    | 112,115 | **64.3%** | 15       | 14        | 4               | yes      | yes    | yes       |
-| `es`     | 201,655    | 145,334 | **72.1%** | 25       | 24        | 5               | yes      | yes    | yes       |
-| `fr`     | 144,105    | 103,417 | **71.8%** | 17       | 16        | 5               | yes      | yes    | yes       |
-| `id`     | 41,132     | 33,725  | **82.0%** | 6        | 4         | 4               | yes      | **no** | yes       |
-| `it`     | 40,944     | 40,702  | **99.4%** | 7        | 5         | 4               | yes      | **no** | yes       |
-| `ja`     | 191,188    | 40,571  | **21.2%** | 13       | 12        | 4               | yes      | **no** | yes       |
-| `ko`     | 38,467     | 24,395  | **63.4%** | 24       | 23        | 5               | yes      | yes    | yes       |
-| `nl`     | 322,146    | 159,228 | **49.4%** | 7        | 5         | 5               | yes      | **no** | yes       |
-| `pt-BR`  | 200,241    | 153,146 | **76.5%** | 7        | 5         | 4               | yes      | **no** | yes       |
-| `ru`     | 424,352    | 371,579 | **87.6%** | 10       | 8         | 4               | yes      | yes    | yes       |
-| `tl`     | 23,306     | 12,579  | **54.0%** | 12       | 11        | 5               | yes      | yes    | yes       |
-| `uk`     | 20,903     | 20,541  | **98.3%** | 6        | 4         | 4               | yes      | **no** | yes       |
+| language | candidates | proved  | coverage  | families | checkable | returns stop at | conforms | ships    | published |
+| -------- | ---------- | ------- | --------- | -------- | --------- | --------------- | -------- | -------- | --------- |
+| `de`     | 36,493     | 36,346  | **99.6%** | 21       | 20        | 4               | yes      | yes      | yes       |
+| `en`     | 174,456    | 112,115 | **64.3%** | 15       | 14        | 4               | yes      | yes      | yes       |
+| `es`     | 201,655    | 145,334 | **72.1%** | 25       | 24        | 5               | yes      | yes      | yes       |
+| `fr`     | 144,105    | 103,417 | **71.8%** | 17       | 16        | 5               | yes      | yes      | yes       |
+| `id`     | 41,132     | 33,725  | **82.0%** | 6        | 4         | 4               | yes      | pending  | yes       |
+| `it`     | 40,944     | 40,702  | **99.4%** | 7        | 5         | 4               | yes      | pending  | yes       |
+| `ja`     | 191,188    | 40,571  | **21.2%** | 13       | 12        | 4               | yes      | **held** | yes       |
+| `ko`     | 38,467     | 24,395  | **63.4%** | 24       | 23        | 5               | yes      | yes      | yes       |
+| `nl`     | 322,146    | 159,228 | **49.4%** | 7        | 5         | 5               | yes      | pending  | yes       |
+| `pt-BR`  | 200,241    | 153,146 | **76.5%** | 7        | 5         | 4               | yes      | pending  | yes       |
+| `ru`     | 424,352    | 371,579 | **87.6%** | 10       | 8         | 4               | yes      | yes      | yes       |
+| `tl`     | 23,306     | 12,579  | **54.0%** | 12       | 11        | 5               | yes      | yes      | yes       |
+| `uk`     | 20,903     | 20,541  | **98.3%** | 6        | 4         | 4               | yes      | pending  | yes       |
 
 **Ships** is the only column here that is not measured. Conforming says the evidence is sound and
 Blinkered's own floor says the list deals a playable board; neither says anybody wants to ship it.
@@ -40,7 +40,11 @@ could disagree. The build carries it forward rather than computing it, because n
 able to bless a language or withdraw one. **Absence means no**: a fresh clone, a deleted file or a
 brand new language starts unblessed and has to be blessed on purpose.
 
-On the chart a language that ships is drawn solid and one still being worked on is drawn dashed.
+**Ships** has three states, because two could not tell a decision apart from work not done.
+`yes` is blessed. `held` means somebody looked and said no, and that language's `why`
+says why — Japanese is held because its reader cannot build compound words, not because it failed
+anything. `pending` means nobody has decided yet, which is where every language starts. Only
+`yes` ships, and the chart draws the other two dashed.
 
 **Checkable** is how many of a language's families somebody who disbelieved us could confirm by
 fetching: a stable identifier, or a page we fetched ourselves. The rest are crawls somebody else
