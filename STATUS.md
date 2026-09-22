@@ -3,20 +3,25 @@
 Operational state. The **findings** live in [README.md](README.md) and the **numbers** in
 [LANGUAGES.md](LANGUAGES.md); this is the bit that goes stale.
 
-## All eight are published and conforming; seven ship
+## Thirteen are published and conforming; seven ship
 
-|      |   words | coverage | was   | families | checkable | ships  |
-| ---- | ------: | -------: | ----- | -------: | --------: | ------ |
-| `de` |  36,346 |    99.6% | 98.4% |       21 |        20 | yes    |
-| `ru` | 371,579 |    87.6% | 81.2% |       10 |         8 | yes    |
-| `es` | 145,334 |    72.1% | 63.9% |       25 |        24 | yes    |
-| `fr` | 103,417 |    71.8% | 66.9% |       17 |        16 | yes    |
-| `en` | 112,115 |    64.3% | 40.5% |       15 |        14 | yes    |
-| `ko` |  24,395 |    63.4% | 61.6% |       24 |        23 | yes    |
-| `tl` |  12,575 |    54.0% | 41.7% |       12 |        11 | yes    |
-| `ja` |  40,571 |    21.2% | 18.1% |       13 |        12 | **no** |
+|         |   words | coverage | was   | families | checkable | ships  |
+| ------- | ------: | -------: | ----- | -------: | --------: | ------ |
+| `de`    |  36,346 |    99.6% | 98.4% |       21 |        20 | yes    |
+| `it`    |  40,702 |    99.4% | new   |        7 |         5 | **no** |
+| `uk`    |  20,541 |    98.3% | new   |        6 |         4 | **no** |
+| `ru`    | 371,579 |    87.6% | 81.2% |       10 |         8 | yes    |
+| `id`    |  33,725 |    82.0% | new   |        6 |         4 | **no** |
+| `pt-BR` | 153,146 |    76.5% | new   |        7 |         5 | **no** |
+| `es`    | 145,334 |    72.1% | 63.9% |       25 |        24 | yes    |
+| `fr`    | 103,417 |    71.8% | 66.9% |       17 |        16 | yes    |
+| `en`    | 112,115 |    64.3% | 40.5% |       15 |        14 | yes    |
+| `ko`    |  24,395 |    63.4% | 61.6% |       24 |        23 | yes    |
+| `tl`    |  12,579 |    54.0% | 41.7% |       12 |        11 | yes    |
+| `nl`    | 159,228 |    49.4% | new   |        7 |         5 | **no** |
+| `ja`    |  40,571 |    21.2% | 18.1% |       13 |        12 | **no** |
 
-**`was` is the morning of 2026-09-21, before any books.** Every language reads the Internet Archive now. Two were
+**`was` is the morning of 2026-09-21, before any books; `new` is the second batch.** Every language reads the Internet Archive now. Two were
 not reading it at all and said nothing: German declared its books inside the `LEIPZIG` array of
 package-name strings, so the build asked for a collection called `lz:[object Object]`, skipped it
 with a warning and reported 98.4% anyway; Tagalog declared no books source at all while its
