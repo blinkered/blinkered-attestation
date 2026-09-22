@@ -3,33 +3,29 @@
 Operational state. The **findings** live in [README.md](README.md) and the **numbers** in
 [LANGUAGES.md](LANGUAGES.md); this is the bit that goes stale.
 
-## Thirteen are published and conforming; seven ship
+## Fifteen are published and conforming; fourteen ship
 
-|         |   words | coverage | was   | families | checkable | ships  |
-| ------- | ------: | -------: | ----- | -------: | --------: | ------ |
-| `de`    |  36,346 |    99.6% | 98.4% |       21 |        20 | yes    |
-| `it`    |  40,702 |    99.4% | new   |        7 |         5 | **no** |
-| `uk`    |  20,541 |    98.3% | new   |        6 |         4 | **no** |
-| `ru`    | 371,579 |    87.6% | 81.2% |       10 |         8 | yes    |
-| `id`    |  33,725 |    82.0% | new   |        6 |         4 | **no** |
-| `pt-BR` | 153,146 |    76.5% | new   |        7 |         5 | **no** |
-| `es`    | 145,334 |    72.1% | 63.9% |       25 |        24 | yes    |
-| `fr`    | 103,417 |    71.8% | 66.9% |       17 |        16 | yes    |
-| `en`    | 112,115 |    64.3% | 40.5% |       15 |        14 | yes    |
-| `ko`    |  24,395 |    63.4% | 61.6% |       24 |        23 | yes    |
-| `tl`    |  12,579 |    54.0% | 41.7% |       12 |        11 | yes    |
-| `nl`    | 159,228 |    49.4% | new   |        7 |         5 | **no** |
-| `ja`    |  40,571 |    21.2% | 18.1% |       13 |        12 | **no** |
+|             |   words | coverage | families | checkable | ships    |
+| ----------- | ------: | -------: | -------: | --------: | -------- |
+| `de`        |  36,346 |    99.6% |       21 |        20 | yes      |
+| **`it`**    |  40,702 |    99.4% |        7 |         5 | yes      |
+| **`uk`**    |  20,541 |    98.3% |        6 |         4 | yes      |
+| **`fi`**    |  42,609 |    96.6% |        7 |         5 | yes      |
+| `ru`        | 371,579 |    87.6% |       10 |         8 | yes      |
+| **`id`**    |  33,725 |    82.0% |        6 |         4 | yes      |
+| **`pt-BR`** | 153,146 |    76.5% |        7 |         5 | yes      |
+| `es`        | 145,334 |    72.1% |       25 |        24 | yes      |
+| `fr`        | 103,417 |    71.8% |       17 |        16 | yes      |
+| `en`        | 112,115 |    64.3% |       15 |        14 | yes      |
+| `ko`        |  24,395 |    63.4% |       24 |        23 | yes      |
+| `tl`        |  12,579 |    54.0% |       12 |        11 | yes      |
+| **`nl`**    | 159,228 |    49.4% |        7 |         5 | yes      |
+| **`ar`**    | 313,501 |    47.7% |        6 |         4 | yes      |
+| `ja`        |  40,571 |    21.2% |       13 |        12 | **held** |
 
-**`was` is the morning of 2026-09-21, before any books; `new` is the second batch.** Every language reads the Internet Archive now. Two were
-not reading it at all and said nothing: German declared its books inside the `LEIPZIG` array of
-package-name strings, so the build asked for a collection called `lz:[object Object]`, skipped it
-with a warning and reported 98.4% anyway; Tagalog declared no books source at all while its
-downloader filled a directory nothing pointed at. `node scripts/cache.mjs --strict` is the check that catches
-both, and it fails rather than prints. Comparing what a language declares against what its
-evidence holds finds neither: a broken source **un-declares itself**, because `SOURCES` drops
-anything whose path is missing, so there is nothing left to compare. The disk is the one record
-the fault cannot erase.
+**Languages in bold are the second batch**, built on 2026-09-21 evening and blessed the same
+night after the operator verified the usability floor, the minimum-W tests and the boards each
+one deals. Japanese is the only held language; its own `status.json` says why.
 
 **`conforms` means the paperwork matches the goods** — the evidence parses, every source is
 registered, every shipped word has evidence from three independent families, and every attestation
@@ -61,30 +57,30 @@ here. Nick has since tested all eight against the word floor in `blinkered` and 
 comfortably, so the recalibration this file used to warn about is not blocking. The warning is
 kept only as the reason to re-test after a list moves a long way, which several did today.
 
-## Nothing is running
-
-The session that gathered all this ended on 2026-09-21. The downloaders, the watchdog and the
-refold chain were all in its scratchpad and are gone with it. **Nothing is lost**: every language
-is published, conforming and licensed, and the 9355 books already on the shelves are in the
-shared cache, which is outside every repository.
-
-To carry on gathering books for a language:
+## Running overnight, 2026-09-21
 
 ```
-node scripts/archive.mjs <tag> <collection or query> <count>
+seven book downloaders        it uk fi id pt-BR nl ar, toward 2,000 books each
+final-refold.sh               fires when they stop, folds the books into all
+                              seven, pushes each, regenerates the roll-up
+watch.sh                      five-minute ticks: disk, live work, and anything
+                              in a batch log that reads like a failure
 ```
 
-`COLLECTIONS.md` in each language repository names the query its shelf came from; the `ia` source
-in its `sources.mjs` has it under `from`. Books are exempt from retirement, so a shelf survives
-`retire.mjs`. A refold after more books arrive is `node build.mjs && node conform.mjs && node
-saturation.mjs && node collections.mjs` in the language repository, then push, then regenerate the
-roll-up here — see [the rule for changing a language](README.md#the-rule-for-changing-a-language).
+All of it lives in a session scratchpad and none of it survives a reboot. **Nothing is lost if it
+dies**: every language is published, conforming, licensed and blessed, and the books already
+gathered are in the shared cache outside every repository. A downloader that dies mid-run can be
+restarted with the query in that language's `COLLECTIONS.md`, and a refold by hand is
 
-**Watch two things if you restart a downloader.** Check free disk against the download size first;
-this cache reached 92GB once. And if you write a watchdog that restarts them, give it a read-back
-check: one built with an associative array resolved every key to the last entry's value and
-restarted three languages with Japanese's collection, putting 697 wrong-language books across
-seven shelves. No published list was affected, because the legibility floor refused all of them.
+```
+node build.mjs && node conform.mjs && node saturation.mjs && node collections.mjs
+```
+
+then push, then regenerate the roll-up — see [the rule](README.md#the-rule-for-changing-a-language).
+
+**Run the roll-up with a token.** `GITHUB_TOKEN="$(gh auth token)" node scripts/languages.mjs
+--remote`. Unauthenticated it gets a 403 listing the organisation and refuses rather than
+guessing, which is right but stops the run. The scheduled workflow already passes one.
 
 ## The last mile per language
 
