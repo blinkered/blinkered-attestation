@@ -15,7 +15,7 @@ three independent families whether each word is real. Nothing a list here says s
 They used to live in `blinkered/packages/words/data/`, which is where the game reads the list it
 plays against. That worked for exactly as long as the two were the same file.
 
-They are not the same file any more. `blinkered` now borrows its lists back from the language
+They are not the same file any more. `blinkered` now takes its lists from the language
 repositories, so a candidate list left in `packages/words/data/de/words.txt` would be overwritten
 by German's own output, and the next German build would take its own output as its candidates.
 German could then never gain a word: every build would ask about exactly what the last build
