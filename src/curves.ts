@@ -61,9 +61,11 @@ const INK = [
 /** Enough room under a label for the next one, at twelve-point type. */
 const LABEL_GAP = 15
 
+const PENDING_DASH = ' stroke-dasharray="6 4"'
+const HELD_DASH = ' stroke-dasharray="1 4" stroke-linecap="round"'
 const WIDTH = 720
-const HEIGHT = 420
-const PAD = { left: 52, right: 104, top: 20, bottom: 44 }
+const HEIGHT = 450
+const PAD = { left: 52, right: 104, top: 20, bottom: 74 }
 
 function escape(text: string): string {
   return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -136,11 +138,12 @@ export function chart(curves: readonly Curve[]): string {
       `<line x1="${x(last.families).toFixed(1)}" y1="${end.toFixed(1)}" ` +
       `x2="${String(PAD.left + plotWidth + 5)}" y2="${label.toFixed(1)}" ` +
       `stroke="${ink}" stroke-opacity="0.35" stroke-dasharray="2 3" />`
-    // Solid means the language ships; dashed means it is still being worked on. The difference
-    // is a decision somebody made, not a measurement, so it is drawn rather than described: a
-    // reader should be able to see what is live without reading a legend.
+    // Three states of blessing, three strokes. Solid ships, dashed is pending, dotted is held
+    // back on purpose. The difference is a decision somebody made rather than a measurement, so
+    // it is drawn: a reader should see what is live, and what is waiting rather than rejected,
+    // without reading a legend.
     const live = curve.ships === true
-    const dash = live ? '' : ' stroke-dasharray="6 4"'
+    const dash = live ? '' : curve.ships === false ? HELD_DASH : PENDING_DASH
     return (
       `<polyline points="${points}" fill="none" stroke="${ink}" stroke-width="2" ` +
       `stroke-linejoin="round"${dash} />` +
@@ -156,12 +159,14 @@ ${grid.join('\n')}
 <line x1="${String(PAD.left)}" y1="${String(PAD.top)}" x2="${String(PAD.left)}" y2="${String(PAD.top + plotHeight)}" stroke="#888" />
 <line x1="${String(PAD.left)}" y1="${String(PAD.top + plotHeight)}" x2="${String(PAD.left + plotWidth)}" y2="${String(PAD.top + plotHeight)}" stroke="#888" />
 ${ticks.join('\n')}
-<text x="${String(PAD.left + plotWidth / 2)}" y="${String(HEIGHT - 8)}" fill="#888" font-size="12" text-anchor="middle">independent families consulted</text>
+<text x="${String(PAD.left + plotWidth / 2)}" y="${String(HEIGHT - PAD.bottom + 40)}" fill="#888" font-size="12" text-anchor="middle">independent families consulted</text>
 <text x="14" y="${String(PAD.top + plotHeight / 2)}" fill="#888" font-size="12" text-anchor="middle" transform="rotate(-90 14 ${String(PAD.top + plotHeight / 2)})">candidate list proved</text>
-<line x1="${String(PAD.left + 6)}" y1="${String(PAD.top + 10)}" x2="${String(PAD.left + 34)}" y2="${String(PAD.top + 10)}" stroke="#888" stroke-width="2" />
-<text x="${String(PAD.left + 40)}" y="${String(PAD.top + 10)}" fill="#888" font-size="11" dominant-baseline="middle">ships</text>
-<line x1="${String(PAD.left + 84)}" y1="${String(PAD.top + 10)}" x2="${String(PAD.left + 112)}" y2="${String(PAD.top + 10)}" stroke="#888" stroke-width="2" stroke-dasharray="6 4" />
-<text x="${String(PAD.left + 118)}" y="${String(PAD.top + 10)}" fill="#888" font-size="11" dominant-baseline="middle">in progress</text>
+<line x1="${String(PAD.left)}" y1="${String(HEIGHT - 14)}" x2="${String(PAD.left + 28)}" y2="${String(HEIGHT - 14)}" stroke="#888" stroke-width="2" />
+<text x="${String(PAD.left + 34)}" y="${String(HEIGHT - 14)}" fill="#888" font-size="11" dominant-baseline="middle">ships</text>
+<line x1="${String(PAD.left + 78)}" y1="${String(HEIGHT - 14)}" x2="${String(PAD.left + 106)}" y2="${String(HEIGHT - 14)}" stroke="#888" stroke-width="2" stroke-dasharray="6 4" />
+<text x="${String(PAD.left + 112)}" y="${String(HEIGHT - 14)}" fill="#888" font-size="11" dominant-baseline="middle">pending</text>
+<line x1="${String(PAD.left + 168)}" y1="${String(HEIGHT - 14)}" x2="${String(PAD.left + 196)}" y2="${String(HEIGHT - 14)}" stroke="#888" stroke-width="2" stroke-dasharray="1 4" stroke-linecap="round" />
+<text x="${String(PAD.left + 202)}" y="${String(HEIGHT - 14)}" fill="#888" font-size="11" dominant-baseline="middle">held back</text>
 ${lines.join('\n')}
 </svg>
 `

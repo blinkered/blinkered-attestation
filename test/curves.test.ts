@@ -101,26 +101,42 @@ describe('the chart', () => {
     const curves = drawn.match(/<polyline [^>]*>/g) as RegExpMatchArray
     expect(curves).toHaveLength(2)
     expect(curves[0]).not.toContain('stroke-dasharray')
-    expect(curves[1]).toContain('stroke-dasharray="6 4"')
+    expect(curves[1]).toContain('stroke-dasharray="1 4"')
     // The one that does not ship is named in italics, and the legend explains the difference
     // rather than leaving a reader to infer it.
     expect(drawn).toMatch(/font-style="italic"[^>]*>ja /u)
     expect(drawn).toContain('>ships</text>')
-    expect(drawn).toContain('>in progress</text>')
+    expect(drawn).toContain('>pending</text>')
+    expect(drawn).toContain('>held back</text>')
   })
 
-  it('treats a curve that says nothing about shipping as not shipping', () => {
-    // Absence means no, here as everywhere: a language nobody blessed is drawn as in progress.
+  it('treats a curve that says nothing about shipping as pending', () => {
+    // Absence means undecided, not rejected: a language nobody has blessed is waiting, and
+    // drawing it the same as one somebody held back would accuse us of a decision never made.
     expect(chart([GERMAN]).match(/<polyline [^>]*>/g)?.[0]).toContain('stroke-dasharray="6 4"')
   })
 
-  it('draws a pending language dashed, the same as a held one', () => {
-    // Three states of blessing, two line styles. The picture answers "is this live", and pending
-    // and held are both not; which of the two it is belongs in the table, not the stroke.
+  it('tells a pending language apart from a held one', () => {
+    // Three states of blessing, three strokes. Pending is waiting for somebody to look; held is
+    // somebody having looked and said no. A reader who cannot tell those apart learns the wrong
+    // thing about the language sitting lowest on the chart.
     const held = chart([{ ...GERMAN, ships: false }]).match(/<polyline [^>]*>/g)?.[0]
     const pending = chart([{ ...GERMAN, ships: 'pending' }]).match(/<polyline [^>]*>/g)?.[0]
-    expect(held).toContain('stroke-dasharray="6 4"')
+    expect(held).toContain('stroke-dasharray="1 4"')
     expect(pending).toContain('stroke-dasharray="6 4"')
+  })
+
+  it('keeps the legend clear of the plot', () => {
+    // The legend used to sit inside the top-left of the plot, where Italian and German cross it
+    // on their way up. Below the axis nothing can be drawn over it.
+    const drawn = chart([{ ...GERMAN, ships: true }])
+    const axis = Number(/<text x="[\d.]+" y="(\d+)"[^>]*>independent families/u.exec(drawn)?.[1])
+    const key = Number(/<text x="[\d.]+" y="(\d+)"[^>]*>ships</u.exec(drawn)?.[1])
+    const plotFloor = Number(/y2="([\d.]+)" stroke="#888" \/>\n<line/u.exec(drawn)?.[1] ?? 0)
+    // Guarded, because a regex that stops matching would otherwise pass this test with zeros.
+    expect(plotFloor).toBeGreaterThan(0)
+    expect(key).toBeGreaterThan(axis)
+    expect(key).toBeGreaterThan(plotFloor)
   })
 
   it('survives being asked to draw nothing', () => {
