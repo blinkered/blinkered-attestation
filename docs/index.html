@@ -182,10 +182,11 @@
 
       <footer>
         Each language measures its own curve from its own committed evidence and publishes it as
-        <code>status.json</code>. A solid line ships; a dashed line is a language still being worked
-        on. This page reads those files from each repository's main branch, so it is as current as
-        the repositories are. Nothing here is authoritative: if this disagrees with a language
-        repository, the language repository is right.
+        <code>status.json</code>. A solid line ships. A dashed one does not, and the table says
+        which kind: <b>held</b> is a decision somebody made and wrote down, <b>pending</b> is a
+        language nobody has decided about yet. This page reads those files from each repository's
+        main branch, so it is as current as the repositories are. Nothing here is authoritative: if
+        this disagrees with a language repository, the language repository is right.
       </footer>
     </main>
 
@@ -510,7 +511,10 @@
                 shipped: curve.shipped,
                 families: curve.families,
                 knee: curve.knee,
-                ships: curve.ships === true,
+                // Carried through, not coerced. `=== true` here flattened "pending" to false
+                // and the table three lines down then reported every unblessed language as held,
+                // which is the one distinction this field exists to make.
+                ships: curve.ships === true ? true : curve.ships === false ? false : 'pending',
                 built: true,
                 live: true,
               })
