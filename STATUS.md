@@ -3,7 +3,7 @@
 Operational state. The **findings** live in [README.md](README.md) and the **numbers** in
 [LANGUAGES.md](LANGUAGES.md); this is the bit that goes stale.
 
-## Twenty-two are published and conforming; twenty-one ship
+## Twenty-four are published and conforming; twenty-one ship
 
 |          |   words | coverage | families | checkable | ships    |
 | -------- | ------: | -------: | -------: | --------: | -------- |
@@ -27,13 +27,29 @@ Operational state. The **findings** live in [README.md](README.md) and the **num
 | **`tr`** | 327,920 |    51.4% |        6 |         4 | yes      |
 | `nl`     | 164,989 |    51.2% |        7 |         5 | yes      |
 | **`sv`** | 162,041 |    43.6% |        7 |         5 | yes      |
+| _`is`_   |  27,162 |    39.5% |        6 |         5 | pending  |
 | **`hu`** | 459,813 |    35.5% |        7 |         5 | yes      |
 | `ja`     |  40,810 |    21.3% |       13 |        12 | **held** |
+| _`pcm`_  |   3,293 |    20.1% |        5 |         4 | pending  |
 
 **Languages in bold are the third batch**, built on 2026-09-22 and blessed the same day: `cs`
 `fa` `ro` `pl` `tr` `sv` `hu`. Each clears the usability floor on all three boards and deals a
 first-run tour of common words. Japanese is the only language that does not ship, and that is a
 decision rather than a queue; its own `status.json` says why.
+
+**Languages in italics are the fourth batch**, being built on 2026-09-23 and published as each
+finishes; none is blessed. Twenty-seven languages are in it: `hr` and `pcm` first, because
+Nick's coworkers are Croatian and Nigerian, then `da` `no` `is` `et` `lv` `lt`, `sk` `sl` `bg`
+`mk` `sr`, `el` `ca` `gl` `pt`, and `af` `sw` `ms` `eu` `cy` `ga` `he` `hy` `ka` `vi`.
+
+**Naijá is the one to read.** `SCRIPTS.md` said attestation would not work for it, because its
+commonest words are spelled as English. That turned out to be half right. A collection that is
+partly English is fixable: `sources.mjs` admits a document only if it reads as Naijá, and the guard
+admits none of 40 English, 20 German or 20 Spanish books or of 60 Igbo, Yoruba, Hausa and Italian
+Wikipedia articles, and all 1,189 chapters of the Naijá Bible. Without it 429 more words ship, and
+309 of those are English. What stands is English quoted inside a Naijá document: THE and WAS ship,
+and whether they are Naijá words is a lexicographer's call, not an attestation one. The candidates
+had no validator at all, so 20.1% is the rule doing the only filtering there is.
 
 **What the third batch showed.** Turkish and Hungarian are the demonstration this project was
 built to make. Hungarian dropped 835,248 of 1,295,061 candidates and Turkish 312,230 of 638,282,

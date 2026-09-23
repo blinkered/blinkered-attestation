@@ -972,6 +972,63 @@
       ]
     },
     {
+      "tag": "is",
+      "repo": "blinkered-dictionary-is",
+      "published": true,
+      "built": true,
+      "conforms": true,
+      "ships": "pending",
+      "candidates": 68689,
+      "shipped": 27162,
+      "families": 6,
+      "checkable": 5,
+      "knee": 6,
+      "steps": [
+        {
+          "families": 1,
+          "added": "wikimedia",
+          "kept": 0,
+          "share": 0,
+          "gained": 0
+        },
+        {
+          "families": 2,
+          "added": "leipzig",
+          "kept": 0,
+          "share": 0,
+          "gained": 0
+        },
+        {
+          "families": 3,
+          "added": "internetarchive",
+          "kept": 22822,
+          "share": 0.332251,
+          "gained": 22822
+        },
+        {
+          "families": 4,
+          "added": "ebible",
+          "kept": 24919,
+          "share": 0.36278,
+          "gained": 2097
+        },
+        {
+          "families": 5,
+          "added": "tatoeba",
+          "kept": 26287,
+          "share": 0.382696,
+          "gained": 1368
+        },
+        {
+          "families": 6,
+          "added": "gutenberg",
+          "kept": 27162,
+          "share": 0.395434,
+          "gained": 875
+        }
+      ]
+    },
+    {
       "tag": "it",
       "repo": "blinkered-dictionary-it",
       "published": true,
@@ -1385,6 +1442,56 @@
           "kept": 164989,
           "share": 0.512156,
           "gained": 37
+        }
+      ]
+    },
+    {
+      "tag": "pcm",
+      "repo": "blinkered-dictionary-pcm",
+      "published": true,
+      "built": true,
+      "conforms": true,
+      "ships": "pending",
+      "candidates": 16394,
+      "shipped": 3293,
+      "families": 5,
+      "checkable": 4,
+      "knee": null,
+      "steps": [
+        {
+          "families": 1,
+          "added": "wikimedia",
+          "kept": 0,
+          "share": 0,
+          "gained": 0
+        },
+        {
+          "families": 2,
+          "added": "commoncrawl",
+          "kept": 0,
+          "share": 0,
+          "gained": 0
+        },
+        {
+          "families": 3,
+          "added": "UD_Naija-NSC",
+          "kept": 2225,
+          "share": 0.13572,
+          "gained": 2225
+        },
+        {
+          "families": 4,
+          "added": "bbc.com",
+          "kept": 2869,
+          "share": 0.175003,
+          "gained": 644
+        },
+        {
+          "families": 5,
+          "added": "ebible",
+          "kept": 3293,
+          "share": 0.200866,
+          "gained": 424
         }
       ]
     },
