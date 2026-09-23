@@ -3,7 +3,7 @@
 Operational state. The **findings** live in [README.md](README.md) and the **numbers** in
 [LANGUAGES.md](LANGUAGES.md); this is the bit that goes stale.
 
-## Thirty-nine are published and conforming; twenty-one ship
+## Forty-four are published and conforming; twenty-one ship
 
 |          |   words | coverage | families | checkable | ships    |
 | -------- | ------: | -------: | -------: | --------: | -------- |
@@ -25,6 +25,7 @@ Operational state. The **findings** live in [README.md](README.md) and the **num
 | `es`     | 145,686 |    72.2% |       25 |        24 | yes      |
 | `fr`     | 104,090 |    72.2% |       17 |        16 | yes      |
 | _`vi`_   |  18,057 |    70.5% |       10 |         9 | pending  |
+| _`no`_   |  27,849 |    67.7% |        6 |         5 | pending  |
 | _`ka`_   | 109,205 |    66.7% |       10 |         9 | pending  |
 | `en`     | 112,351 |    64.4% |       15 |        14 | yes      |
 | _`ms`_   |   5,048 |    63.7% |       10 |         9 | pending  |
@@ -38,14 +39,18 @@ Operational state. The **findings** live in [README.md](README.md) and the **num
 | _`sl`_   | 136,507 |    52.0% |       17 |        16 | pending  |
 | **`tr`** | 327,920 |    51.4% |        6 |         4 | yes      |
 | `nl`     | 164,989 |    51.2% |        7 |         5 | yes      |
+| _`lv`_   |  49,838 |    49.9% |       13 |        12 | pending  |
+| _`is`_   |  33,777 |    49.2% |        6 |         5 | pending  |
+| _`lt`_   |  97,922 |    48.3% |       13 |        12 | pending  |
 | _`sk`_   | 138,362 |    48.1% |       21 |        20 | pending  |
 | **`sv`** | 162,041 |    43.6% |        7 |         5 | yes      |
 | _`cy`_   |  19,697 |    41.3% |        9 |         9 | pending  |
-| _`is`_   |  27,162 |    39.5% |        6 |         5 | pending  |
 | _`bg`_   | 107,898 |    38.7% |       19 |        18 | pending  |
 | **`hu`** | 459,813 |    35.5% |        7 |         5 | yes      |
 | `ja`     |  40,810 |    21.3% |       13 |        12 | **held** |
+| _`da`_   |  63,245 |    20.4% |        6 |         5 | pending  |
 | _`pcm`_  |   3,293 |    20.1% |        5 |         4 | pending  |
+| _`et`_   | 100,784 |    17.1% |       16 |        15 | pending  |
 
 **Languages in bold are the third batch**, built on 2026-09-22 and blessed the same day: `cs`
 `fa` `ro` `pl` `tr` `sv` `hu`. Each clears the usability floor on all three boards and deals a
@@ -57,9 +62,12 @@ finishes; none is blessed. Twenty-seven languages are in it: `hr` and `pcm` firs
 Nick's coworkers are Croatian and Nigerian, then `da` `no` `is` `et` `lv` `lt`, `sk` `sl` `bg`
 `mk` `sr`, `el` `ca` `gl` `pt`, and `af` `sw` `ms` `eu` `cy` `ga` `he` `hy` `ka` `vi`.
 
-**Seventeen of the fourth batch are published so far**, all pending: `pcm` and `is`, the ten
-smaller lists, `af` `sw` `ms` `eu` `cy` `ga` `he` `hy` `ka` `vi`, and five Slavic ones, `sk` `sl`
-`bg` `mk` `sr`. Serbian is built from Cyrillic sources alone, and Slovak's book shelf was screened
+**Twenty-two of the fourth batch are published so far**, all pending: `pcm` and `is`, the ten
+smaller lists, `af` `sw` `ms` `eu` `cy` `ga` `he` `hy` `ka` `vi`, five Slavic ones, `sk` `sl`
+`bg` `mk` `sr`, and five Nordic and Baltic ones, `da` `no` `et` `lv` `lt`. Danish and Estonian
+sit low for Hungarian's reason: candidate lists of 310,000 and 589,000 words, mostly forms nobody
+has written down three times. Estonian's ready-made families proved 2.8% on their own; ten
+publishers, literary weeklies above all, took it to 17.1%. Serbian is built from Cyrillic sources alone, and Slovak's book shelf was screened
 for Czech, which would otherwise pass the legibility floor against it. Afrikaans, Hebrew, Armenian and
 Vietnamese come in above seventy percent on families nobody had tried for them: publisher harvests
 and Internet Archive shelves weeded for the right language, because the Archive's language tags
