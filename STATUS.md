@@ -3,7 +3,7 @@
 Operational state. The **findings** live in [README.md](README.md) and the **numbers** in
 [LANGUAGES.md](LANGUAGES.md); this is the bit that goes stale.
 
-## Forty-four are published and conforming; twenty-one ship
+## Forty-nine are published and conforming; twenty-one ship
 
 |          |   words | coverage | families | checkable | ships    |
 | -------- | ------: | -------: | -------: | --------: | -------- |
@@ -17,6 +17,7 @@ Operational state. The **findings** live in [README.md](README.md) and the **num
 | _`mk`_   |  18,269 |    85.5% |       12 |        11 | pending  |
 | `id`     |  34,539 |    84.0% |        6 |         4 | yes      |
 | **`fa`** |  41,801 |    81.8% |        6 |         4 | yes      |
+| _`ca`_   |  36,799 |    78.6% |       14 |        13 | pending  |
 | `pt-BR`  | 157,040 |    78.4% |        7 |         5 | yes      |
 | _`he`_   |  12,253 |    76.9% |        8 |         7 | pending  |
 | **`ro`** | 142,067 |    75.9% |        7 |         5 | yes      |
@@ -25,9 +26,11 @@ Operational state. The **findings** live in [README.md](README.md) and the **num
 | `es`     | 145,686 |    72.2% |       25 |        24 | yes      |
 | `fr`     | 104,090 |    72.2% |       17 |        16 | yes      |
 | _`vi`_   |  18,057 |    70.5% |       10 |         9 | pending  |
+| _`pt`_   |  93,840 |    69.6% |       16 |        15 | pending  |
 | _`no`_   |  27,849 |    67.7% |        6 |         5 | pending  |
 | _`ka`_   | 109,205 |    66.7% |       10 |         9 | pending  |
 | `en`     | 112,351 |    64.4% |       15 |        14 | yes      |
+| _`hr`_   | 219,247 |    64.3% |       17 |        15 | pending  |
 | _`ms`_   |   5,048 |    63.7% |       10 |         9 | pending  |
 | `ko`     |  24,400 |    63.4% |       24 |        23 | yes      |
 | _`ga`_   |   8,585 |    63.4% |       11 |        10 | pending  |
@@ -44,8 +47,10 @@ Operational state. The **findings** live in [README.md](README.md) and the **num
 | _`lt`_   |  97,922 |    48.3% |       13 |        12 | pending  |
 | _`sk`_   | 138,362 |    48.1% |       21 |        20 | pending  |
 | **`sv`** | 162,041 |    43.6% |        7 |         5 | yes      |
+| _`el`_   | 109,599 |    42.6% |       16 |        15 | pending  |
 | _`cy`_   |  19,697 |    41.3% |        9 |         9 | pending  |
 | _`bg`_   | 107,898 |    38.7% |       19 |        18 | pending  |
+| _`gl`_   |  13,148 |    38.0% |       14 |        13 | pending  |
 | **`hu`** | 459,813 |    35.5% |        7 |         5 | yes      |
 | `ja`     |  40,810 |    21.3% |       13 |        12 | **held** |
 | _`da`_   |  63,245 |    20.4% |        6 |         5 | pending  |
@@ -57,24 +62,29 @@ Operational state. The **findings** live in [README.md](README.md) and the **num
 first-run tour of common words. Japanese is the only language that does not ship, and that is a
 decision rather than a queue; its own `status.json` says why.
 
-**Languages in italics are the fourth batch**, being built on 2026-09-23 and published as each
-finishes; none is blessed. Twenty-seven languages are in it: `hr` and `pcm` first, because
-Nick's coworkers are Croatian and Nigerian, then `da` `no` `is` `et` `lv` `lt`, `sk` `sl` `bg`
-`mk` `sr`, `el` `ca` `gl` `pt`, and `af` `sw` `ms` `eu` `cy` `ga` `he` `hy` `ka` `vi`.
+**Languages in italics are the fourth batch**, built and published on 2026-09-23; all
+twenty-seven are pending and none is blessed. `hr` and `pcm` went first, because Nick's coworkers
+are Croatian and Nigerian. Every one of them conforms, and every one checked so far clears the
+usability floor on all three boards; none has a first-run tour board yet, which the game needs
+before it can offer a language.
 
-**Twenty-two of the fourth batch are published so far**, all pending: `pcm` and `is`, the ten
-smaller lists, `af` `sw` `ms` `eu` `cy` `ga` `he` `hy` `ka` `vi`, five Slavic ones, `sk` `sl`
-`bg` `mk` `sr`, and five Nordic and Baltic ones, `da` `no` `et` `lv` `lt`. Danish and Estonian
-sit low for Hungarian's reason: candidate lists of 310,000 and 589,000 words, mostly forms nobody
-has written down three times. Estonian's ready-made families proved 2.8% on their own; ten
-publishers, literary weeklies above all, took it to 17.1%. Serbian is built from Cyrillic sources alone, and Slovak's book shelf was screened
-for Czech, which would otherwise pass the legibility floor against it. Afrikaans, Hebrew, Armenian and
-Vietnamese come in above seventy percent on families nobody had tried for them: publisher harvests
-and Internet Archive shelves weeded for the right language, because the Archive's language tags
-are mostly wrong. Basque is built on candidates with their English taken out
-(`candidates/eu/PROVENANCE.md`); Welsh and Swahili still carry English from their candidate lists,
-roughly 150 and 60 words in the commonest three thousand, and want the same cleanup. Every list
-built from here on carries its written forms, so Vietnamese ships A CÒNG and not ACÒNG.
+**Croatian** proves 64.3% on seventeen families, and books were the lever: with ninety Archive
+books it kept 50.3%, and each hundred more added between three points and half a point until the
+downloader was stopped at 1,250. **Macedonian, Afrikaans and Serbian** come in above seventy-five
+percent; Serbian on Cyrillic sources alone. **Danish and Estonian** sit low for Hungarian's reason,
+candidate lists of 310,000 and 589,000 words, mostly forms nobody has written down three times;
+Estonian's ready-made families proved 2.8% on their own, and ten publishers, literary weeklies
+above all, took it to 17.1%.
+
+**What the batch taught, briefly.** The Archive's language tags by English name are mostly wrong
+(none of the top fifteen "Estonian" books was Estonian); query by ISO code. The legibility floor
+does not keep out a close neighbour: Spanish books score 37 to 55% against Catalan, Galician and
+Portuguese candidates, and what separates them is the share of a book's hits that no neighbour's
+list contains. Three candidate lists carried English from a Wiktionary-titles validator: Basque's
+is cleaned (`candidates/eu/PROVENANCE.md`); Welsh and Swahili still carry roughly 150 and 60 words
+in the commonest three thousand. And every list built from here on carries its written forms, so
+Portuguese ships NÃO rather than NAO and Vietnamese A CÒNG rather than ACÒNG. The twenty-two
+languages built before that fix still ship without them until they are rebuilt.
 
 **Naijá is the one to read.** `SCRIPTS.md` said attestation would not work for it, because its
 commonest words are spelled as English. That turned out to be half right. A collection that is
