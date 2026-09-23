@@ -69,6 +69,7 @@ describe('the public interface', () => {
       'take',
       'tatoebaDocuments',
       'tatoebaRows',
+      'trustedSpellings',
       'validateSourceId',
       'verseDocuments',
       'versesByChapter',

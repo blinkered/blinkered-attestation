@@ -32,7 +32,7 @@ export {
 } from './readers.js'
 export type { FamilyOf, Partition, SourceTotals } from './attest.js'
 
-export { build } from './build.js'
+export { build, trustedSpellings } from './build.js'
 export type { Built } from './build.js'
 
 export { conform, shippedWords } from './conformance.js'

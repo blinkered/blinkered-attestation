@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { build } from '../src/build.js'
+import { build, trustedSpellings } from '../src/build.js'
 import type { ScanResult } from '../src/scan.js'
 
 const result = (
@@ -95,6 +95,13 @@ describe('building a language', () => {
       'APFEL\t2\tgut,tat\t1,1',
       'ZEBRA\t2\tgut,tat\t1,1',
     ])
+  })
+
+  it('writes a word the way the candidate list spelled it, when folding lost something', () => {
+    // ABADIA is the key and ABADÍA the word. Without the written form the game spells the key,
+    // and every attested list lost its accents that way before anybody noticed.
+    const accented = build('de', CANDIDATES, THREE, 1, undefined, new Map([['OKAY', 'ÖKAY']]))
+    expect(accented.words).toBe('#blinkered/wordlist/2 language=de common=1 full=1\nOKAY\tÖKAY\n')
   })
 
   it('builds nothing from nothing without falling over', () => {
@@ -219,8 +226,48 @@ describe('building on evidence already here', () => {
     expect(found?.attestations.map((one) => one.source)).toEqual(['gut'])
   })
 
+  it('forgets a word that is no longer a candidate, however well the record attests it', () => {
+    // Basque's list lost its English, and a rebuild over the old record shipped AND and NEW on
+    // reused sightings alone. The record answers questions; it does not get to ask them.
+    const built = build('de', ['PIZZA'], fresh, 10, prior)
+    expect(built.evidence.map((word) => word.word)).toEqual(['PIZZA'])
+    expect(built.words).not.toContain('OKAY')
+  })
+
   it('builds from nothing when there is no evidence yet', () => {
     const built = build('de', CANDIDATES, fresh, 10)
     expect(built.reused).toEqual([])
+  })
+})
+
+describe('which written forms to trust', () => {
+  const TILES = new Set(['A', 'B', 'D', 'I', 'T', 'U', 'R'])
+
+  it('trusts a mark many words use, which is what an accent looks like', () => {
+    const rows = Array.from({ length: 3 }, (_, at) => [`ABADIA${String(at)}`, 'ABADÍA'] as const)
+    expect(trustedSpellings(rows, TILES, 3).size).toBe(3)
+  })
+
+  it('drops a mark only a few words use, which is what corpus noise looks like', () => {
+    // Icelandic ĀTT and BŨR: its accented letters are tiles, so a real spelling never differs.
+    const rows = [
+      ['ATT', 'ĀTT'],
+      ['BUR', 'BŨR'],
+    ] as const
+    expect(trustedSpellings(rows, TILES, 3).size).toBe(0)
+  })
+
+  it('treats a composed and a decomposed mark as the same mark', () => {
+    const rows = [
+      ['ABADIA', 'ABADÍA'],
+      ['DIA', 'DÍA'],
+    ] as const
+    expect(trustedSpellings(rows, TILES, 2).get('DIA')).toBe('DÍA')
+  })
+
+  it('defaults to fifty words, which clears every real accent in the candidate lists', () => {
+    const rows = Array.from({ length: 49 }, (_, at) => [`A${String(at)}`, 'Á'] as const)
+    expect(trustedSpellings(rows, TILES).size).toBe(0)
+    expect(trustedSpellings([...rows, ['B', 'Á']], TILES).size).toBe(50)
   })
 })
