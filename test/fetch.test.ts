@@ -171,6 +171,52 @@ describe('discovering what a publisher has', () => {
     expect((await discover('old.kr', get, undefined, 0)).urls).toEqual(['http://old.kr/a'])
   })
 
+  it('keeps a harvest inside a section when the rest of the domain is another language', async () => {
+    // BBC News Pidgin lives at bbc.com/pidgin and bbc.com is otherwise English. Robots.txt is
+    // still the host's, and the forty sitemaps it names are for other services, so none of them
+    // is fetched; the section's own front page is what answers.
+    const get = web({
+      'https://www.bbc.com/robots.txt':
+        'User-agent: *\nDisallow: /pidgin/send\nSitemap: https://www.bbc.com/afrique/sitemap.xml',
+      'https://www.bbc.com/afrique/sitemap.xml':
+        '<urlset><url><loc>https://www.bbc.com/afrique/x</loc></url></urlset>',
+      'https://www.bbc.com/pidgin/':
+        '<a href="/pidgin/articles/c1">tori</a><a href="/news/world">English</a>' +
+        '<a href="/pidginx/y">not the section</a><a href="/pidgin">home</a>' +
+        '<a href="/pidgin/send/z">forbidden</a>',
+    })
+    const found = await discover('www.bbc.com/pidgin/', get, undefined, 0)
+    expect(found.urls).toEqual([
+      'https://www.bbc.com/pidgin/articles/c1',
+      'https://www.bbc.com/pidgin',
+    ])
+    expect(found.disallowed).toEqual(['/pidgin/send'])
+  })
+
+  it('follows a sitemap robots.txt names inside the section, and nothing it cannot read', async () => {
+    const get = web({
+      'https://example.org/robots.txt':
+        'User-agent: *\nSitemap: /relative.xml\nSitemap: https://example.org/pcm/map.xml',
+      'https://example.org/pcm/map.xml':
+        '<urlset><url><loc>https://example.org/pcm/a</loc></url>' +
+        '<url><loc>https://example.org/en/b</loc></url></urlset>',
+    })
+    expect((await discover('example.org/pcm', get, undefined, 0)).urls).toEqual([
+      'https://example.org/pcm/a',
+    ])
+  })
+
+  it('looks for a section’s own sitemap at the conventional place inside it', async () => {
+    const get = web({
+      'https://example.org/robots.txt': 'User-agent: *',
+      'https://example.org/pcm/sitemap.xml':
+        '<urlset><url><loc>https://example.org/pcm/c</loc></url></urlset>',
+    })
+    expect((await discover('example.org/pcm', get, undefined, 0)).urls).toEqual([
+      'https://example.org/pcm/c',
+    ])
+  })
+
   it('comes back empty from a site that answers nothing, rather than crawling it', async () => {
     // Following links from a homepage is a different and far ruder activity.
     expect((await discover('silent.kr', web({}), undefined, 0)).urls).toEqual([])

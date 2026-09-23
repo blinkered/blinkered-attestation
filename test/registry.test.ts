@@ -148,6 +148,22 @@ describe('derived sources', () => {
     expect(sourceFor('web:lemonde.fr').ranks).toBe(false)
   })
 
+  it('builds a Universal Dependencies treebank pinned to a commit, one family per treebank', () => {
+    const spec = sourceFor('ud:UD_Naija-NSC@e1208ebb')
+    expect(spec.family).toBe('UD_Naija-NSC')
+    expect(checkabilityOf(spec)).toBe('durable')
+    expect(expandLocator(spec, 'pcm_nsc-ud-dev.conllu#BEN_34_Tale_MG')).toBe(
+      'https://raw.githubusercontent.com/UniversalDependencies/UD_Naija-NSC/e1208ebb/pcm_nsc-ud-dev.conllu#BEN_34_Tale_MG',
+    )
+  })
+
+  it.each(['UD_Naija-NSC', '@e1208ebb', 'UD_Naija-NSC@'])(
+    'refuses a treebank %s that does not name both itself and a commit',
+    (pinned) => {
+      expect(() => sourceFor(`ud:${pinned}`)).toThrow('must name a treebank and a commit')
+    },
+  )
+
   it('keeps every crawl-derived dataset in one family', () => {
     // Three re-processings of the same crawled web are three datasets and one opinion. This is
     // the line that makes Egyptian Arabic fail the rule rather than pass it on a technicality.

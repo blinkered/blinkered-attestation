@@ -248,6 +248,26 @@ const DERIVED: Readonly<Record<string, (rest: string) => SourceSpec>> = {
       `eBible.org, ${translation}`,
       `https://ebible.org/${translation}/{id}.htm`,
     ),
+  // A Universal Dependencies treebank pinned to one commit: `ud:UD_Naija-NSC@<sha>`. UD distributes
+  // treebanks the way OPUS distributes corpora, and each was gathered by its own project, so the
+  // family is the treebank rather than UD. Pinned because treebanks are revised in place: a
+  // locator into a file that has since been re-segmented would point at somebody else's sentence.
+  // A locator is `<file>#<text id>`; the server ignores the fragment and returns the whole file,
+  // which holds the word, and the fragment tells a person what to search it for.
+  ud: (pinned) => {
+    const at = pinned.indexOf('@')
+    if (at <= 0 || at === pinned.length - 1) {
+      throw new RangeError(`ud source "${pinned}" must name a treebank and a commit`)
+    }
+    const treebank = pinned.slice(0, at)
+    return template(
+      `ud:${pinned}`,
+      treebank,
+      `Universal Dependencies ${treebank}`,
+      `Universal Dependencies, ${treebank} contributors`,
+      `https://raw.githubusercontent.com/UniversalDependencies/${treebank}/${pinned.slice(at + 1)}/{id}`,
+    )
+  },
   // One family per registrable domain, which is what makes the harvest able to clear a gap
   // rather than nibble at it. It attests; it does not rank.
   web: (domain) => ({

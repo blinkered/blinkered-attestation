@@ -81,20 +81,33 @@ export async function discover(
   limit = MAX_PAGES_PER_HOST,
   delayMs = POLITE_DELAY_MS,
 ): Promise<SiteHarvest> {
-  const registrable = domainOf(`https://${domain}/`)
-  const robots = await get(`https://${domain}/robots.txt`)
+  // A publisher can share a domain with somebody writing another language. BBC News Pidgin is
+  // `www.bbc.com/pidgin` and the rest of bbc.com is English, so harvesting the domain would read
+  // English into a Naijá list. A path after the host keeps the harvest inside that section. The
+  // family is still the registrable domain, and robots.txt is still read from the host, because
+  // that is where a site keeps it and the only place its rules are binding.
+  const slash = domain.indexOf('/')
+  const host = slash < 0 ? domain : domain.slice(0, slash)
+  const section = slash < 0 ? '' : domain.slice(slash).replace(/\/+$/u, '')
+  const within = (path: string): boolean =>
+    section === '' || path === section || path.startsWith(`${section}/`)
+
+  const registrable = domainOf(`https://${host}/`)
+  const robots = await get(`https://${host}/robots.txt`)
   const disallowed = robots === null ? [] : disallowedPaths(robots)
 
-  // A sitemap named in robots.txt is the site's own answer and beats any guess.
+  // A sitemap named in robots.txt is the site's own answer and beats any guess — for a section,
+  // only the ones inside it. bbc.com names forty sitemaps, every one of them another language.
   const declared = (robots ?? '')
     .split('\n')
     .map((line) => /^\s*sitemap:\s*(\S+)/iu.exec(line)?.[1])
     .filter((found): found is string => found !== undefined)
+    .filter((url) => section === '' || (URL.canParse(url) && within(new URL(url).pathname)))
 
   const found: string[] = []
   for (const candidate of [
     ...declared,
-    ...DISCOVERY_PATHS.map((path) => `https://${domain}${path}`),
+    ...DISCOVERY_PATHS.map((path) => `https://${host}${section}${path}`),
   ]) {
     if (found.length >= limit) break
     const body = await get(candidate)
@@ -137,6 +150,8 @@ export async function discover(
       // a font CDN — which then appeared in its saturation curve as an independent family called
       // `typekit.net`. A family is a publisher, so a page has to be the publisher's.
       .filter((url) => domainOf(url) === registrable)
+      // Parseable by now: a string that is not a URL cannot share a registrable domain with one.
+      .filter((url) => within(new URL(url).pathname))
       .filter((url) => allowed(url, disallowed))
       .slice(0, limit)
 
@@ -148,9 +163,9 @@ export async function discover(
   // largest. So read the front page and follow what it links to, one level, which is what a
   // person would do and is bounded by the same limit as everything else.
   if (urls.length === 0) {
-    const front = await get(`https://${domain}/`)
+    const front = await get(`https://${host}${section}/`)
     await wait(delayMs)
-    if (front !== null) urls = pagesAmong(pageLinks(front, `https://${domain}/`))
+    if (front !== null) urls = pagesAmong(pageLinks(front, `https://${host}${section}/`))
   }
 
   return { domain, urls, disallowed }
