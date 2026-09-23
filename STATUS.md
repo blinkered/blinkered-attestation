@@ -3,37 +3,37 @@
 Operational state. The **findings** live in [README.md](README.md) and the **numbers** in
 [LANGUAGES.md](LANGUAGES.md); this is the bit that goes stale.
 
-## Twenty-two are published and conforming; fourteen ship
+## Twenty-two are published and conforming; twenty-one ship
 
 |          |   words | coverage | families | checkable | ships    |
 | -------- | ------: | -------: | -------: | --------: | -------- |
 | `de`     |  36,349 |    99.6% |       21 |        20 | yes      |
 | `it`     |  40,782 |    99.6% |        7 |         5 | yes      |
 | `uk`     |  20,640 |    98.7% |        6 |         4 | yes      |
-| **`cs`** |  21,486 |    97.7% |        7 |         5 | pending  |
+| **`cs`** |  21,486 |    97.7% |        7 |         5 | yes      |
 | `fi`     |  42,730 |    96.9% |        7 |         5 | yes      |
 | `ru`     | 373,007 |    87.9% |       10 |         8 | yes      |
 | `id`     |  34,539 |    84.0% |        6 |         4 | yes      |
-| **`fa`** |  41,801 |    81.8% |        6 |         4 | pending  |
+| **`fa`** |  41,801 |    81.8% |        6 |         4 | yes      |
 | `pt-BR`  | 157,040 |    78.4% |        7 |         5 | yes      |
-| **`ro`** | 142,067 |    75.9% |        7 |         5 | pending  |
+| **`ro`** | 142,067 |    75.9% |        7 |         5 | yes      |
 | `es`     | 145,686 |    72.2% |       25 |        24 | yes      |
 | `fr`     | 104,090 |    72.2% |       17 |        16 | yes      |
 | `en`     | 112,351 |    64.4% |       15 |        14 | yes      |
 | `ko`     |  24,400 |    63.4% |       24 |        23 | yes      |
-| **`pl`** | 330,328 |    60.7% |        7 |         5 | pending  |
+| **`pl`** | 330,328 |    60.7% |        7 |         5 | yes      |
 | `tl`     |  12,579 |    54.0% |       12 |        11 | yes      |
 | `ar`     | 346,516 |    52.7% |        6 |         4 | yes      |
-| **`tr`** | 327,920 |    51.4% |        6 |         4 | pending  |
+| **`tr`** | 327,920 |    51.4% |        6 |         4 | yes      |
 | `nl`     | 164,989 |    51.2% |        7 |         5 | yes      |
-| **`sv`** | 162,041 |    43.6% |        7 |         5 | pending  |
-| **`hu`** | 459,813 |    35.5% |        7 |         5 | pending  |
+| **`sv`** | 162,041 |    43.6% |        7 |         5 | yes      |
+| **`hu`** | 459,813 |    35.5% |        7 |         5 | yes      |
 | `ja`     |  40,810 |    21.3% |       13 |        12 | **held** |
 
-**Languages in bold are the third batch**, built on 2026-09-22 and pending: `cs` `fa` `ro` `pl`
-`tr` `sv` `hu`. Nobody has verified the boards they deal, so none of them ships and none is in the
-game. Japanese is the only _held_ language, which is a decision rather than a queue; its own
-`status.json` says why.
+**Languages in bold are the third batch**, built on 2026-09-22 and blessed the same day: `cs`
+`fa` `ro` `pl` `tr` `sv` `hu`. Each clears the usability floor on all three boards and deals a
+first-run tour of common words. Japanese is the only language that does not ship, and that is a
+decision rather than a queue; its own `status.json` says why.
 
 **What the third batch showed.** Turkish and Hungarian are the demonstration this project was
 built to make. Hungarian dropped 835,248 of 1,295,061 candidates and Turkish 312,230 of 638,282,
