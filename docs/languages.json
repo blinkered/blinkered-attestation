@@ -124,6 +124,154 @@
       ]
     },
     {
+      "tag": "bg",
+      "repo": "blinkered-dictionary-bg",
+      "published": true,
+      "built": true,
+      "conforms": true,
+      "ships": "pending",
+      "candidates": 279165,
+      "shipped": 107898,
+      "families": 19,
+      "checkable": 18,
+      "knee": 4,
+      "steps": [
+        {
+          "families": 1,
+          "added": "wikimedia",
+          "kept": 0,
+          "share": 0,
+          "gained": 0
+        },
+        {
+          "families": 2,
+          "added": "internetarchive",
+          "kept": 0,
+          "share": 0,
+          "gained": 0
+        },
+        {
+          "families": 3,
+          "added": "leipzig",
+          "kept": 96752,
+          "share": 0.346576,
+          "gained": 96752
+        },
+        {
+          "families": 4,
+          "added": "fakti.bg",
+          "kept": 100422,
+          "share": 0.359723,
+          "gained": 3670
+        },
+        {
+          "families": 5,
+          "added": "segabg.com",
+          "kept": 101679,
+          "share": 0.364225,
+          "gained": 1257
+        },
+        {
+          "families": 6,
+          "added": "gutenberg",
+          "kept": 102799,
+          "share": 0.368237,
+          "gained": 1120
+        },
+        {
+          "families": 7,
+          "added": "dnes.bg",
+          "kept": 103821,
+          "share": 0.371898,
+          "gained": 1022
+        },
+        {
+          "families": 8,
+          "added": "actualno.com",
+          "kept": 104767,
+          "share": 0.375287,
+          "gained": 946
+        },
+        {
+          "families": 9,
+          "added": "tatoeba",
+          "kept": 105520,
+          "share": 0.377984,
+          "gained": 753
+        },
+        {
+          "families": 10,
+          "added": "bnr.bg",
+          "kept": 106223,
+          "share": 0.380503,
+          "gained": 703
+        },
+        {
+          "families": 11,
+          "added": "pik.bg",
+          "kept": 106761,
+          "share": 0.38243,
+          "gained": 538
+        },
+        {
+          "families": 12,
+          "added": "economic.bg",
+          "kept": 107134,
+          "share": 0.383766,
+          "gained": 373
+        },
+        {
+          "families": 13,
+          "added": "bta.bg",
+          "kept": 107350,
+          "share": 0.38454,
+          "gained": 216
+        },
+        {
+          "families": 14,
+          "added": "24chasa.bg",
+          "kept": 107524,
+          "share": 0.385163,
+          "gained": 174
+        },
+        {
+          "families": 15,
+          "added": "nova.bg",
+          "kept": 107682,
+          "share": 0.385729,
+          "gained": 158
+        },
+        {
+          "families": 16,
+          "added": "dir.bg",
+          "kept": 107771,
+          "share": 0.386048,
+          "gained": 89
+        },
+        {
+          "families": 17,
+          "added": "investor.bg",
+          "kept": 107856,
+          "share": 0.386352,
+          "gained": 85
+        },
+        {
+          "families": 18,
+          "added": "mediapool.bg",
+          "kept": 107896,
+          "share": 0.386495,
+          "gained": 40
+        },
+        {
+          "families": 19,
+          "added": "novini.bg",
+          "kept": 107898,
+          "share": 0.386503,
+          "gained": 2
+        }
+      ]
+    },
+    {
       "tag": "cs",
       "repo": "blinkered-dictionary-cs",
       "published": true,
@@ -1928,6 +2076,105 @@
       ]
     },
     {
+      "tag": "mk",
+      "repo": "blinkered-dictionary-mk",
+      "published": true,
+      "built": true,
+      "conforms": true,
+      "ships": "pending",
+      "candidates": 21362,
+      "shipped": 18269,
+      "families": 12,
+      "checkable": 11,
+      "knee": 4,
+      "steps": [
+        {
+          "families": 1,
+          "added": "wikimedia",
+          "kept": 0,
+          "share": 0,
+          "gained": 0
+        },
+        {
+          "families": 2,
+          "added": "leipzig",
+          "kept": 0,
+          "share": 0,
+          "gained": 0
+        },
+        {
+          "families": 3,
+          "added": "internetarchive",
+          "kept": 17208,
+          "share": 0.805543,
+          "gained": 17208
+        },
+        {
+          "families": 4,
+          "added": "tatoeba",
+          "kept": 17850,
+          "share": 0.835596,
+          "gained": 642
+        },
+        {
+          "families": 5,
+          "added": "kurir.mk",
+          "kept": 17984,
+          "share": 0.841869,
+          "gained": 134
+        },
+        {
+          "families": 6,
+          "added": "360stepeni.mk",
+          "kept": 18074,
+          "share": 0.846082,
+          "gained": 90
+        },
+        {
+          "families": 7,
+          "added": "plusinfo.mk",
+          "kept": 18136,
+          "share": 0.848984,
+          "gained": 62
+        },
+        {
+          "families": 8,
+          "added": "a1on.mk",
+          "kept": 18187,
+          "share": 0.851372,
+          "gained": 51
+        },
+        {
+          "families": 9,
+          "added": "meta.mk",
+          "kept": 18228,
+          "share": 0.853291,
+          "gained": 41
+        },
+        {
+          "families": 10,
+          "added": "time.mk",
+          "kept": 18244,
+          "share": 0.85404,
+          "gained": 16
+        },
+        {
+          "families": 11,
+          "added": "sdk.mk",
+          "kept": 18257,
+          "share": 0.854648,
+          "gained": 13
+        },
+        {
+          "families": 12,
+          "added": "mia.mk",
+          "kept": 18269,
+          "share": 0.85521,
+          "gained": 12
+        }
+      ]
+    },
+    {
       "tag": "ms",
       "repo": "blinkered-dictionary-ms",
       "published": true,
@@ -2400,6 +2647,401 @@
           "kept": 373007,
           "share": 0.879004,
           "gained": 11
+        }
+      ]
+    },
+    {
+      "tag": "sk",
+      "repo": "blinkered-dictionary-sk",
+      "published": true,
+      "built": true,
+      "conforms": true,
+      "ships": "pending",
+      "candidates": 287672,
+      "shipped": 138362,
+      "families": 21,
+      "checkable": 20,
+      "knee": 4,
+      "steps": [
+        {
+          "families": 1,
+          "added": "wikimedia",
+          "kept": 0,
+          "share": 0,
+          "gained": 0
+        },
+        {
+          "families": 2,
+          "added": "leipzig",
+          "kept": 0,
+          "share": 0,
+          "gained": 0
+        },
+        {
+          "families": 3,
+          "added": "internetarchive",
+          "kept": 122852,
+          "share": 0.427056,
+          "gained": 122852
+        },
+        {
+          "families": 4,
+          "added": "sita.sk",
+          "kept": 127079,
+          "share": 0.44175,
+          "gained": 4227
+        },
+        {
+          "families": 5,
+          "added": "aktuality.sk",
+          "kept": 129268,
+          "share": 0.449359,
+          "gained": 2189
+        },
+        {
+          "families": 6,
+          "added": "startitup.sk",
+          "kept": 131221,
+          "share": 0.456148,
+          "gained": 1953
+        },
+        {
+          "families": 7,
+          "added": "hnonline.sk",
+          "kept": 132386,
+          "share": 0.460198,
+          "gained": 1165
+        },
+        {
+          "families": 8,
+          "added": "postoj.sk",
+          "kept": 133397,
+          "share": 0.463712,
+          "gained": 1011
+        },
+        {
+          "families": 9,
+          "added": "tatoeba",
+          "kept": 134386,
+          "share": 0.46715,
+          "gained": 989
+        },
+        {
+          "families": 10,
+          "added": "ebible",
+          "kept": 135329,
+          "share": 0.470428,
+          "gained": 943
+        },
+        {
+          "families": 11,
+          "added": "hlavnespravy.sk",
+          "kept": 136131,
+          "share": 0.473216,
+          "gained": 802
+        },
+        {
+          "families": 12,
+          "added": "stvr.sk",
+          "kept": 136694,
+          "share": 0.475173,
+          "gained": 563
+        },
+        {
+          "families": 13,
+          "added": "pravda.sk",
+          "kept": 137137,
+          "share": 0.476713,
+          "gained": 443
+        },
+        {
+          "families": 14,
+          "added": "noviny.sk",
+          "kept": 137487,
+          "share": 0.47793,
+          "gained": 350
+        },
+        {
+          "families": 15,
+          "added": "topky.sk",
+          "kept": 137697,
+          "share": 0.47866,
+          "gained": 210
+        },
+        {
+          "families": 16,
+          "added": "refresher.sk",
+          "kept": 137884,
+          "share": 0.47931,
+          "gained": 187
+        },
+        {
+          "families": 17,
+          "added": "cas.sk",
+          "kept": 138065,
+          "share": 0.479939,
+          "gained": 181
+        },
+        {
+          "families": 18,
+          "added": "litcentrum.sk",
+          "kept": 138170,
+          "share": 0.480304,
+          "gained": 105
+        },
+        {
+          "families": 19,
+          "added": "trend.sk",
+          "kept": 138237,
+          "share": 0.480537,
+          "gained": 67
+        },
+        {
+          "families": 20,
+          "added": "dobrenoviny.sk",
+          "kept": 138304,
+          "share": 0.48077,
+          "gained": 67
+        },
+        {
+          "families": 21,
+          "added": "tasr.sk",
+          "kept": 138362,
+          "share": 0.480971,
+          "gained": 58
+        }
+      ]
+    },
+    {
+      "tag": "sl",
+      "repo": "blinkered-dictionary-sl",
+      "published": true,
+      "built": true,
+      "conforms": true,
+      "ships": "pending",
+      "candidates": 262639,
+      "shipped": 136507,
+      "families": 17,
+      "checkable": 16,
+      "knee": 4,
+      "steps": [
+        {
+          "families": 1,
+          "added": "wikimedia",
+          "kept": 0,
+          "share": 0,
+          "gained": 0
+        },
+        {
+          "families": 2,
+          "added": "internetarchive",
+          "kept": 0,
+          "share": 0,
+          "gained": 0
+        },
+        {
+          "families": 3,
+          "added": "leipzig",
+          "kept": 122696,
+          "share": 0.467166,
+          "gained": 122696
+        },
+        {
+          "families": 4,
+          "added": "24ur.com",
+          "kept": 126783,
+          "share": 0.482727,
+          "gained": 4087
+        },
+        {
+          "families": 5,
+          "added": "delo.si",
+          "kept": 128536,
+          "share": 0.489402,
+          "gained": 1753
+        },
+        {
+          "families": 6,
+          "added": "mladina.si",
+          "kept": 130034,
+          "share": 0.495105,
+          "gained": 1498
+        },
+        {
+          "families": 7,
+          "added": "n1info.si",
+          "kept": 131378,
+          "share": 0.500223,
+          "gained": 1344
+        },
+        {
+          "families": 8,
+          "added": "gutenberg",
+          "kept": 132657,
+          "share": 0.505093,
+          "gained": 1279
+        },
+        {
+          "families": 9,
+          "added": "metropolitan.si",
+          "kept": 133699,
+          "share": 0.50906,
+          "gained": 1042
+        },
+        {
+          "families": 10,
+          "added": "primorske.si",
+          "kept": 134494,
+          "share": 0.512087,
+          "gained": 795
+        },
+        {
+          "families": 11,
+          "added": "reporter.si",
+          "kept": 135070,
+          "share": 0.51428,
+          "gained": 576
+        },
+        {
+          "families": 12,
+          "added": "svet24.si",
+          "kept": 135532,
+          "share": 0.516039,
+          "gained": 462
+        },
+        {
+          "families": 13,
+          "added": "dnevnik.si",
+          "kept": 135902,
+          "share": 0.517448,
+          "gained": 370
+        },
+        {
+          "families": 14,
+          "added": "zurnal24.si",
+          "kept": 136202,
+          "share": 0.51859,
+          "gained": 300
+        },
+        {
+          "families": 15,
+          "added": "siol.net",
+          "kept": 136422,
+          "share": 0.519428,
+          "gained": 220
+        },
+        {
+          "families": 16,
+          "added": "tatoeba",
+          "kept": 136505,
+          "share": 0.519744,
+          "gained": 83
+        },
+        {
+          "families": 17,
+          "added": "demokracija.si",
+          "kept": 136507,
+          "share": 0.519751,
+          "gained": 2
+        }
+      ]
+    },
+    {
+      "tag": "sr",
+      "repo": "blinkered-dictionary-sr",
+      "published": true,
+      "built": true,
+      "conforms": true,
+      "ships": "pending",
+      "candidates": 109513,
+      "shipped": 82665,
+      "families": 12,
+      "checkable": 11,
+      "knee": 5,
+      "steps": [
+        {
+          "families": 1,
+          "added": "wikimedia",
+          "kept": 0,
+          "share": 0,
+          "gained": 0
+        },
+        {
+          "families": 2,
+          "added": "internetarchive",
+          "kept": 0,
+          "share": 0,
+          "gained": 0
+        },
+        {
+          "families": 3,
+          "added": "leipzig",
+          "kept": 72256,
+          "share": 0.659794,
+          "gained": 72256
+        },
+        {
+          "families": 4,
+          "added": "ebible",
+          "kept": 76122,
+          "share": 0.695096,
+          "gained": 3866
+        },
+        {
+          "families": 5,
+          "added": "standard.rs",
+          "kept": 79486,
+          "share": 0.725813,
+          "gained": 3364
+        },
+        {
+          "families": 6,
+          "added": "tatoeba",
+          "kept": 80379,
+          "share": 0.733968,
+          "gained": 893
+        },
+        {
+          "families": 7,
+          "added": "nspm.rs",
+          "kept": 81090,
+          "share": 0.74046,
+          "gained": 711
+        },
+        {
+          "families": 8,
+          "added": "rastko.rs",
+          "kept": 81526,
+          "share": 0.744441,
+          "gained": 436
+        },
+        {
+          "families": 9,
+          "added": "politika.rs",
+          "kept": 81941,
+          "share": 0.748231,
+          "gained": 415
+        },
+        {
+          "families": 10,
+          "added": "gutenberg",
+          "kept": 82299,
+          "share": 0.7515,
+          "gained": 358
+        },
+        {
+          "families": 11,
+          "added": "pravda.rs",
+          "kept": 82579,
+          "share": 0.754057,
+          "gained": 280
+        },
+        {
+          "families": 12,
+          "added": "rtrs.tv",
+          "kept": 82665,
+          "share": 0.754842,
+          "gained": 86
         }
       ]
     },
