@@ -19,20 +19,28 @@ publisher.
 
 | language | candidates | proved  | coverage  | families | checkable | returns stop at | conforms | ships    | published |
 | -------- | ---------- | ------- | --------- | -------- | --------- | --------------- | -------- | -------- | --------- |
+| `af`     | 12,354     | 11,165  | **90.4%** | 7        | 6         | 4               | yes      | pending  | yes       |
 | `ar`     | 656,979    | 346,516 | **52.7%** | 6        | 4         | 4               | yes      | yes      | yes       |
 | `cs`     | 22,001     | 21,486  | **97.7%** | 7        | 5         | 4               | yes      | yes      | yes       |
+| `cy`     | 47,635     | 19,697  | **41.3%** | 9        | 9         | 6               | yes      | pending  | yes       |
 | `de`     | 36,493     | 36,349  | **99.6%** | 21       | 20        | 4               | yes      | yes      | yes       |
 | `en`     | 174,456    | 112,351 | **64.4%** | 15       | 14        | 4               | yes      | yes      | yes       |
 | `es`     | 201,655    | 145,686 | **72.2%** | 25       | 24        | 5               | yes      | yes      | yes       |
+| `eu`     | 6,485      | 3,964   | **61.1%** | 10       | 9         | 7               | yes      | pending  | yes       |
 | `fa`     | 51,132     | 41,801  | **81.8%** | 6        | 4         | 4               | yes      | yes      | yes       |
 | `fi`     | 44,104     | 42,730  | **96.9%** | 7        | 5         | 4               | yes      | yes      | yes       |
 | `fr`     | 144,105    | 104,090 | **72.2%** | 17       | 16        | 5               | yes      | yes      | yes       |
+| `ga`     | 13,545     | 8,585   | **63.4%** | 11       | 10        | 6               | yes      | pending  | yes       |
+| `he`     | 15,924     | 12,253  | **76.9%** | 8        | 7         | 6               | yes      | pending  | yes       |
 | `hu`     | 1,295,061  | 459,813 | **35.5%** | 7        | 5         | 6               | yes      | yes      | yes       |
+| `hy`     | 19,341     | 14,076  | **72.8%** | 8        | 7         | 5               | yes      | pending  | yes       |
 | `id`     | 41,132     | 34,539  | **84.0%** | 6        | 4         | 4               | yes      | yes      | yes       |
 | `is`     | 68,689     | 27,162  | **39.5%** | 6        | 5         | 6               | yes      | pending  | yes       |
 | `it`     | 40,944     | 40,782  | **99.6%** | 7        | 5         | 4               | yes      | yes      | yes       |
 | `ja`     | 191,188    | 40,810  | **21.3%** | 13       | 12        | 4               | yes      | **held** | yes       |
+| `ka`     | 163,684    | 109,205 | **66.7%** | 10       | 9         | 4               | yes      | pending  | yes       |
 | `ko`     | 38,467     | 24,400  | **63.4%** | 24       | 23        | 5               | yes      | yes      | yes       |
+| `ms`     | 7,921      | 5,048   | **63.7%** | 10       | 9         | 5               | yes      | pending  | yes       |
 | `nl`     | 322,146    | 164,989 | **51.2%** | 7        | 5         | 5               | yes      | yes      | yes       |
 | `pcm`    | 16,394     | 3,293   | **20.1%** | 5        | 4         | still paying    | yes      | pending  | yes       |
 | `pl`     | 544,157    | 330,328 | **60.7%** | 7        | 5         | 4               | yes      | yes      | yes       |
@@ -40,9 +48,11 @@ publisher.
 | `ro`     | 187,238    | 142,067 | **75.9%** | 7        | 5         | 4               | yes      | yes      | yes       |
 | `ru`     | 424,352    | 373,007 | **87.9%** | 10       | 8         | 4               | yes      | yes      | yes       |
 | `sv`     | 371,287    | 162,041 | **43.6%** | 7        | 5         | 5               | yes      | yes      | yes       |
+| `sw`     | 29,002     | 16,691  | **57.6%** | 9        | 8         | 6               | yes      | pending  | yes       |
 | `tl`     | 23,306     | 12,579  | **54.0%** | 12       | 11        | 5               | yes      | yes      | yes       |
 | `tr`     | 638,282    | 327,920 | **51.4%** | 6        | 4         | 5               | yes      | yes      | yes       |
 | `uk`     | 20,903     | 20,640  | **98.7%** | 6        | 4         | 4               | yes      | yes      | yes       |
+| `vi`     | 25,622     | 18,057  | **70.5%** | 10       | 9         | 5               | yes      | pending  | yes       |
 
 **Ships** is the only column here that is not measured. Conforming says the evidence is sound and
 Blinkered's own floor says the list deals a playable board; neither says anybody wants to ship it.
