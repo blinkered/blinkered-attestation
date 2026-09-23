@@ -41,3 +41,37 @@ fails without saying so.
 
 Where an upstream dictionary is offered under several licenses, the branch above is the one
 relied on, and it is never GPL. Distributed under `CC-BY-SA-4.0`.
+
+## English taken out, 2026-09-23
+
+**This list is no longer exactly what the generator above produced.** The first validator in
+group 1 is the `titles()` bug `SCRIPTS.md` describes: a Wiktionary documents every language, so
+eu.wiktionary having a page for THE says nothing about Basque. Basque subtitles quote English, so
+attestation could not catch it either. The first Basque build shipped 212 English words on
+perfectly real evidence: THE, YOU, KNOW, SCHOOL, STUDENT, HOUSE.
+
+So every candidate that is also in `candidates/en` was asked again, and kept only if one of these
+says it is Basque:
+
+1. **en.wiktionary files it under Basque** (`Category:Basque lemmas` or `Category:Basque
+   non-lemma forms`). That is the language-specific half of the original validator, and it keeps
+   the native words that happen to share an English spelling: BAKE, HIRE, GAIN, MORE, HUTS,
+   HASTEN, ESKER.
+2. **Or it is a loan Basque actually uses**, which takes three things at once: Xuxen, Basque's
+   own spell checker, accepts it; it is spelled the way Basque spells (no C, Q, V, W or Y, and no
+   TH, PH, SH, CK, OO or EE, because Basque respells what it borrows: _eskola_, _telebista_); and a
+   Romance language has it too, which is what separates HOTEL, PIZZA, RADIO and FILM from HOPE
+   and LISTEN. Xuxen alone is too generous; it accepts BOOK and EAGLE.
+3. **Twenty-five words are removed by hand** because they passed all of that and are still
+   English: HOPE, LISTEN, LIGHT, OPEN and the rest are in `english.tsv`. English loans in real
+   Basque use were kept on purpose: BASKET, FLIRT, GOLF, INTERNET, PUB, SURF, SPORT, TEST, STOP,
+   SINGLE, POP, SET.
+
+932 of the 1,279 shared words went and 347 stayed. `english.tsv` lists every removed word and
+which test removed it, so the cut can be argued with one word at a time. The header's counts and
+digest were recomputed; the common tier is now 4,811 and the full list 6,485.
+
+**Xuxen is GPL-2.0, and this file promises never to rely on GPL.** It is consulted only to take
+words out of a list the CC-BY-SA sources above had already built. It contributes no word and
+nothing of it is distributed, which is the same footing as asking any reference book whether a
+word is in it. If that reading is wrong, dropping test 2 removes the loans and nothing else.
