@@ -64,8 +64,9 @@ decision rather than a queue; its own `status.json` says why.
 
 **Languages in italics are the fourth batch**, built and published on 2026-09-23; all
 twenty-seven are pending and none is blessed. `hr` and `pcm` went first, because Nick's coworkers
-are Croatian and Nigerian. Every one of them conforms, and every one checked so far clears the
-usability floor on all three boards; none has a first-run tour board yet, which the game needs
+are Croatian and Nigerian. Every one of them conforms and clears the usability floor on all three boards, though
+Estonian and Macedonian only just, each with one board at exactly the 114-word floor, and Naijá
+and Icelandic within a few words of it; none has a first-run tour board yet, which the game needs
 before it can offer a language.
 
 **Croatian** proves 64.3% on seventeen families, and books were the lever: with ninety Archive
