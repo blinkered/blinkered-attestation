@@ -3,7 +3,7 @@
 Operational state. The **findings** live in [README.md](README.md) and the **numbers** in
 [LANGUAGES.md](LANGUAGES.md); this is the bit that goes stale.
 
-## Forty-nine are published and conforming; twenty-one ship
+## Forty-nine are published and conforming; forty-eight ship
 
 |          |   words | coverage | families | checkable | ships    |
 | -------- | ------: | -------: | -------: | --------: | -------- |
@@ -12,62 +12,62 @@ Operational state. The **findings** live in [README.md](README.md) and the **num
 | `uk`     |  20,640 |    98.7% |        6 |         4 | yes      |
 | **`cs`** |  21,486 |    97.7% |        7 |         5 | yes      |
 | `fi`     |  42,730 |    96.9% |        7 |         5 | yes      |
-| _`af`_   |  11,165 |    90.4% |        7 |         6 | pending  |
+| _`af`_   |  11,165 |    90.4% |        7 |         6 | yes      |
 | `ru`     | 373,007 |    87.9% |       10 |         8 | yes      |
-| _`mk`_   |  18,269 |    85.5% |       12 |        11 | pending  |
+| _`mk`_   |  18,269 |    85.5% |       12 |        11 | yes      |
 | `id`     |  34,539 |    84.0% |        6 |         4 | yes      |
 | **`fa`** |  41,801 |    81.8% |        6 |         4 | yes      |
-| _`ca`_   |  36,799 |    78.6% |       14 |        13 | pending  |
+| _`ca`_   |  36,799 |    78.6% |       14 |        13 | yes      |
 | `pt-BR`  | 157,040 |    78.4% |        7 |         5 | yes      |
-| _`he`_   |  12,253 |    76.9% |        8 |         7 | pending  |
+| _`he`_   |  12,253 |    76.9% |        8 |         7 | yes      |
 | **`ro`** | 142,067 |    75.9% |        7 |         5 | yes      |
-| _`sr`_   |  82,665 |    75.5% |       12 |        11 | pending  |
-| _`hy`_   |  14,076 |    72.8% |        8 |         7 | pending  |
+| _`sr`_   |  82,665 |    75.5% |       12 |        11 | yes      |
+| _`hy`_   |  14,076 |    72.8% |        8 |         7 | yes      |
 | `es`     | 145,686 |    72.2% |       25 |        24 | yes      |
 | `fr`     | 104,090 |    72.2% |       17 |        16 | yes      |
-| _`vi`_   |  18,057 |    70.5% |       10 |         9 | pending  |
-| _`pt`_   |  93,840 |    69.6% |       16 |        15 | pending  |
-| _`no`_   |  27,849 |    67.7% |        6 |         5 | pending  |
-| _`ka`_   | 109,205 |    66.7% |       10 |         9 | pending  |
+| _`vi`_   |  18,057 |    70.5% |       10 |         9 | yes      |
+| _`pt`_   |  93,840 |    69.6% |       16 |        15 | yes      |
+| _`no`_   |  27,849 |    67.7% |        6 |         5 | yes      |
+| _`ka`_   | 109,205 |    66.7% |       10 |         9 | yes      |
 | `en`     | 112,351 |    64.4% |       15 |        14 | yes      |
-| _`hr`_   | 219,247 |    64.3% |       17 |        15 | pending  |
-| _`ms`_   |   5,048 |    63.7% |       10 |         9 | pending  |
+| _`hr`_   | 219,247 |    64.3% |       17 |        15 | yes      |
+| _`ms`_   |   5,048 |    63.7% |       10 |         9 | yes      |
 | `ko`     |  24,400 |    63.4% |       24 |        23 | yes      |
-| _`ga`_   |   8,585 |    63.4% |       11 |        10 | pending  |
-| _`eu`_   |   3,964 |    61.1% |       10 |         9 | pending  |
+| _`ga`_   |   8,585 |    63.4% |       11 |        10 | yes      |
+| _`eu`_   |   3,964 |    61.1% |       10 |         9 | yes      |
 | **`pl`** | 330,328 |    60.7% |        7 |         5 | yes      |
-| _`sw`_   |  16,596 |    58.6% |        9 |         8 | pending  |
+| _`sw`_   |  16,596 |    58.6% |        9 |         8 | yes      |
 | `tl`     |  12,579 |    54.0% |       12 |        11 | yes      |
 | `ar`     | 346,516 |    52.7% |        6 |         4 | yes      |
-| _`sl`_   | 136,507 |    52.0% |       17 |        16 | pending  |
+| _`sl`_   | 136,507 |    52.0% |       17 |        16 | yes      |
 | **`tr`** | 327,920 |    51.4% |        6 |         4 | yes      |
 | `nl`     | 164,989 |    51.2% |        7 |         5 | yes      |
-| _`lv`_   |  49,838 |    49.9% |       13 |        12 | pending  |
-| _`is`_   |  33,777 |    49.2% |        6 |         5 | pending  |
-| _`lt`_   |  97,922 |    48.3% |       13 |        12 | pending  |
-| _`sk`_   | 138,362 |    48.1% |       21 |        20 | pending  |
+| _`lv`_   |  49,838 |    49.9% |       13 |        12 | yes      |
+| _`is`_   |  33,777 |    49.2% |        6 |         5 | yes      |
+| _`lt`_   |  97,922 |    48.3% |       13 |        12 | yes      |
+| _`sk`_   | 138,362 |    48.1% |       21 |        20 | yes      |
 | **`sv`** | 162,041 |    43.6% |        7 |         5 | yes      |
-| _`el`_   | 109,599 |    42.6% |       16 |        15 | pending  |
-| _`cy`_   |  19,601 |    41.3% |        9 |         9 | pending  |
-| _`bg`_   | 107,898 |    38.7% |       19 |        18 | pending  |
-| _`gl`_   |  13,148 |    38.0% |       14 |        13 | pending  |
+| _`el`_   | 109,599 |    42.6% |       16 |        15 | yes      |
+| _`cy`_   |  19,601 |    41.3% |        9 |         9 | yes      |
+| _`bg`_   | 107,898 |    38.7% |       19 |        18 | yes      |
+| _`gl`_   |  13,148 |    38.0% |       14 |        13 | yes      |
 | **`hu`** | 459,813 |    35.5% |        7 |         5 | yes      |
 | `ja`     |  40,810 |    21.3% |       13 |        12 | **held** |
-| _`da`_   |  63,245 |    20.4% |        6 |         5 | pending  |
-| _`pcm`_  |   3,293 |    20.1% |        5 |         4 | pending  |
-| _`et`_   | 100,784 |    17.1% |       16 |        15 | pending  |
+| _`da`_   |  63,245 |    20.4% |        6 |         5 | yes      |
+| _`pcm`_  |   3,293 |    20.1% |        5 |         4 | yes      |
+| _`et`_   | 100,784 |    17.1% |       16 |        15 | yes      |
 
 **Languages in bold are the third batch**, built on 2026-09-22 and blessed the same day: `cs`
 `fa` `ro` `pl` `tr` `sv` `hu`. Each clears the usability floor on all three boards and deals a
-first-run tour of common words. Japanese is the only language that does not ship, and that is a
+first-run tour of common words. Japanese is still the only language that does not ship, and that is a
 decision rather than a queue; its own `status.json` says why.
 
-**Languages in italics are the fourth batch**, built and published on 2026-09-23; all
-twenty-seven are pending and none is blessed. `hr` and `pcm` went first, because Nick's coworkers
+**Languages in italics are the fourth batch**, built, published and blessed on 2026-09-23: Nick
+blessed all twenty-seven once they cleared the standard tests, the minimum-W floor and their tour
+boards. `hr` and `pcm` went first, because Nick's coworkers
 are Croatian and Nigerian. Every one of them conforms and clears the usability floor on all three boards, though
 Estonian and Macedonian only just, each with one board at exactly the 114-word floor, and Naijá
-and Icelandic within a few words of it; none has a first-run tour board yet, which the game needs
-before it can offer a language.
+and Icelandic within a few words of it. Each has a first-run tour board in the game.
 
 **Croatian** proves 64.3% on seventeen families, and books were the lever: with ninety Archive
 books it kept 50.3%, and each hundred more added between three points and half a point until the
@@ -102,13 +102,14 @@ all of these; only some of them have been used.
 **`conforms` means the paperwork matches the goods** — the evidence parses, every source is
 registered, every shipped word has evidence from three independent families, and every attestation
 says where to look. It says nothing about whether a list _plays_; the usability floor answers
-that, and all fourteen shipping lists have passed it.
+that, and every shipping list has passed it.
 
-## Fourteen ship; Japanese does not, for now
+## Japanese does not ship, for now
 
-Nick's call: seven on 2026-09-21, the second batch of seven the same night after he verified the
-usability floor, the minimum-W tests and the boards each one deals. Japanese is 21.3% and the only
-language below fifty, and the reason is not that it needs more books.
+Nick's call, batch by batch: seven on 2026-09-21, the second batch of seven the same night after he verified the
+usability floor, the minimum-W tests and the boards each one deals. Japanese is 21.3%, and unlike
+the other languages below fifty, the reason is not the size of its candidate list or a lack of
+books.
 
 **`blinkered-dictionary-ja` stays published, conforming and building.** It is held back from the
 app, not abandoned. Its numbers stay in `LANGUAGES.md` and on the chart, which is the honest
