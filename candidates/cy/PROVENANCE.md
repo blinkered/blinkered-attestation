@@ -40,3 +40,21 @@ fails without saying so.
 
 Where an upstream dictionary is offered under several licenses, the branch above is the one
 relied on, and it is never GPL. Distributed under `LGPL-3.0-or-later`.
+
+## English taken out, 2026-09-23
+
+**This list is no longer exactly what the generator above produced.** The hunspell dictionary that
+validated it accepts some English, and Welsh text quotes English, so attestation could not catch
+it either: the first Welsh build shipped HIM, HOW, DID, WANT, FATHER and TRUTH on real evidence.
+
+Every candidate that is also in `candidates/en` was asked again. It stays if en.wiktionary files it
+under `Category:Welsh lemmas` or `Category:Welsh non-lemma forms`, or if undoing a soft or nasal
+mutation gives a word en.wiktionary files as Welsh: DON is TON, GAM is CAM, WELI is GWELI.
+Aspirate mutation and h-prothesis are not used, because almost any English word beginning TH, CH,
+PH or H can be read as one. Of what is left, only the **5,000 commonest English words** go,
+because the long tail is mostly Welsh words en.wiktionary has not reached.
+
+That is a narrow cut on purpose. **Many Welsh words are spelled like English and stay**: PAID
+("don't"), UNION ("exactly"), WELL (GWELL, "better"), WAS (GWAS, "servant"), ALL (GALL). SON
+(_sôn_), PER (_pêr_), TESTAMENT and AMEN are kept by hand. 122 of the 2,127 shared words went;
+`english.tsv` lists each and why. The header's counts and digest were recomputed.

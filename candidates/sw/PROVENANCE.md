@@ -40,3 +40,21 @@ fails without saying so.
 
 Where an upstream dictionary is offered under several licenses, the branch above is the one
 relied on, and it is never GPL. Distributed under `LGPL-2.1-or-later`.
+
+## English taken out, 2026-09-23
+
+**This list is no longer exactly what the generator above produced.** The hunspell dictionary that
+validated it accepts English, and Swahili text quotes English, so attestation could not catch it
+either: the first Swahili build shipped SAID, YOU, SCHOOL, WORLD and MUSIC on real evidence.
+
+Every candidate that is also in `candidates/en` was asked again. It stays if en.wiktionary files it
+under `Category:Swahili lemmas` or `Category:Swahili non-lemma forms`. Otherwise it goes if it
+ends in a consonant, which no native Swahili word does, or if it is one of the **5,000 commonest
+English words**. A vowel-final word outside that stays, because that is where Swahili words
+en.wiktionary has not reached are found: NIPA ("give me"), PELE, KOA, LILO and EWE ("O you!") are
+kept, as is ACHE, the subjunctive of _kuacha_. MAGAZINE, INSTITUTE, POLICE, MANIFESTO, GAMBIA and
+UKELELE are removed by hand.
+
+702 of the 1,069 shared words went, most of them English names and plurals no Swahili speaker
+would spell that way; `english.tsv` lists each and why. The header's counts and digest were
+recomputed.
