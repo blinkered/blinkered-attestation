@@ -139,6 +139,30 @@ describe('the chart', () => {
     expect(key).toBeGreaterThan(plotFloor)
   })
 
+  it('keeps forty-nine labels on the chart and apart, however they crowd', () => {
+    // Forty-nine languages outgrew a fixed height: the label column ran below the axis and the
+    // leaders with it. Here every language ends within a point of the floor, the worst crowd.
+    const many = Array.from({ length: 49 }, (_, at) => ({
+      ...GERMAN,
+      language: `l${String(at)}`,
+      steps: [...GERMAN.steps.slice(0, 4), step(5, 10, 0.01 + at / 10000, 1)],
+    }))
+    const drawn = chart(many)
+    const height = Number(/height="(\d+)"/u.exec(drawn)?.[1])
+    const floor = Number(/y2="([\d.]+)" stroke="#888" \/>\n<line/u.exec(drawn)?.[1])
+    const labels = [
+      ...drawn.matchAll(/<text x="[\d.]+" y="([\d.]+)" fill="#[0-9a-f]{6}" font-size="12"/gu),
+    ]
+      .map((match) => Number(match[1]))
+      .sort((left, right) => left - right)
+    expect(labels).toHaveLength(49)
+    expect(height).toBeGreaterThan(49 * 15)
+    expect(Math.max(...labels)).toBeLessThanOrEqual(floor)
+    for (let at = 1; at < labels.length; at += 1) {
+      expect((labels[at] as number) - (labels[at - 1] as number)).toBeGreaterThanOrEqual(14.9)
+    }
+  })
+
   it('survives being asked to draw nothing', () => {
     const empty = chart([])
     expect(empty).toContain('</svg>')

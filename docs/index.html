@@ -188,9 +188,9 @@
 
       <footer>
         Each language measures its own curve from its own committed evidence and publishes it as
-        <code>status.json</code>. A solid line ships. A dashed one does not, and the table says
-        which kind: <b>held</b> is a decision somebody made and wrote down, <b>pending</b> is a
-        language nobody has decided about yet. This page reads those files from each repository's
+        <code>status.json</code>. A solid line ships, a dashed one is <b>pending</b>, a language
+        nobody has decided about yet, and a dotted one is <b>held</b>, a decision somebody made and
+        wrote down. This page reads those files from each repository's
         main branch, so it is as current as the repositories are. Nothing here is authoritative: if
         this disagrees with a language repository, the language repository is right.
       </footer>
@@ -331,9 +331,14 @@
               stroke: one.ink,
               'stroke-width': 2.25,
               'stroke-linejoin': 'round',
-              // Solid ships, dashed does not. That is a decision somebody made rather than a
+              // Solid ships, dashed is pending, dotted is held back on purpose, the same three
+              // strokes as curves.svg. That is a decision somebody made rather than a
               // measurement, so it is drawn: what is live should be visible without reading.
-              ...(one.ships === true ? {} : { 'stroke-dasharray': '6 4' }),
+              ...(one.ships === true
+                ? {}
+                : one.ships === false
+                  ? { 'stroke-dasharray': '1 4', 'stroke-linecap': 'round' }
+                  : { 'stroke-dasharray': '6 4' }),
             }),
           )
           const last = one.steps.at(-1)

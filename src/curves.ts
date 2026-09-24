@@ -64,8 +64,11 @@ const LABEL_GAP = 15
 const PENDING_DASH = ' stroke-dasharray="6 4"'
 const HELD_DASH = ' stroke-dasharray="1 4" stroke-linecap="round"'
 const WIDTH = 720
-const HEIGHT = 450
-const PAD = { left: 52, right: 104, top: 20, bottom: 74 }
+/** The plot's height when few languages are drawn; it grows when their labels need more room. */
+const PLOT_HEIGHT = 356
+const PAD = { left: 52, right: 144, top: 20, bottom: 74 }
+/** Between the plot and the labels, where a leader jogs from its curve's height to its label's. */
+const GUTTER = 40
 
 function escape(text: string): string {
   return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -82,7 +85,12 @@ export function chart(curves: readonly Curve[]): string {
   const plotted = curves.filter((curve) => curve.steps.length > 0)
   const maxFamilies = Math.max(1, ...plotted.map((curve) => curve.steps.length))
   const plotWidth = WIDTH - PAD.left - PAD.right
-  const plotHeight = HEIGHT - PAD.top - PAD.bottom
+  // Every label needs its own line in the right-hand column. A fixed height held twenty-two of
+  // them and not forty-nine: the column ran off the bottom and the leaders with it, diagonals
+  // crossing the whole chart to labels nobody could match to a line. So the plot is as tall as
+  // its labels need, and at that height a label sits close to where its curve ended.
+  const plotHeight = Math.max(PLOT_HEIGHT, plotted.length * LABEL_GAP)
+  const HEIGHT = PAD.top + plotHeight + PAD.bottom
 
   const x = (families: number): number =>
     PAD.left + (maxFamilies === 1 ? 0 : ((families - 1) / (maxFamilies - 1)) * plotWidth)
@@ -115,13 +123,19 @@ export function chart(curves: readonly Curve[]): string {
   const ends = plotted
     .map((curve, at) => ({ at, y: y((curve.steps.at(-1) as Step).share) }))
     .sort((left, right) => left.y - right.y)
-  const labelY = new Map<number, number>()
-  let floor = PAD.top
-  for (const end of ends) {
-    const placed = Math.max(end.y, floor)
-    labelY.set(end.at, placed)
-    floor = placed + LABEL_GAP
+  // Pushed down past each other first, then back up from the floor, so a crowd near the bottom
+  // stays on the chart instead of spilling below the axis. The plot is tall enough for every
+  // label, so the second pass always has room.
+  const placed = ends.map((end) => end.y)
+  for (let at = 1; at < placed.length; at += 1) {
+    placed[at] = Math.max(placed[at] as number, (placed[at - 1] as number) + LABEL_GAP)
   }
+  let ceiling = PAD.top + plotHeight
+  for (let at = placed.length - 1; at >= 0; at -= 1) {
+    placed[at] = Math.min(placed[at] as number, ceiling)
+    ceiling = (placed[at] as number) - LABEL_GAP
+  }
+  const labelY = new Map(ends.map((end, at) => [end.at, placed[at] as number]))
 
   const lines = plotted.map((curve, at) => {
     const ink = INK[at % INK.length] as string
@@ -131,13 +145,15 @@ export function chart(curves: readonly Curve[]): string {
     const last = curve.steps.at(-1) as Step
     const end = y(last.share)
     const label = labelY.get(at) as number
-    // A leader from where the curve actually stopped to its label in the right-hand column.
-    // German runs out of families at five and Korean at twenty-three, so without one a reader
-    // has to guess which line the label at the edge belongs to.
+    // A leader from where the curve actually stopped to its label. It runs flat at the curve's
+    // final value to the edge of the plot, which is also true: a language out of families keeps
+    // what it had. Only then does it jog to its label, inside the gutter. A straight line from
+    // the curve's end to the label crossed the whole chart once forty-nine labels shared a column.
+    const edge = PAD.left + plotWidth
     const leader =
-      `<line x1="${x(last.families).toFixed(1)}" y1="${end.toFixed(1)}" ` +
-      `x2="${String(PAD.left + plotWidth + 5)}" y2="${label.toFixed(1)}" ` +
-      `stroke="${ink}" stroke-opacity="0.35" stroke-dasharray="2 3" />`
+      `<polyline points="${x(last.families).toFixed(1)},${end.toFixed(1)} ` +
+      `${String(edge)},${end.toFixed(1)} ${String(edge + GUTTER - 4)},${label.toFixed(1)}" ` +
+      `fill="none" stroke="${ink}" stroke-opacity="0.35" stroke-dasharray="2 3" />`
     // Three states of blessing, three strokes. Solid ships, dashed is pending, dotted is held
     // back on purpose. The difference is a decision somebody made rather than a measurement, so
     // it is drawn: a reader should see what is live, and what is waiting rather than rejected,
@@ -148,7 +164,7 @@ export function chart(curves: readonly Curve[]): string {
       `<polyline points="${points}" fill="none" stroke="${ink}" stroke-width="2" ` +
       `stroke-linejoin="round"${dash} />` +
       leader +
-      `<text x="${String(PAD.left + plotWidth + 8)}" y="${label.toFixed(1)}" ` +
+      `<text x="${String(PAD.left + plotWidth + GUTTER)}" y="${label.toFixed(1)}" ` +
       `fill="${ink}" font-size="12" dominant-baseline="middle"${live ? '' : ' font-style="italic"'}>` +
       `${escape(curve.language)} ${(last.share * 100).toFixed(0)}%</text>`
     )
