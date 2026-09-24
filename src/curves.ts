@@ -150,9 +150,10 @@ export function chart(curves: readonly Curve[]): string {
     // what it had. Only then does it jog to its label, inside the gutter. A straight line from
     // the curve's end to the label crossed the whole chart once forty-nine labels shared a column.
     const edge = PAD.left + plotWidth
+    // A path rather than a polyline, so that a polyline in this chart always means a curve.
     const leader =
-      `<polyline points="${x(last.families).toFixed(1)},${end.toFixed(1)} ` +
-      `${String(edge)},${end.toFixed(1)} ${String(edge + GUTTER - 4)},${label.toFixed(1)}" ` +
+      `<path d="M${x(last.families).toFixed(1)},${end.toFixed(1)} ` +
+      `L${String(edge)},${end.toFixed(1)} L${String(edge + GUTTER - 4)},${label.toFixed(1)}" ` +
       `fill="none" stroke="${ink}" stroke-opacity="0.35" stroke-dasharray="2 3" />`
     // Three states of blessing, three strokes. Solid ships, dashed is pending, dotted is held
     // back on purpose. The difference is a decision somebody made rather than a measurement, so

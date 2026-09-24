@@ -63,14 +63,14 @@ describe('the chart', () => {
     expect(svg.match(/<polyline /g)).toHaveLength(2)
     // Korean stops at four families and German at five, so Korean's leader starts short of the
     // right edge rather than at it.
-    expect(svg).toContain('<line x1="475.0"')
+    expect(svg).toContain('<path d="M445.0,')
     expect(svg).toContain('>de 98%</text>')
     expect(svg).toContain('>ko 39%</text>')
   })
 
   it('scales the x axis to the language that consulted the most families', () => {
     // German's fifth family is the rightmost point, so it sits on the right edge of the plot.
-    expect(svg).toContain('616.0,')
+    expect(svg).toContain('576.0,')
   })
 
   it('leaves out a language that measured nothing rather than drawing a flat line for it', () => {
@@ -82,7 +82,7 @@ describe('the chart', () => {
   it('nudges labels apart when two languages finished at the same coverage, with a leader', () => {
     const twin = { ...KOREAN, language: 'tw' }
     const drawn = chart([KOREAN, twin])
-    const placed = [...drawn.matchAll(/<text x="624" y="([\d.]+)"/g)].map((found) =>
+    const placed = [...drawn.matchAll(/<text x="616" y="([\d.]+)"/g)].map((found) =>
       Number(found[1]),
     )
     expect(placed).toHaveLength(2)
