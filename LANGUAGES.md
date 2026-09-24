@@ -24,7 +24,7 @@ publisher.
 | `bg`     | 279,165    | 107,898 | **38.7%** | 19       | 18        | 4               | yes      | pending  | yes       |
 | `ca`     | 46,841     | 36,799  | **78.6%** | 14       | 13        | 5               | yes      | pending  | yes       |
 | `cs`     | 22,001     | 21,486  | **97.7%** | 7        | 5         | 4               | yes      | yes      | yes       |
-| `cy`     | 47,635     | 19,697  | **41.3%** | 9        | 9         | 6               | yes      | pending  | yes       |
+| `cy`     | 47,513     | 19,601  | **41.3%** | 9        | 9         | 6               | yes      | pending  | yes       |
 | `da`     | 309,554    | 63,245  | **20.4%** | 6        | 5         | 6               | yes      | pending  | yes       |
 | `de`     | 36,493     | 36,349  | **99.6%** | 21       | 20        | 4               | yes      | yes      | yes       |
 | `el`     | 257,014    | 109,599 | **42.6%** | 16       | 15        | 5               | yes      | pending  | yes       |
@@ -63,7 +63,7 @@ publisher.
 | `sl`     | 262,639    | 136,507 | **52.0%** | 17       | 16        | 4               | yes      | pending  | yes       |
 | `sr`     | 109,513    | 82,665  | **75.5%** | 12       | 11        | 5               | yes      | pending  | yes       |
 | `sv`     | 371,287    | 162,041 | **43.6%** | 7        | 5         | 5               | yes      | yes      | yes       |
-| `sw`     | 29,002     | 16,691  | **57.6%** | 9        | 8         | 6               | yes      | pending  | yes       |
+| `sw`     | 28,300     | 16,596  | **58.6%** | 9        | 8         | 6               | yes      | pending  | yes       |
 | `tl`     | 23,306     | 12,579  | **54.0%** | 12       | 11        | 5               | yes      | yes      | yes       |
 | `tr`     | 638,282    | 327,920 | **51.4%** | 6        | 4         | 5               | yes      | yes      | yes       |
 | `uk`     | 20,903     | 20,640  | **98.7%** | 6        | 4         | 4               | yes      | yes      | yes       |
@@ -95,4 +95,4 @@ differ by fifty points because German's candidate list is 36,000 words and Frenc
 
 Every built language conforms: each ships only what its evidence supports.
 
-Generated 2026-09-23 from the published repositories.
+Generated 2026-09-24 from the published repositories.

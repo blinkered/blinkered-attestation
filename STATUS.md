@@ -36,7 +36,7 @@ Operational state. The **findings** live in [README.md](README.md) and the **num
 | _`ga`_   |   8,585 |    63.4% |       11 |        10 | pending  |
 | _`eu`_   |   3,964 |    61.1% |       10 |         9 | pending  |
 | **`pl`** | 330,328 |    60.7% |        7 |         5 | yes      |
-| _`sw`_   |  16,691 |    57.6% |        9 |         8 | pending  |
+| _`sw`_   |  16,596 |    58.6% |        9 |         8 | pending  |
 | `tl`     |  12,579 |    54.0% |       12 |        11 | yes      |
 | `ar`     | 346,516 |    52.7% |        6 |         4 | yes      |
 | _`sl`_   | 136,507 |    52.0% |       17 |        16 | pending  |
@@ -48,7 +48,7 @@ Operational state. The **findings** live in [README.md](README.md) and the **num
 | _`sk`_   | 138,362 |    48.1% |       21 |        20 | pending  |
 | **`sv`** | 162,041 |    43.6% |        7 |         5 | yes      |
 | _`el`_   | 109,599 |    42.6% |       16 |        15 | pending  |
-| _`cy`_   |  19,697 |    41.3% |        9 |         9 | pending  |
+| _`cy`_   |  19,601 |    41.3% |        9 |         9 | pending  |
 | _`bg`_   | 107,898 |    38.7% |       19 |        18 | pending  |
 | _`gl`_   |  13,148 |    38.0% |       14 |        13 | pending  |
 | **`hu`** | 459,813 |    35.5% |        7 |         5 | yes      |
@@ -81,11 +81,7 @@ above all, took it to 17.1%.
 (none of the top fifteen "Estonian" books was Estonian); query by ISO code. The legibility floor
 does not keep out a close neighbour: Spanish books score 37 to 55% against Catalan, Galician and
 Portuguese candidates, and what separates them is the share of a book's hits that no neighbour's
-list contains. Three candidate lists carried English from a Wiktionary-titles validator: Basque's
-is cleaned (`candidates/eu/PROVENANCE.md`); Welsh and Swahili still carry roughly 150 and 60 words
-in the commonest three thousand. And every list built from here on carries its written forms, so
-Portuguese ships NÃO rather than NAO and Vietnamese A CÒNG rather than ACÒNG. The twenty-two
-languages built before that fix still ship without them until they are rebuilt.
+list contains. Three candidate lists carried English their validators let through, and all three are cleaned: Basque's came from Wiktionary page titles, Welsh's and Swahili's from hunspell; each `candidates/<tag>/PROVENANCE.md` says how, and `english.tsv` names every word removed. Welsh keeps PAID, UNION and WELL, which are Welsh. And every list now carries its written forms, the older twenty-two included, rebuilt from their recorded evidence with the same words: French ships ÉTÉ rather than ETE, Portuguese NÃO rather than NAO, Vietnamese A CÒNG rather than ACÒNG.
 
 **Naijá is the one to read.** `SCRIPTS.md` said attestation would not work for it, because its
 commonest words are spelled as English. That turned out to be half right. A collection that is
