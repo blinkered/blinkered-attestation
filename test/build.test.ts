@@ -234,6 +234,18 @@ describe('building on evidence already here', () => {
     expect(built.words).not.toContain('OKAY')
   })
 
+  it('refuses a collection that scans empty when the record says it held text', () => {
+    // A book shelf emptied of its books but not removed: scanning it would erase every word
+    // the books attested, and nothing downstream would say so.
+    expect(() => build('de', CANDIDATES, [...fresh, result('gut', 0, [])], 10, prior)).toThrow(
+      /gut scanned empty, but the evidence here records 1000 tokens/u,
+    )
+  })
+
+  it('accepts an empty collection the record never had', () => {
+    expect(build('de', CANDIDATES, [...fresh, result('ia', 0, [])], 10, prior).kept).toBe(1)
+  })
+
   it('builds from nothing when there is no evidence yet', () => {
     const built = build('de', CANDIDATES, fresh, 10)
     expect(built.reused).toEqual([])

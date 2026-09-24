@@ -176,6 +176,20 @@ export function build(
   written: ReadonlyMap<string, string> = new Map(),
 ): Built {
   const asked = new Set(candidates)
+  // A collection the record says held text, scanned today as holding none, is a folder whose
+  // files were removed and the folder left behind. A fresh scan beats the record, so letting it
+  // through would erase everything that collection ever attested: emptying the book shelves once
+  // took Arabic from 346,516 words to 158,940 with nothing failing. Deleting the folder is how to
+  // say "use what is recorded"; an empty one is a mistake, and it is refused by name.
+  for (const result of results) {
+    const had = prior?.totals.get(result.source) ?? 0
+    if (result.tokens === 0 && had > 0) {
+      throw new Error(
+        `${result.source} scanned empty, but the evidence here records ${String(had)} tokens ` +
+          'from it. Remove the collection entirely to reuse the record, or put its files back.',
+      )
+    }
+  }
   const { totals: scanned, words: freshWords } = merge(results)
   const carried = recorded(prior, new Set(scanned.keys()), asked)
 
