@@ -95,4 +95,4 @@ differ by fifty points because German's candidate list is 36,000 words and Frenc
 
 Every built language conforms: each ships only what its evidence supports.
 
-Generated 2026-09-24 from the published repositories.
+Generated 2026-09-25 from the published repositories.
